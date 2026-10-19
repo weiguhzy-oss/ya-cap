@@ -44,24 +44,6 @@
 "shortcutNeedsModifierTitle" = "Cần phím bổ trợ";
 "shortcutNeedsModifier" = "Tổ hợp ⌘/⌥/⇧/⌃ + phím khác (vd: ⌘⇧8), hoặc riêng F1–F12";
 "shortcutRestore" = "Khôi phục mặc định";
-"quickPinShortcutHeader" = "Ghim nhanh";
-"quickPinShortcutDefaultDisplay" = "Chưa đặt";
-"quickPinShortcutClear" = "Xóa phím tắt ghim nhanh";
-"selectedImagePinShortcutHeader" = "Ghim ảnh đã chọn";
-"selectedImagePinShortcutDefaultDisplay" = "Chưa đặt";
-"selectedImagePinShortcutClear" = "Xóa phím tắt ghim ảnh đã chọn";
-"clipboardImagePinShortcutHeader" = "Ghim ảnh hiện tại hoặc ảnh từ clipboard";
-"clipboardImagePinShortcutDefaultDisplay" = "Chưa đặt";
-"clipboardImagePinShortcutClear" = "Xóa phím tắt ghim ảnh hiện tại hoặc ảnh từ clipboard";
-"clipboardTextPinShortcutHeader" = "Ghim văn bản từ clipboard";
-"clipboardTextPinShortcutDefaultDisplay" = "Chưa đặt";
-"clipboardTextPinShortcutClear" = "Xóa phím tắt ghim văn bản từ clipboard";
-"selectedImagePinNoImage" = "Chưa chọn ảnh trong Finder";
-"clipboardImagePinNoImage" = "Không có ảnh trong clipboard";
-"clipboardTextPinNoText" = "Clipboard không có văn bản";
-"pinFromFinderHint" = "Đã ghim ảnh từ Finder, nhấn X để đóng";
-"pinFromClipboardHint" = "Đã ghim ảnh từ clipboard, nhấn X để đóng";
-"pinFromClipboardTextHint" = "Đã ghim văn bản từ clipboard, bấm đúp để sửa";
 "pinToolbarClose" = "Đóng ảnh đã ghim";
 "pinToolbarCopy" = "Sao chép ảnh đã ghim";
 "pinToolbarDrag" = "Kéo ảnh đã ghim";
@@ -69,12 +51,6 @@
 "pinToolbarEditText" = "Sửa văn bản";
 
 /* Image-edit shortcuts */
-"selectedImageEditShortcutHeader" = "Chỉnh sửa ảnh đã chọn";
-"selectedImageEditShortcutHint" = "Nhấn để chỉnh sửa một ảnh đang được chọn trong Finder. Mặc định chưa đặt";
-"selectedImageEditShortcutDefaultDisplay" = "Chưa đặt";
-"clipboardImageEditShortcutHeader" = "Chỉnh sửa ảnh từ clipboard";
-"clipboardImageEditShortcutHint" = "Nhấn để chỉnh sửa ảnh hiện có trong clipboard. Mặc định chưa đặt";
-"clipboardImageEditShortcutDefaultDisplay" = "Chưa đặt";
 "textRecognitionShortcutHeader" = "Nhận dạng văn bản";
 "textRecognitionShortcutDefaultDisplay" = "Chưa đặt";
 "copyImageTextShortcutHeader" = "Sao chép chữ trong ảnh";
@@ -85,8 +61,6 @@
 "recordShortcutDefaultDisplay" = "Chưa đặt";
 "fullScreenScreenshotShortcutHeader" = "Chụp toàn màn hình";
 "fullScreenScreenshotShortcutDefaultDisplay" = "Chưa đặt";
-"colorPickerShortcutHeader" = "Chọn màu";
-"colorPickerShortcutDefaultDisplay" = "Chưa đặt";
 
 /* Copy-to-clipboard shortcut (editor confirm) */
 "clipboardShortcutHeader" = "Sao chép vào clipboard";
@@ -96,32 +70,18 @@
 /* Save-to-file shortcut (editor save) */
 "fileSaveShortcutHeader" = "Lưu vào tệp";
 "fileSaveShortcutHint" = "Nhấn trong trình chỉnh sửa để lưu ảnh chụp dạng PNG vào thư mục ảnh chụp đã đặt. Mặc định là ⌘S";
-"previousHistoryImageShortcutHeader" = "Ảnh chụp lịch sử trước";
-"nextHistoryImageShortcutHeader" = "Ảnh chụp lịch sử tiếp theo";
-"historyPanelShortcutHeader" = "Bảng lịch sử";
-"historyPanelShortcutDefaultDisplay" = "Chưa đặt";
 
 /* Shortcut conflict */
 "shortcutConflictTitle" = "Phím tắt đã được dùng";
 "shortcutConflictScreenshot" = "Tổ hợp phím này đã được dùng cho phím tắt chụp màn hình. Vui lòng chọn tổ hợp khác";
 "shortcutConflictCountdown" = "Tổ hợp phím này đã được dùng cho phím tắt chụp màn hình đếm ngược (phím tắt chụp màn hình + ⌥). Vui lòng chọn tổ hợp khác";
-"shortcutConflictQuickPin" = "Tổ hợp phím này đã được dùng cho ghim nhanh. Vui lòng chọn tổ hợp khác";
-"shortcutConflictSelectedImagePin" = "Tổ hợp phím này đã được dùng cho phím tắt ghim ảnh đã chọn. Vui lòng chọn tổ hợp khác";
-"shortcutConflictClipboardImagePin" = "Tổ hợp phím này đã được dùng cho phím tắt ghim ảnh từ clipboard. Vui lòng chọn tổ hợp khác";
-"shortcutConflictClipboardTextPin" = "Tổ hợp phím này đã được dùng cho phím tắt ghim văn bản từ clipboard. Vui lòng chọn tổ hợp khác";
 "shortcutConflictClipboard" = "Tổ hợp phím này đã được dùng cho phím tắt sao chép vào clipboard. Vui lòng chọn tổ hợp khác";
 "shortcutConflictFileSave" = "Tổ hợp phím này đã được dùng cho phím tắt lưu vào tệp. Vui lòng chọn tổ hợp khác";
-"shortcutConflictPreviousHistoryImage" = "Tổ hợp phím này đã được dùng cho phím tắt ảnh chụp lịch sử trước. Vui lòng chọn tổ hợp khác";
-"shortcutConflictNextHistoryImage" = "Tổ hợp phím này đã được dùng cho phím tắt ảnh chụp lịch sử tiếp theo. Vui lòng chọn tổ hợp khác";
-"shortcutConflictHistoryPanel" = "Tổ hợp phím này đã được dùng cho phím tắt bảng lịch sử. Vui lòng chọn tổ hợp khác";
-"shortcutConflictSelectedImageEdit" = "Tổ hợp phím này đã được dùng cho phím tắt chỉnh sửa ảnh đã chọn. Vui lòng chọn tổ hợp khác";
-"shortcutConflictClipboardImageEdit" = "Tổ hợp phím này đã được dùng cho phím tắt chỉnh sửa ảnh từ clipboard. Vui lòng chọn tổ hợp khác";
 "shortcutConflictTextRecognition" = "Tổ hợp phím này đã được dùng cho phím tắt nhận dạng văn bản. Vui lòng chọn tổ hợp khác";
 "shortcutConflictCopyImageText" = "Tổ hợp phím này đã được dùng cho phím tắt sao chép chữ trong ảnh. Vui lòng chọn tổ hợp khác";
 "shortcutConflictScreenshotTranslation" = "Tổ hợp phím này đã được dùng cho phím tắt dịch ảnh chụp màn hình. Vui lòng chọn tổ hợp khác";
 "shortcutConflictRecord" = "Tổ hợp phím này đã được dùng cho phím tắt ghi màn hình. Vui lòng chọn tổ hợp khác";
 "shortcutConflictFullScreenScreenshot" = "Tổ hợp phím này đã được dùng cho phím tắt chụp toàn màn hình. Vui lòng chọn tổ hợp khác";
-"shortcutConflictColorPicker" = "Tổ hợp phím này đã được dùng cho phím tắt Chọn màu. Vui lòng chọn tổ hợp khác";
 
 /* Menu bar */
 "takeScreenshot" = "Chụp màn hình";
@@ -196,7 +156,6 @@
 "historyPanelShortcutToggleGuide" = "Hiện hoặc ẩn phím tắt";
 
 /* Cursor chip */
-"dragToQuickPin" = "Nhấp vào cửa sổ hoặc kéo chọn vùng để ghim ngay";
 "dragToScreenshot" = "Nhấp vào cửa sổ hoặc kéo để chụp";
 "dragToScreenshotAspectFree" = "Nhấp vào cửa sổ hoặc kéo để chụp · Tỷ lệ kéo tự do (R)";
 "dragToScreenshotAspect" = "Nhấp vào cửa sổ hoặc kéo để chụp · Kéo %@ (R)";
@@ -222,8 +181,6 @@
 "editSuspendedResumeToast" = "Đang tiếp tục bản chỉnh sửa tạm lưu";
 "fullScreenScreenshotFailed" = "Chụp toàn màn hình thất bại";
 "openImageNoImage" = "Sao chép ảnh vào bảng nhớ tạm hoặc chọn một tệp ảnh";
-"selectedImageEditNoImage" = "Chưa chọn đúng một ảnh trong Finder";
-"clipboardImageEditNoImage" = "Không có ảnh có thể chỉnh sửa trong clipboard";
 "recordingSaved" = "Đã lưu bản ghi vào %@";
 "recordingCancelled" = "Đã hủy ghi";
 "recordingExportingGIF" = "Đang tạo GIF";

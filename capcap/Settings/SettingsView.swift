@@ -72,9 +72,7 @@ private enum HistoryPanelSettingsMode {
 
 class SettingsView: NSView {
 
-    var isStartup: Bool = false
     var onMenuBarToggle: ((Bool) -> Void)?
-    var onLaunch: (() -> Void)?
 
     // Switches
     private var menuBarSwitch: NSSwitch!
@@ -124,54 +122,19 @@ class SettingsView: NSView {
     private var fullScreenScreenshotShortcutRestoreButton: NSButton!
     private var fullScreenScreenshotShortcutRecordingMonitor: Any?
 
-    // Color picker shortcut card
-    private var colorPickerShortcutTitleLabel: NSTextField!
-    private var colorPickerShortcutField: NSTextField!
-    private var colorPickerShortcutSetButton: NSButton!
-    private var colorPickerShortcutRestoreButton: NSButton!
-    private var colorPickerShortcutRecordingMonitor: Any?
+    // Copy-to-clipboard (editor confirm) shortcut card
+    private var clipboardShortcutTitleLabel: NSTextField!
+    private var clipboardShortcutField: NSTextField!
+    private var clipboardShortcutSetButton: NSButton!
+    private var clipboardShortcutRestoreButton: NSButton!
+    private var clipboardShortcutRecordingMonitor: Any?
 
-    // Quick Pin shortcut card
-    private var quickPinShortcutTitleLabel: NSTextField!
-    private var quickPinShortcutField: NSTextField!
-    private var quickPinShortcutSetButton: NSButton!
-    private var quickPinShortcutRestoreButton: NSButton!
-    private var quickPinShortcutRecordingMonitor: Any?
-
-    // Pin selected image shortcut card
-    private var selectedImagePinShortcutTitleLabel: NSTextField!
-    private var selectedImagePinShortcutField: NSTextField!
-    private var selectedImagePinShortcutSetButton: NSButton!
-    private var selectedImagePinShortcutRestoreButton: NSButton!
-    private var selectedImagePinShortcutRecordingMonitor: Any?
-
-    // Pin clipboard image shortcut card
-    private var clipboardImagePinShortcutTitleLabel: NSTextField!
-    private var clipboardImagePinShortcutField: NSTextField!
-    private var clipboardImagePinShortcutSetButton: NSButton!
-    private var clipboardImagePinShortcutRestoreButton: NSButton!
-    private var clipboardImagePinShortcutRecordingMonitor: Any?
-
-    // Pin clipboard text shortcut card
-    private var clipboardTextPinShortcutTitleLabel: NSTextField!
-    private var clipboardTextPinShortcutField: NSTextField!
-    private var clipboardTextPinShortcutSetButton: NSButton!
-    private var clipboardTextPinShortcutRestoreButton: NSButton!
-    private var clipboardTextPinShortcutRecordingMonitor: Any?
-
-    // Edit selected image shortcut card
-    private var selectedImageEditShortcutTitleLabel: NSTextField!
-    private var selectedImageEditShortcutField: NSTextField!
-    private var selectedImageEditShortcutSetButton: NSButton!
-    private var selectedImageEditShortcutRestoreButton: NSButton!
-    private var selectedImageEditShortcutRecordingMonitor: Any?
-
-    // Edit clipboard image shortcut card
-    private var clipboardImageEditShortcutTitleLabel: NSTextField!
-    private var clipboardImageEditShortcutField: NSTextField!
-    private var clipboardImageEditShortcutSetButton: NSButton!
-    private var clipboardImageEditShortcutRestoreButton: NSButton!
-    private var clipboardImageEditShortcutRecordingMonitor: Any?
+    // Save-to-file shortcut card (default ⌘S)
+    private var fileSaveShortcutTitleLabel: NSTextField!
+    private var fileSaveShortcutField: NSTextField!
+    private var fileSaveShortcutSetButton: NSButton!
+    private var fileSaveShortcutRestoreButton: NSButton!
+    private var fileSaveShortcutRecordingMonitor: Any?
 
     // Text recognition shortcut card
     private var textRecognitionShortcutTitleLabel: NSTextField!
@@ -194,69 +157,20 @@ class SettingsView: NSView {
     private var screenshotTranslationShortcutRestoreButton: NSButton!
     private var screenshotTranslationShortcutRecordingMonitor: Any?
 
-    // Recording shortcut card
+    // Record shortcut card
     private var recordShortcutTitleLabel: NSTextField!
     private var recordShortcutField: NSTextField!
     private var recordShortcutSetButton: NSButton!
     private var recordShortcutRestoreButton: NSButton!
     private var recordShortcutRecordingMonitor: Any?
 
-    // Image Merge shortcut card
-    private var imageMergeShortcutTitleLabel: NSTextField!
-    private var imageMergeShortcutField: NSTextField!
-    private var imageMergeShortcutSetButton: NSButton!
-    private var imageMergeShortcutRestoreButton: NSButton!
-    private var imageMergeShortcutRecordingMonitor: Any?
-
-    // File upload shortcut card
-    private var finderUploadShortcutTitleLabel: NSTextField!
-    private var finderUploadShortcutField: NSTextField!
-    private var finderUploadShortcutSetButton: NSButton!
-    private var finderUploadShortcutRestoreButton: NSButton!
-    private var finderUploadShortcutRecordingMonitor: Any?
-
-    // Copy-to-clipboard (editor confirm) shortcut card
-    private var clipboardShortcutTitleLabel: NSTextField!
-    private var clipboardShortcutField: NSTextField!
-    private var clipboardShortcutSetButton: NSButton!
-    private var clipboardShortcutRestoreButton: NSButton!
-    private var clipboardShortcutRecordingMonitor: Any?
-
-    // Save-to-file shortcut card (default ⌘S)
-    private var fileSaveShortcutTitleLabel: NSTextField!
-    private var fileSaveShortcutField: NSTextField!
-    private var fileSaveShortcutSetButton: NSButton!
-    private var fileSaveShortcutRestoreButton: NSButton!
-    private var fileSaveShortcutRecordingMonitor: Any?
-
-    // History navigation shortcut cards
-    private var previousHistoryImageShortcutTitleLabel: NSTextField!
-    private var previousHistoryImageShortcutField: NSTextField!
-    private var previousHistoryImageShortcutSetButton: NSButton!
-    private var previousHistoryImageShortcutRestoreButton: NSButton!
-    private var previousHistoryImageShortcutRecordingMonitor: Any?
-
-    private var nextHistoryImageShortcutTitleLabel: NSTextField!
-    private var nextHistoryImageShortcutField: NSTextField!
-    private var nextHistoryImageShortcutSetButton: NSButton!
-    private var nextHistoryImageShortcutRestoreButton: NSButton!
-    private var nextHistoryImageShortcutRecordingMonitor: Any?
-
-    private var historyPanelShortcutTitleLabel: NSTextField!
-    private var historyPanelShortcutField: NSTextField!
-    private var historyPanelShortcutSetButton: NSButton!
-    private var historyPanelShortcutRestoreButton: NSButton!
-    private var historyPanelShortcutRecordingMonitor: Any?
-
     private var shortcutResetButton: NSButton?
+
 
     // Permission badges
     private var accessibilityBadge: StatusBadge!
     private var screenRecordingBadge: StatusBadge!
     private var microphoneBadge: StatusBadge?
-
-    // Sidebar bottom action — Launch App in startup mode, Quit App otherwise.
-    private var launchButton: ActionButton?
 
     // Labels (kept for language switching)
     private var menuBarTitleLabel: NSTextField!
@@ -366,8 +280,7 @@ class SettingsView: NSView {
         )
     )
 
-    init(frame: NSRect, isStartup: Bool = false) {
-        self.isStartup = isStartup
+    override init(frame: NSRect) {
         super.init(frame: frame)
         appearance = NSAppearance(named: .darkAqua)
         wantsLayer = true
@@ -402,24 +315,8 @@ class SettingsView: NSView {
         refreshTimer?.invalidate()
         cancelShortcutRecording()
         cancelFullScreenScreenshotShortcutRecording()
-        cancelColorPickerShortcutRecording()
-        cancelQuickPinShortcutRecording()
-        cancelSelectedImagePinShortcutRecording()
-        cancelClipboardImagePinShortcutRecording()
-        cancelClipboardTextPinShortcutRecording()
-        cancelSelectedImageEditShortcutRecording()
-        cancelClipboardImageEditShortcutRecording()
-        cancelTextRecognitionShortcutRecording()
-        cancelCopyImageTextShortcutRecording()
-        cancelScreenshotTranslationShortcutRecording()
-        cancelRecordShortcutRecording()
-        cancelImageMergeShortcutRecording()
-        cancelFinderUploadShortcutRecording()
         cancelClipboardShortcutRecording()
         cancelFileSaveShortcutRecording()
-        cancelPreviousHistoryImageShortcutRecording()
-        cancelNextHistoryImageShortcutRecording()
-        cancelHistoryPanelShortcutRecording()
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -476,31 +373,17 @@ class SettingsView: NSView {
         paneViews[.about] = buildAboutPane()
 
         // Default selection
-        let initial: SettingsTab = isStartup ? .permissions : .general
-        selectTab(initial)
+        selectTab(.general)
 
-        updateLaunchButtonVisibility()
         refreshPermissionStatus()
         refreshShortcutDisplay()
         refreshFullScreenScreenshotShortcutDisplay()
-        refreshColorPickerShortcutDisplay()
-        refreshQuickPinShortcutDisplay()
-        refreshSelectedImagePinShortcutDisplay()
-        refreshClipboardImagePinShortcutDisplay()
-        refreshClipboardTextPinShortcutDisplay()
-        refreshSelectedImageEditShortcutDisplay()
-        refreshClipboardImageEditShortcutDisplay()
         refreshTextRecognitionShortcutDisplay()
         refreshCopyImageTextShortcutDisplay()
         refreshScreenshotTranslationShortcutDisplay()
         refreshRecordShortcutDisplay()
-        refreshImageMergeShortcutDisplay()
-        refreshFinderUploadShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
-        refreshPreviousHistoryImageShortcutDisplay()
-        refreshNextHistoryImageShortcutDisplay()
-        refreshHistoryPanelShortcutDisplay()
     }
 
     // MARK: - Sidebar
@@ -557,32 +440,11 @@ class SettingsView: NSView {
             btn.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
         }
 
-        // Hairline above the bottom action so the sidebar visually splits
-        // navigation from the primary launch/quit affordance.
-        let divider = SidebarSeparatorView()
-        panel.addSubview(divider)
-
-        let bottomBtn = ActionButton(symbolName: "power", title: L10n.launchApp, tint: .systemGreen)
-        bottomBtn.target = self
-        bottomBtn.action = #selector(launchClicked)
-        bottomBtn.translatesAutoresizingMaskIntoConstraints = false
-        panel.addSubview(bottomBtn)
-        launchButton = bottomBtn
-
         NSLayoutConstraint.activate([
             navigation.topAnchor.constraint(equalTo: panel.topAnchor, constant: 14),
             navigation.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 14),
             navigation.trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -14),
-            navigation.bottomAnchor.constraint(equalTo: divider.topAnchor, constant: -8),
-
-            divider.heightAnchor.constraint(equalToConstant: 1),
-            divider.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 14),
-            divider.trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -14),
-            divider.bottomAnchor.constraint(equalTo: bottomBtn.topAnchor, constant: -8),
-
-            bottomBtn.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 14),
-            bottomBtn.trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -14),
-            bottomBtn.bottomAnchor.constraint(equalTo: panel.bottomAnchor, constant: -10),
+            navigation.bottomAnchor.constraint(equalTo: panel.bottomAnchor, constant: -14),
         ])
 
         return panel
@@ -1075,42 +937,6 @@ class SettingsView: NSView {
         stack.addArrangedSubview(fileSaveShortcut.card)
         fileSaveShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
 
-        let previousHistoryImageShortcut = buildShortcutCard(
-            title: L10n.previousHistoryImageShortcutHeader,
-            setAction: #selector(previousHistoryImageShortcutSetClicked),
-            restoreAction: #selector(previousHistoryImageShortcutRestoreClicked)
-        )
-        previousHistoryImageShortcutTitleLabel = previousHistoryImageShortcut.title
-        previousHistoryImageShortcutField = previousHistoryImageShortcut.field
-        previousHistoryImageShortcutSetButton = previousHistoryImageShortcut.setButton
-        previousHistoryImageShortcutRestoreButton = previousHistoryImageShortcut.restoreButton
-        stack.addArrangedSubview(previousHistoryImageShortcut.card)
-        previousHistoryImageShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        let nextHistoryImageShortcut = buildShortcutCard(
-            title: L10n.nextHistoryImageShortcutHeader,
-            setAction: #selector(nextHistoryImageShortcutSetClicked),
-            restoreAction: #selector(nextHistoryImageShortcutRestoreClicked)
-        )
-        nextHistoryImageShortcutTitleLabel = nextHistoryImageShortcut.title
-        nextHistoryImageShortcutField = nextHistoryImageShortcut.field
-        nextHistoryImageShortcutSetButton = nextHistoryImageShortcut.setButton
-        nextHistoryImageShortcutRestoreButton = nextHistoryImageShortcut.restoreButton
-        stack.addArrangedSubview(nextHistoryImageShortcut.card)
-        nextHistoryImageShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        let historyPanelShortcut = buildShortcutCard(
-            title: L10n.historyPanelShortcutHeader,
-            setAction: #selector(historyPanelShortcutSetClicked),
-            restoreAction: #selector(historyPanelShortcutRestoreClicked)
-        )
-        historyPanelShortcutTitleLabel = historyPanelShortcut.title
-        historyPanelShortcutField = historyPanelShortcut.field
-        historyPanelShortcutSetButton = historyPanelShortcut.setButton
-        historyPanelShortcutRestoreButton = historyPanelShortcut.restoreButton
-        stack.addArrangedSubview(historyPanelShortcut.card)
-        historyPanelShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
         // Full-screen screenshot shortcut card
         let fullScreenScreenshotShortcut = buildShortcutCard(
             title: L10n.fullScreenScreenshotShortcutHeader,
@@ -1123,179 +949,6 @@ class SettingsView: NSView {
         fullScreenScreenshotShortcutRestoreButton = fullScreenScreenshotShortcut.restoreButton
         stack.addArrangedSubview(fullScreenScreenshotShortcut.card)
         fullScreenScreenshotShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Color picker shortcut card
-        let colorPickerShortcut = buildShortcutCard(
-            title: L10n.colorPickerShortcutHeader,
-            setAction: #selector(colorPickerShortcutSetClicked),
-            restoreAction: #selector(colorPickerShortcutRestoreClicked)
-        )
-        colorPickerShortcutTitleLabel = colorPickerShortcut.title
-        colorPickerShortcutField = colorPickerShortcut.field
-        colorPickerShortcutSetButton = colorPickerShortcut.setButton
-        colorPickerShortcutRestoreButton = colorPickerShortcut.restoreButton
-        stack.addArrangedSubview(colorPickerShortcut.card)
-        colorPickerShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Edit selected image shortcut card
-        let selectedImageEditShortcut = buildShortcutCard(
-            title: L10n.selectedImageEditShortcutHeader,
-            setAction: #selector(selectedImageEditShortcutSetClicked),
-            restoreAction: #selector(selectedImageEditShortcutRestoreClicked)
-        )
-        selectedImageEditShortcutTitleLabel = selectedImageEditShortcut.title
-        selectedImageEditShortcutField = selectedImageEditShortcut.field
-        selectedImageEditShortcutSetButton = selectedImageEditShortcut.setButton
-        selectedImageEditShortcutRestoreButton = selectedImageEditShortcut.restoreButton
-        stack.addArrangedSubview(selectedImageEditShortcut.card)
-        selectedImageEditShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // File upload shortcut card
-        let finderUploadShortcut = buildShortcutCard(
-            title: L10n.fileUploadShortcutHeader,
-            setAction: #selector(finderUploadShortcutSetClicked),
-            restoreAction: #selector(finderUploadShortcutRestoreClicked)
-        )
-        finderUploadShortcutTitleLabel = finderUploadShortcut.title
-        finderUploadShortcutField = finderUploadShortcut.field
-        finderUploadShortcutSetButton = finderUploadShortcut.setButton
-        finderUploadShortcutRestoreButton = finderUploadShortcut.restoreButton
-        stack.addArrangedSubview(finderUploadShortcut.card)
-        finderUploadShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Edit clipboard image shortcut card
-        let clipboardImageEditShortcut = buildShortcutCard(
-            title: L10n.clipboardImageEditShortcutHeader,
-            setAction: #selector(clipboardImageEditShortcutSetClicked),
-            restoreAction: #selector(clipboardImageEditShortcutRestoreClicked)
-        )
-        clipboardImageEditShortcutTitleLabel = clipboardImageEditShortcut.title
-        clipboardImageEditShortcutField = clipboardImageEditShortcut.field
-        clipboardImageEditShortcutSetButton = clipboardImageEditShortcut.setButton
-        clipboardImageEditShortcutRestoreButton = clipboardImageEditShortcut.restoreButton
-        stack.addArrangedSubview(clipboardImageEditShortcut.card)
-        clipboardImageEditShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Quick Pin shortcut card
-        let quickPinShortcut = buildShortcutCard(
-            title: L10n.quickPinShortcutHeader,
-            setAction: #selector(quickPinShortcutSetClicked),
-            restoreAction: #selector(quickPinShortcutRestoreClicked)
-        )
-        quickPinShortcutTitleLabel = quickPinShortcut.title
-        quickPinShortcutField = quickPinShortcut.field
-        quickPinShortcutSetButton = quickPinShortcut.setButton
-        quickPinShortcutRestoreButton = quickPinShortcut.restoreButton
-        quickPinShortcutRestoreButton.toolTip = L10n.quickPinShortcutClear
-        stack.addArrangedSubview(quickPinShortcut.card)
-        quickPinShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Pin selected image shortcut card
-        let selectedImagePinShortcut = buildShortcutCard(
-            title: L10n.selectedImagePinShortcutHeader,
-            setAction: #selector(selectedImagePinShortcutSetClicked),
-            restoreAction: #selector(selectedImagePinShortcutRestoreClicked)
-        )
-        selectedImagePinShortcutTitleLabel = selectedImagePinShortcut.title
-        selectedImagePinShortcutField = selectedImagePinShortcut.field
-        selectedImagePinShortcutSetButton = selectedImagePinShortcut.setButton
-        selectedImagePinShortcutRestoreButton = selectedImagePinShortcut.restoreButton
-        selectedImagePinShortcutRestoreButton.toolTip = L10n.selectedImagePinShortcutClear
-        stack.addArrangedSubview(selectedImagePinShortcut.card)
-        selectedImagePinShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Pin clipboard image shortcut card
-        let clipboardImagePinShortcut = buildShortcutCard(
-            title: L10n.clipboardImagePinShortcutHeader,
-            setAction: #selector(clipboardImagePinShortcutSetClicked),
-            restoreAction: #selector(clipboardImagePinShortcutRestoreClicked)
-        )
-        clipboardImagePinShortcutTitleLabel = clipboardImagePinShortcut.title
-        clipboardImagePinShortcutField = clipboardImagePinShortcut.field
-        clipboardImagePinShortcutSetButton = clipboardImagePinShortcut.setButton
-        clipboardImagePinShortcutRestoreButton = clipboardImagePinShortcut.restoreButton
-        clipboardImagePinShortcutRestoreButton.toolTip = L10n.clipboardImagePinShortcutClear
-        stack.addArrangedSubview(clipboardImagePinShortcut.card)
-        clipboardImagePinShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Text recognition shortcut card
-        let textRecognitionShortcut = buildShortcutCard(
-            title: L10n.textRecognitionShortcutHeader,
-            setAction: #selector(textRecognitionShortcutSetClicked),
-            restoreAction: #selector(textRecognitionShortcutRestoreClicked)
-        )
-        textRecognitionShortcutTitleLabel = textRecognitionShortcut.title
-        textRecognitionShortcutField = textRecognitionShortcut.field
-        textRecognitionShortcutSetButton = textRecognitionShortcut.setButton
-        textRecognitionShortcutRestoreButton = textRecognitionShortcut.restoreButton
-        stack.addArrangedSubview(textRecognitionShortcut.card)
-        textRecognitionShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Copy image text shortcut card
-        let copyImageTextShortcut = buildShortcutCard(
-            title: L10n.copyImageTextShortcutHeader,
-            setAction: #selector(copyImageTextShortcutSetClicked),
-            restoreAction: #selector(copyImageTextShortcutRestoreClicked)
-        )
-        copyImageTextShortcutTitleLabel = copyImageTextShortcut.title
-        copyImageTextShortcutField = copyImageTextShortcut.field
-        copyImageTextShortcutSetButton = copyImageTextShortcut.setButton
-        copyImageTextShortcutRestoreButton = copyImageTextShortcut.restoreButton
-        stack.addArrangedSubview(copyImageTextShortcut.card)
-        copyImageTextShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Screenshot translation shortcut card
-        let screenshotTranslationShortcut = buildShortcutCard(
-            title: L10n.screenshotTranslationShortcutHeader,
-            setAction: #selector(screenshotTranslationShortcutSetClicked),
-            restoreAction: #selector(screenshotTranslationShortcutRestoreClicked)
-        )
-        screenshotTranslationShortcutTitleLabel = screenshotTranslationShortcut.title
-        screenshotTranslationShortcutField = screenshotTranslationShortcut.field
-        screenshotTranslationShortcutSetButton = screenshotTranslationShortcut.setButton
-        screenshotTranslationShortcutRestoreButton = screenshotTranslationShortcut.restoreButton
-        stack.addArrangedSubview(screenshotTranslationShortcut.card)
-        screenshotTranslationShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Recording shortcut card
-        let recordShortcut = buildShortcutCard(
-            title: L10n.recordShortcutHeader,
-            setAction: #selector(recordShortcutSetClicked),
-            restoreAction: #selector(recordShortcutRestoreClicked)
-        )
-        recordShortcutTitleLabel = recordShortcut.title
-        recordShortcutField = recordShortcut.field
-        recordShortcutSetButton = recordShortcut.setButton
-        recordShortcutRestoreButton = recordShortcut.restoreButton
-        stack.addArrangedSubview(recordShortcut.card)
-        recordShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Image Merge shortcut card
-        let imageMergeShortcut = buildShortcutCard(
-            title: L10n.imageMergeShortcutHeader,
-            setAction: #selector(imageMergeShortcutSetClicked),
-            restoreAction: #selector(imageMergeShortcutRestoreClicked)
-        )
-        imageMergeShortcutTitleLabel = imageMergeShortcut.title
-        imageMergeShortcutField = imageMergeShortcut.field
-        imageMergeShortcutSetButton = imageMergeShortcut.setButton
-        imageMergeShortcutRestoreButton = imageMergeShortcut.restoreButton
-        stack.addArrangedSubview(imageMergeShortcut.card)
-        imageMergeShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        // Pin clipboard text shortcut card
-        let clipboardTextPinShortcut = buildShortcutCard(
-            title: L10n.clipboardTextPinShortcutHeader,
-            setAction: #selector(clipboardTextPinShortcutSetClicked),
-            restoreAction: #selector(clipboardTextPinShortcutRestoreClicked)
-        )
-        clipboardTextPinShortcutTitleLabel = clipboardTextPinShortcut.title
-        clipboardTextPinShortcutField = clipboardTextPinShortcut.field
-        clipboardTextPinShortcutSetButton = clipboardTextPinShortcut.setButton
-        clipboardTextPinShortcutRestoreButton = clipboardTextPinShortcut.restoreButton
-        clipboardTextPinShortcutRestoreButton.toolTip = L10n.clipboardTextPinShortcutClear
-        stack.addArrangedSubview(clipboardTextPinShortcut.card)
-        clipboardTextPinShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
 
         let footer = NSStackView()
         footer.orientation = .horizontal
@@ -2953,37 +2606,6 @@ class SettingsView: NSView {
         return PermissionRowBuild(row: button, name: nameLbl, desc: descLbl, badge: badge)
     }
 
-    private func updateLaunchButtonVisibility() {
-        // The bottom action is always visible now — its title and enablement
-        // flips between Launch (startup mode) and Quit (regular mode).
-        refreshBottomAction()
-    }
-
-    private func refreshBottomAction() {
-        guard let btn = launchButton else { return }
-        if isStartup {
-            let allGranted = AppPermissions.allRequiredGranted
-            btn.update(symbolName: "power", title: L10n.launchApp, tint: .systemGreen)
-            btn.isEnabled = allGranted
-        } else {
-            // Red tint — actual destructive confirmation happens in the NSAlert
-            // sheet that fires on click.
-            btn.update(symbolName: "power", title: L10n.settingsQuit, tint: .systemRed)
-            btn.isEnabled = true
-        }
-    }
-
-    func setStartupMode(_ startup: Bool) {
-        let wasStartup = isStartup
-        isStartup = startup
-        updateLaunchButtonVisibility()
-        if startup {
-            selectTab(.permissions)
-        } else if wasStartup && selectedTab == .permissions && AppPermissions.allRequiredGranted {
-            selectTab(.general)
-        }
-    }
-
     func showPermissionsTab() {
         selectTab(.permissions)
     }
@@ -3003,12 +2625,6 @@ class SettingsView: NSView {
         accessibilityBadge?.configure(granted: accessibilityGranted)
         screenRecordingBadge?.configure(granted: screenRecordingGranted)
         microphoneBadge?.configure(granted: AppPermissions.microphoneGranted)
-
-        // Only the startup-mode Launch button is gated on permissions; the
-        // regular-mode Quit button stays enabled.
-        if isStartup {
-            refreshBottomAction()
-        }
     }
 
     // MARK: - Actions
@@ -3331,45 +2947,6 @@ class SettingsView: NSView {
         permissionFlowController.closePanel()
     }
 
-    @objc private func launchClicked() {
-        if isStartup {
-            guard AppPermissions.allRequiredGranted else {
-                showPermissionsTab()
-                refreshPermissionStatus()
-                return
-            }
-            refreshTimer?.invalidate()
-            refreshTimer = nil
-            onLaunch?()
-        } else {
-            confirmQuit()
-        }
-    }
-
-    private func confirmQuit() {
-        let alert = NSAlert()
-        alert.messageText = L10n.quitConfirmTitle
-        alert.informativeText = L10n.quitConfirmMessage
-        alert.alertStyle = .warning
-        let quitBtn = alert.addButton(withTitle: L10n.quitConfirmAction)
-        if #available(macOS 11.0, *) {
-            quitBtn.hasDestructiveAction = true
-        }
-        let cancelBtn = alert.addButton(withTitle: L10n.quitConfirmCancel)
-        cancelBtn.keyEquivalent = "\u{1b}" // Escape
-
-        let handle: (NSApplication.ModalResponse) -> Void = { response in
-            if response == .alertFirstButtonReturn {
-                NSApp.terminate(nil)
-            }
-        }
-        if let win = self.window {
-            alert.beginSheetModal(for: win, completionHandler: handle)
-        } else {
-            handle(alert.runModal())
-        }
-    }
-
     // MARK: - Shortcut recording
 
     /// Tells the user a recorded combo is already taken by another function,
@@ -3409,27 +2986,6 @@ class SettingsView: NSView {
         if slot != .fullScreenScreenshot, fullScreenScreenshotShortcutRecordingMonitor != nil {
             cancelFullScreenScreenshotShortcutRecording()
         }
-        if slot != .colorPicker, colorPickerShortcutRecordingMonitor != nil {
-            cancelColorPickerShortcutRecording()
-        }
-        if slot != .quickPin, quickPinShortcutRecordingMonitor != nil {
-            cancelQuickPinShortcutRecording()
-        }
-        if slot != .selectedImagePin, selectedImagePinShortcutRecordingMonitor != nil {
-            cancelSelectedImagePinShortcutRecording()
-        }
-        if slot != .clipboardImagePin, clipboardImagePinShortcutRecordingMonitor != nil {
-            cancelClipboardImagePinShortcutRecording()
-        }
-        if slot != .clipboardTextPin, clipboardTextPinShortcutRecordingMonitor != nil {
-            cancelClipboardTextPinShortcutRecording()
-        }
-        if slot != .selectedImageEdit, selectedImageEditShortcutRecordingMonitor != nil {
-            cancelSelectedImageEditShortcutRecording()
-        }
-        if slot != .clipboardImageEdit, clipboardImageEditShortcutRecordingMonitor != nil {
-            cancelClipboardImageEditShortcutRecording()
-        }
         if slot != .textRecognition, textRecognitionShortcutRecordingMonitor != nil {
             cancelTextRecognitionShortcutRecording()
         }
@@ -3442,26 +2998,11 @@ class SettingsView: NSView {
         if slot != .record, recordShortcutRecordingMonitor != nil {
             cancelRecordShortcutRecording()
         }
-        if slot != .imageMerge, imageMergeShortcutRecordingMonitor != nil {
-            cancelImageMergeShortcutRecording()
-        }
-        if slot != .finderUpload, finderUploadShortcutRecordingMonitor != nil {
-            cancelFinderUploadShortcutRecording()
-        }
         if slot != .clipboard, clipboardShortcutRecordingMonitor != nil {
             cancelClipboardShortcutRecording()
         }
         if slot != .fileSave, fileSaveShortcutRecordingMonitor != nil {
             cancelFileSaveShortcutRecording()
-        }
-        if slot != .previousHistoryImage, previousHistoryImageShortcutRecordingMonitor != nil {
-            cancelPreviousHistoryImageShortcutRecording()
-        }
-        if slot != .nextHistoryImage, nextHistoryImageShortcutRecordingMonitor != nil {
-            cancelNextHistoryImageShortcutRecording()
-        }
-        if slot != .historyPanel, historyPanelShortcutRecordingMonitor != nil {
-            cancelHistoryPanelShortcutRecording()
         }
     }
 
@@ -3642,631 +3183,6 @@ class SettingsView: NSView {
         } else {
             fullScreenScreenshotShortcutField?.stringValue = L10n.fullScreenScreenshotShortcutDefaultDisplay
             fullScreenScreenshotShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func colorPickerShortcutSetClicked() {
-        if colorPickerShortcutRecordingMonitor != nil {
-            cancelColorPickerShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .colorPicker)
-        HotkeyManager.shared.beginRecording()
-        colorPickerShortcutSetButton.title = L10n.shortcutCancel
-        colorPickerShortcutField.stringValue = L10n.shortcutWaiting
-        colorPickerShortcutRestoreButton.isHidden = true
-
-        colorPickerShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelColorPickerShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelColorPickerShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .colorPicker) {
-                self.cancelColorPickerShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.colorPickerHotkeyKeyCode = Int(keyCode)
-            Defaults.colorPickerHotkeyModifiers = Int(carbonMods)
-            self.finishColorPickerShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func colorPickerShortcutRestoreClicked() {
-        if colorPickerShortcutRecordingMonitor != nil {
-            cancelColorPickerShortcutRecording()
-        }
-        Defaults.clearColorPickerHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshColorPickerShortcutDisplay()
-    }
-
-    private func finishColorPickerShortcutRecording() {
-        if let m = colorPickerShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            colorPickerShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshColorPickerShortcutDisplay()
-    }
-
-    func cancelColorPickerShortcutRecording() {
-        guard colorPickerShortcutRecordingMonitor != nil else { return }
-        if let m = colorPickerShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            colorPickerShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshColorPickerShortcutDisplay()
-    }
-
-    private func refreshColorPickerShortcutDisplay() {
-        colorPickerShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentColorPickerDisplayString() {
-            colorPickerShortcutField?.stringValue = display
-            colorPickerShortcutRestoreButton?.isHidden = false
-        } else {
-            colorPickerShortcutField?.stringValue = L10n.colorPickerShortcutDefaultDisplay
-            colorPickerShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func quickPinShortcutSetClicked() {
-        if quickPinShortcutRecordingMonitor != nil {
-            cancelQuickPinShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .quickPin)
-        HotkeyManager.shared.beginRecording()
-        quickPinShortcutSetButton.title = L10n.shortcutCancel
-        quickPinShortcutField.stringValue = L10n.shortcutWaiting
-        quickPinShortcutRestoreButton.isHidden = true
-
-        quickPinShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelQuickPinShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelQuickPinShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .quickPin) {
-                self.cancelQuickPinShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.quickPinHotkeyKeyCode = Int(keyCode)
-            Defaults.quickPinHotkeyModifiers = Int(carbonMods)
-            self.finishQuickPinShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func quickPinShortcutRestoreClicked() {
-        if quickPinShortcutRecordingMonitor != nil {
-            cancelQuickPinShortcutRecording()
-        }
-        Defaults.clearQuickPinHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshQuickPinShortcutDisplay()
-    }
-
-    private func finishQuickPinShortcutRecording() {
-        if let monitor = quickPinShortcutRecordingMonitor {
-            NSEvent.removeMonitor(monitor)
-            quickPinShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshQuickPinShortcutDisplay()
-    }
-
-    func cancelQuickPinShortcutRecording() {
-        guard let monitor = quickPinShortcutRecordingMonitor else { return }
-        NSEvent.removeMonitor(monitor)
-        quickPinShortcutRecordingMonitor = nil
-        HotkeyManager.shared.endRecording()
-        refreshQuickPinShortcutDisplay()
-    }
-
-    private func refreshQuickPinShortcutDisplay() {
-        quickPinShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentQuickPinDisplayString() {
-            quickPinShortcutField?.stringValue = display
-            quickPinShortcutRestoreButton?.isHidden = false
-        } else {
-            quickPinShortcutField?.stringValue = L10n.quickPinShortcutDefaultDisplay
-            quickPinShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func selectedImagePinShortcutSetClicked() {
-        if selectedImagePinShortcutRecordingMonitor != nil {
-            cancelSelectedImagePinShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .selectedImagePin)
-        HotkeyManager.shared.beginRecording()
-        selectedImagePinShortcutSetButton.title = L10n.shortcutCancel
-        selectedImagePinShortcutField.stringValue = L10n.shortcutWaiting
-        selectedImagePinShortcutRestoreButton.isHidden = true
-
-        selectedImagePinShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelSelectedImagePinShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelSelectedImagePinShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            // No two functions may share a shortcut — reject a combo already
-            // bound to the screenshot or countdown hotkey.
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .selectedImagePin) {
-                self.cancelSelectedImagePinShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.selectedImagePinHotkeyKeyCode = Int(keyCode)
-            Defaults.selectedImagePinHotkeyModifiers = Int(carbonMods)
-            self.finishSelectedImagePinShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func selectedImagePinShortcutRestoreClicked() {
-        if selectedImagePinShortcutRecordingMonitor != nil {
-            cancelSelectedImagePinShortcutRecording()
-        }
-        Defaults.clearSelectedImagePinHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshSelectedImagePinShortcutDisplay()
-    }
-
-    private func finishSelectedImagePinShortcutRecording() {
-        if let m = selectedImagePinShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            selectedImagePinShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshSelectedImagePinShortcutDisplay()
-    }
-
-    func cancelSelectedImagePinShortcutRecording() {
-        guard selectedImagePinShortcutRecordingMonitor != nil else { return }
-        if let m = selectedImagePinShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            selectedImagePinShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshSelectedImagePinShortcutDisplay()
-    }
-
-    private func refreshSelectedImagePinShortcutDisplay() {
-        selectedImagePinShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentSelectedImagePinDisplayString() {
-            selectedImagePinShortcutField?.stringValue = display
-            selectedImagePinShortcutRestoreButton?.isHidden = false
-        } else {
-            selectedImagePinShortcutField?.stringValue = L10n.selectedImagePinShortcutDefaultDisplay
-            selectedImagePinShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func clipboardImagePinShortcutSetClicked() {
-        if clipboardImagePinShortcutRecordingMonitor != nil {
-            cancelClipboardImagePinShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .clipboardImagePin)
-        HotkeyManager.shared.beginRecording()
-        clipboardImagePinShortcutSetButton.title = L10n.shortcutCancel
-        clipboardImagePinShortcutField.stringValue = L10n.shortcutWaiting
-        clipboardImagePinShortcutRestoreButton.isHidden = true
-
-        clipboardImagePinShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelClipboardImagePinShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelClipboardImagePinShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            // No two functions may share a shortcut — reject a combo already
-            // bound to the screenshot or countdown hotkey.
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .clipboardImagePin) {
-                self.cancelClipboardImagePinShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.clipboardImagePinHotkeyKeyCode = Int(keyCode)
-            Defaults.clipboardImagePinHotkeyModifiers = Int(carbonMods)
-            self.finishClipboardImagePinShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func clipboardImagePinShortcutRestoreClicked() {
-        if clipboardImagePinShortcutRecordingMonitor != nil {
-            cancelClipboardImagePinShortcutRecording()
-        }
-        Defaults.clearClipboardImagePinHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshClipboardImagePinShortcutDisplay()
-    }
-
-    private func finishClipboardImagePinShortcutRecording() {
-        if let m = clipboardImagePinShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            clipboardImagePinShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshClipboardImagePinShortcutDisplay()
-    }
-
-    func cancelClipboardImagePinShortcutRecording() {
-        guard clipboardImagePinShortcutRecordingMonitor != nil else { return }
-        if let m = clipboardImagePinShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            clipboardImagePinShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshClipboardImagePinShortcutDisplay()
-    }
-
-    private func refreshClipboardImagePinShortcutDisplay() {
-        clipboardImagePinShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentClipboardImagePinDisplayString() {
-            clipboardImagePinShortcutField?.stringValue = display
-            clipboardImagePinShortcutRestoreButton?.isHidden = false
-        } else {
-            clipboardImagePinShortcutField?.stringValue = L10n.clipboardImagePinShortcutDefaultDisplay
-            clipboardImagePinShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func clipboardTextPinShortcutSetClicked() {
-        if clipboardTextPinShortcutRecordingMonitor != nil {
-            cancelClipboardTextPinShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .clipboardTextPin)
-        HotkeyManager.shared.beginRecording()
-        clipboardTextPinShortcutSetButton.title = L10n.shortcutCancel
-        clipboardTextPinShortcutField.stringValue = L10n.shortcutWaiting
-        clipboardTextPinShortcutRestoreButton.isHidden = true
-
-        clipboardTextPinShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelClipboardTextPinShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelClipboardTextPinShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .clipboardTextPin) {
-                self.cancelClipboardTextPinShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.clipboardTextPinHotkeyKeyCode = Int(keyCode)
-            Defaults.clipboardTextPinHotkeyModifiers = Int(carbonMods)
-            self.finishClipboardTextPinShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func clipboardTextPinShortcutRestoreClicked() {
-        if clipboardTextPinShortcutRecordingMonitor != nil {
-            cancelClipboardTextPinShortcutRecording()
-        }
-        Defaults.clearClipboardTextPinHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshClipboardTextPinShortcutDisplay()
-    }
-
-    private func finishClipboardTextPinShortcutRecording() {
-        if let m = clipboardTextPinShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            clipboardTextPinShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshClipboardTextPinShortcutDisplay()
-    }
-
-    func cancelClipboardTextPinShortcutRecording() {
-        guard clipboardTextPinShortcutRecordingMonitor != nil else { return }
-        if let m = clipboardTextPinShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            clipboardTextPinShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshClipboardTextPinShortcutDisplay()
-    }
-
-    private func refreshClipboardTextPinShortcutDisplay() {
-        clipboardTextPinShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentClipboardTextPinDisplayString() {
-            clipboardTextPinShortcutField?.stringValue = display
-            clipboardTextPinShortcutRestoreButton?.isHidden = false
-        } else {
-            clipboardTextPinShortcutField?.stringValue = L10n.clipboardTextPinShortcutDefaultDisplay
-            clipboardTextPinShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func selectedImageEditShortcutSetClicked() {
-        if selectedImageEditShortcutRecordingMonitor != nil {
-            cancelSelectedImageEditShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .selectedImageEdit)
-        HotkeyManager.shared.beginRecording()
-        selectedImageEditShortcutSetButton.title = L10n.shortcutCancel
-        selectedImageEditShortcutField.stringValue = L10n.shortcutWaiting
-        selectedImageEditShortcutRestoreButton.isHidden = true
-
-        selectedImageEditShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelSelectedImageEditShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelSelectedImageEditShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .selectedImageEdit) {
-                self.cancelSelectedImageEditShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.selectedImageEditHotkeyKeyCode = Int(keyCode)
-            Defaults.selectedImageEditHotkeyModifiers = Int(carbonMods)
-            self.finishSelectedImageEditShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func selectedImageEditShortcutRestoreClicked() {
-        if selectedImageEditShortcutRecordingMonitor != nil {
-            cancelSelectedImageEditShortcutRecording()
-        }
-        Defaults.clearSelectedImageEditHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshSelectedImageEditShortcutDisplay()
-    }
-
-    private func finishSelectedImageEditShortcutRecording() {
-        if let m = selectedImageEditShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            selectedImageEditShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshSelectedImageEditShortcutDisplay()
-    }
-
-    func cancelSelectedImageEditShortcutRecording() {
-        guard selectedImageEditShortcutRecordingMonitor != nil else { return }
-        if let m = selectedImageEditShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            selectedImageEditShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshSelectedImageEditShortcutDisplay()
-    }
-
-    private func refreshSelectedImageEditShortcutDisplay() {
-        selectedImageEditShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentSelectedImageEditDisplayString() {
-            selectedImageEditShortcutField?.stringValue = display
-            selectedImageEditShortcutRestoreButton?.isHidden = false
-        } else {
-            selectedImageEditShortcutField?.stringValue = L10n.selectedImageEditShortcutDefaultDisplay
-            selectedImageEditShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func clipboardImageEditShortcutSetClicked() {
-        if clipboardImageEditShortcutRecordingMonitor != nil {
-            cancelClipboardImageEditShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .clipboardImageEdit)
-        HotkeyManager.shared.beginRecording()
-        clipboardImageEditShortcutSetButton.title = L10n.shortcutCancel
-        clipboardImageEditShortcutField.stringValue = L10n.shortcutWaiting
-        clipboardImageEditShortcutRestoreButton.isHidden = true
-
-        clipboardImageEditShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelClipboardImageEditShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelClipboardImageEditShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .clipboardImageEdit) {
-                self.cancelClipboardImageEditShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.clipboardImageEditHotkeyKeyCode = Int(keyCode)
-            Defaults.clipboardImageEditHotkeyModifiers = Int(carbonMods)
-            self.finishClipboardImageEditShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func clipboardImageEditShortcutRestoreClicked() {
-        if clipboardImageEditShortcutRecordingMonitor != nil {
-            cancelClipboardImageEditShortcutRecording()
-        }
-        Defaults.clearClipboardImageEditHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshClipboardImageEditShortcutDisplay()
-    }
-
-    private func finishClipboardImageEditShortcutRecording() {
-        if let m = clipboardImageEditShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            clipboardImageEditShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshClipboardImageEditShortcutDisplay()
-    }
-
-    func cancelClipboardImageEditShortcutRecording() {
-        guard clipboardImageEditShortcutRecordingMonitor != nil else { return }
-        if let m = clipboardImageEditShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            clipboardImageEditShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshClipboardImageEditShortcutDisplay()
-    }
-
-    private func refreshClipboardImageEditShortcutDisplay() {
-        clipboardImageEditShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentClipboardImageEditDisplayString() {
-            clipboardImageEditShortcutField?.stringValue = display
-            clipboardImageEditShortcutRestoreButton?.isHidden = false
-        } else {
-            clipboardImageEditShortcutField?.stringValue = L10n.clipboardImageEditShortcutDefaultDisplay
-            clipboardImageEditShortcutRestoreButton?.isHidden = true
         }
     }
 
@@ -4626,187 +3542,6 @@ class SettingsView: NSView {
         }
     }
 
-    @objc private func imageMergeShortcutSetClicked() {
-        if imageMergeShortcutRecordingMonitor != nil {
-            cancelImageMergeShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .imageMerge)
-        HotkeyManager.shared.beginRecording()
-        imageMergeShortcutSetButton.title = L10n.shortcutCancel
-        imageMergeShortcutField.stringValue = L10n.shortcutWaiting
-        imageMergeShortcutRestoreButton.isHidden = true
-
-        imageMergeShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelImageMergeShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelImageMergeShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .imageMerge) {
-                self.cancelImageMergeShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.imageMergeHotkeyKeyCode = Int(keyCode)
-            Defaults.imageMergeHotkeyModifiers = Int(carbonMods)
-            self.finishImageMergeShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func imageMergeShortcutRestoreClicked() {
-        if imageMergeShortcutRecordingMonitor != nil {
-            cancelImageMergeShortcutRecording()
-        }
-        Defaults.clearImageMergeHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshImageMergeShortcutDisplay()
-    }
-
-    private func finishImageMergeShortcutRecording() {
-        if let m = imageMergeShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            imageMergeShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshImageMergeShortcutDisplay()
-    }
-
-    func cancelImageMergeShortcutRecording() {
-        guard imageMergeShortcutRecordingMonitor != nil else { return }
-        if let m = imageMergeShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            imageMergeShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshImageMergeShortcutDisplay()
-    }
-
-    private func refreshImageMergeShortcutDisplay() {
-        imageMergeShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentImageMergeDisplayString() {
-            imageMergeShortcutField?.stringValue = display
-            imageMergeShortcutRestoreButton?.isHidden = false
-        } else {
-            imageMergeShortcutField?.stringValue = L10n.imageMergeShortcutDefaultDisplay
-            imageMergeShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func finderUploadShortcutSetClicked() {
-        if finderUploadShortcutRecordingMonitor != nil {
-            cancelFinderUploadShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .finderUpload)
-        HotkeyManager.shared.beginRecording()
-        finderUploadShortcutSetButton.title = L10n.shortcutCancel
-        finderUploadShortcutField.stringValue = L10n.shortcutWaiting
-        finderUploadShortcutRestoreButton.isHidden = true
-
-        finderUploadShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelFinderUploadShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelFinderUploadShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode,
-                modifiers: carbonMods,
-                assigningTo: .finderUpload
-            ) {
-                self.cancelFinderUploadShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.finderUploadHotkeyKeyCode = Int(keyCode)
-            Defaults.finderUploadHotkeyModifiers = Int(carbonMods)
-            self.finishFinderUploadShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func finderUploadShortcutRestoreClicked() {
-        if finderUploadShortcutRecordingMonitor != nil {
-            cancelFinderUploadShortcutRecording()
-        }
-        Defaults.clearFinderUploadHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshFinderUploadShortcutDisplay()
-    }
-
-    private func finishFinderUploadShortcutRecording() {
-        if let monitor = finderUploadShortcutRecordingMonitor {
-            NSEvent.removeMonitor(monitor)
-            finderUploadShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshFinderUploadShortcutDisplay()
-    }
-
-    func cancelFinderUploadShortcutRecording() {
-        guard finderUploadShortcutRecordingMonitor != nil else { return }
-        if let monitor = finderUploadShortcutRecordingMonitor {
-            NSEvent.removeMonitor(monitor)
-            finderUploadShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshFinderUploadShortcutDisplay()
-    }
-
-    private func refreshFinderUploadShortcutDisplay() {
-        finderUploadShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentFinderUploadDisplayString() {
-            finderUploadShortcutField?.stringValue = display
-            finderUploadShortcutRestoreButton?.isHidden = false
-        } else {
-            finderUploadShortcutField?.stringValue = L10n.finderUploadShortcutDefaultDisplay
-            finderUploadShortcutRestoreButton?.isHidden = true
-        }
-    }
-
     @objc private func clipboardShortcutSetClicked() {
         if clipboardShortcutRecordingMonitor != nil {
             cancelClipboardShortcutRecording()
@@ -4973,293 +3708,26 @@ class SettingsView: NSView {
         fileSaveShortcutRestoreButton?.isHidden = !Defaults.hasCustomFileSaveHotkey
     }
 
-    @objc private func previousHistoryImageShortcutSetClicked() {
-        if previousHistoryImageShortcutRecordingMonitor != nil {
-            cancelPreviousHistoryImageShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .previousHistoryImage)
-        HotkeyManager.shared.beginRecording()
-        previousHistoryImageShortcutSetButton.title = L10n.shortcutCancel
-        previousHistoryImageShortcutField.stringValue = L10n.shortcutWaiting
-        previousHistoryImageShortcutRestoreButton.isHidden = true
-
-        previousHistoryImageShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelPreviousHistoryImageShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .previousHistoryImage) {
-                self.cancelPreviousHistoryImageShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.previousHistoryImageHotkeyKeyCode = Int(keyCode)
-            Defaults.previousHistoryImageHotkeyModifiers = Int(carbonMods)
-            self.finishPreviousHistoryImageShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func previousHistoryImageShortcutRestoreClicked() {
-        if previousHistoryImageShortcutRecordingMonitor != nil {
-            cancelPreviousHistoryImageShortcutRecording()
-        }
-        Defaults.clearPreviousHistoryImageHotkey()
-        refreshPreviousHistoryImageShortcutDisplay()
-    }
-
-    private func finishPreviousHistoryImageShortcutRecording() {
-        if let m = previousHistoryImageShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            previousHistoryImageShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshPreviousHistoryImageShortcutDisplay()
-    }
-
-    func cancelPreviousHistoryImageShortcutRecording() {
-        guard previousHistoryImageShortcutRecordingMonitor != nil else { return }
-        if let m = previousHistoryImageShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            previousHistoryImageShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshPreviousHistoryImageShortcutDisplay()
-    }
-
-    private func refreshPreviousHistoryImageShortcutDisplay() {
-        previousHistoryImageShortcutSetButton?.title = L10n.shortcutSet
-        previousHistoryImageShortcutField?.stringValue = HotkeyManager.currentPreviousHistoryImageDisplayString()
-        previousHistoryImageShortcutRestoreButton?.isHidden = !Defaults.hasCustomPreviousHistoryImageHotkey
-    }
-
-    @objc private func nextHistoryImageShortcutSetClicked() {
-        if nextHistoryImageShortcutRecordingMonitor != nil {
-            cancelNextHistoryImageShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .nextHistoryImage)
-        HotkeyManager.shared.beginRecording()
-        nextHistoryImageShortcutSetButton.title = L10n.shortcutCancel
-        nextHistoryImageShortcutField.stringValue = L10n.shortcutWaiting
-        nextHistoryImageShortcutRestoreButton.isHidden = true
-
-        nextHistoryImageShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelNextHistoryImageShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .nextHistoryImage) {
-                self.cancelNextHistoryImageShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.nextHistoryImageHotkeyKeyCode = Int(keyCode)
-            Defaults.nextHistoryImageHotkeyModifiers = Int(carbonMods)
-            self.finishNextHistoryImageShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func nextHistoryImageShortcutRestoreClicked() {
-        if nextHistoryImageShortcutRecordingMonitor != nil {
-            cancelNextHistoryImageShortcutRecording()
-        }
-        Defaults.clearNextHistoryImageHotkey()
-        refreshNextHistoryImageShortcutDisplay()
-    }
-
-    private func finishNextHistoryImageShortcutRecording() {
-        if let m = nextHistoryImageShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            nextHistoryImageShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshNextHistoryImageShortcutDisplay()
-    }
-
-    func cancelNextHistoryImageShortcutRecording() {
-        guard nextHistoryImageShortcutRecordingMonitor != nil else { return }
-        if let m = nextHistoryImageShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            nextHistoryImageShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshNextHistoryImageShortcutDisplay()
-    }
-
-    private func refreshNextHistoryImageShortcutDisplay() {
-        nextHistoryImageShortcutSetButton?.title = L10n.shortcutSet
-        nextHistoryImageShortcutField?.stringValue = HotkeyManager.currentNextHistoryImageDisplayString()
-        nextHistoryImageShortcutRestoreButton?.isHidden = !Defaults.hasCustomNextHistoryImageHotkey
-    }
-
-    @objc private func historyPanelShortcutSetClicked() {
-        if historyPanelShortcutRecordingMonitor != nil {
-            cancelHistoryPanelShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .historyPanel)
-        HotkeyManager.shared.beginRecording()
-        historyPanelShortcutSetButton.title = L10n.shortcutCancel
-        historyPanelShortcutField.stringValue = L10n.shortcutWaiting
-        historyPanelShortcutRestoreButton.isHidden = true
-
-        historyPanelShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelHistoryPanelShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelHistoryPanelShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .historyPanel) {
-                self.cancelHistoryPanelShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.historyPanelHotkeyKeyCode = Int(keyCode)
-            Defaults.historyPanelHotkeyModifiers = Int(carbonMods)
-            self.finishHistoryPanelShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func historyPanelShortcutRestoreClicked() {
-        if historyPanelShortcutRecordingMonitor != nil {
-            cancelHistoryPanelShortcutRecording()
-        }
-        Defaults.clearHistoryPanelHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshHistoryPanelShortcutDisplay()
-    }
-
-    private func finishHistoryPanelShortcutRecording() {
-        if let m = historyPanelShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            historyPanelShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshHistoryPanelShortcutDisplay()
-    }
-
-    func cancelHistoryPanelShortcutRecording() {
-        guard historyPanelShortcutRecordingMonitor != nil else { return }
-        if let m = historyPanelShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            historyPanelShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshHistoryPanelShortcutDisplay()
-    }
-
-    private func refreshHistoryPanelShortcutDisplay() {
-        historyPanelShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentHistoryPanelDisplayString() {
-            historyPanelShortcutField?.stringValue = display
-            historyPanelShortcutRestoreButton?.isHidden = false
-        } else {
-            historyPanelShortcutField?.stringValue = L10n.historyPanelShortcutDefaultDisplay
-            historyPanelShortcutRestoreButton?.isHidden = true
-        }
-    }
-
     @objc private func shortcutsResetClicked() {
         cancelShortcutRecording()
         cancelFullScreenScreenshotShortcutRecording()
-        cancelColorPickerShortcutRecording()
-        cancelQuickPinShortcutRecording()
-        cancelSelectedImagePinShortcutRecording()
-        cancelClipboardImagePinShortcutRecording()
-        cancelClipboardTextPinShortcutRecording()
-        cancelSelectedImageEditShortcutRecording()
-        cancelClipboardImageEditShortcutRecording()
         cancelTextRecognitionShortcutRecording()
         cancelCopyImageTextShortcutRecording()
         cancelScreenshotTranslationShortcutRecording()
         cancelRecordShortcutRecording()
-        cancelImageMergeShortcutRecording()
-        cancelFinderUploadShortcutRecording()
         cancelClipboardShortcutRecording()
         cancelFileSaveShortcutRecording()
-        cancelPreviousHistoryImageShortcutRecording()
-        cancelNextHistoryImageShortcutRecording()
-        cancelHistoryPanelShortcutRecording()
 
         Defaults.resetShortcutHotkeysToDefaults()
         NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
         refreshShortcutDisplay()
         refreshFullScreenScreenshotShortcutDisplay()
-        refreshColorPickerShortcutDisplay()
-        refreshQuickPinShortcutDisplay()
-        refreshSelectedImagePinShortcutDisplay()
-        refreshClipboardImagePinShortcutDisplay()
-        refreshClipboardTextPinShortcutDisplay()
-        refreshSelectedImageEditShortcutDisplay()
-        refreshClipboardImageEditShortcutDisplay()
         refreshTextRecognitionShortcutDisplay()
         refreshCopyImageTextShortcutDisplay()
         refreshScreenshotTranslationShortcutDisplay()
         refreshRecordShortcutDisplay()
-        refreshImageMergeShortcutDisplay()
-        refreshFinderUploadShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
-        refreshPreviousHistoryImageShortcutDisplay()
-        refreshNextHistoryImageShortcutDisplay()
-        refreshHistoryPanelShortcutDisplay()
     }
 
     @objc private func updateLocalization() {
@@ -5343,20 +3811,6 @@ class SettingsView: NSView {
         shortcutRestoreButton?.toolTip = L10n.shortcutRestore
         fullScreenScreenshotShortcutTitleLabel?.stringValue = L10n.fullScreenScreenshotShortcutHeader
         fullScreenScreenshotShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        colorPickerShortcutTitleLabel?.stringValue = L10n.colorPickerShortcutHeader
-        colorPickerShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        quickPinShortcutTitleLabel?.stringValue = L10n.quickPinShortcutHeader
-        quickPinShortcutRestoreButton?.toolTip = L10n.quickPinShortcutClear
-        selectedImagePinShortcutTitleLabel?.stringValue = L10n.selectedImagePinShortcutHeader
-        selectedImagePinShortcutRestoreButton?.toolTip = L10n.selectedImagePinShortcutClear
-        clipboardImagePinShortcutTitleLabel?.stringValue = L10n.clipboardImagePinShortcutHeader
-        clipboardImagePinShortcutRestoreButton?.toolTip = L10n.clipboardImagePinShortcutClear
-        clipboardTextPinShortcutTitleLabel?.stringValue = L10n.clipboardTextPinShortcutHeader
-        clipboardTextPinShortcutRestoreButton?.toolTip = L10n.clipboardTextPinShortcutClear
-        selectedImageEditShortcutTitleLabel?.stringValue = L10n.selectedImageEditShortcutHeader
-        selectedImageEditShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        clipboardImageEditShortcutTitleLabel?.stringValue = L10n.clipboardImageEditShortcutHeader
-        clipboardImageEditShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         textRecognitionShortcutTitleLabel?.stringValue = L10n.textRecognitionShortcutHeader
         textRecognitionShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         copyImageTextShortcutTitleLabel?.stringValue = L10n.copyImageTextShortcutHeader
@@ -5365,20 +3819,10 @@ class SettingsView: NSView {
         screenshotTranslationShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         recordShortcutTitleLabel?.stringValue = L10n.recordShortcutHeader
         recordShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        imageMergeShortcutTitleLabel?.stringValue = L10n.imageMergeShortcutHeader
-        imageMergeShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        finderUploadShortcutTitleLabel?.stringValue = L10n.fileUploadShortcutHeader
-        finderUploadShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         clipboardShortcutTitleLabel?.stringValue = L10n.clipboardShortcutHeader
         clipboardShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         fileSaveShortcutTitleLabel?.stringValue = L10n.fileSaveShortcutHeader
         fileSaveShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        previousHistoryImageShortcutTitleLabel?.stringValue = L10n.previousHistoryImageShortcutHeader
-        previousHistoryImageShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        nextHistoryImageShortcutTitleLabel?.stringValue = L10n.nextHistoryImageShortcutHeader
-        nextHistoryImageShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        historyPanelShortcutTitleLabel?.stringValue = L10n.historyPanelShortcutHeader
-        historyPanelShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         shortcutResetButton?.title = L10n.toolbarSettingsReset
         aboutTaglineLabel?.stringValue = L10n.aboutTagline
         aboutLicenseTitleLabel?.stringValue = L10n.aboutLicense
@@ -5399,25 +3843,12 @@ class SettingsView: NSView {
         refreshUpdateRow()
         refreshShortcutDisplay()
         refreshFullScreenScreenshotShortcutDisplay()
-        refreshColorPickerShortcutDisplay()
-        refreshQuickPinShortcutDisplay()
-        refreshSelectedImagePinShortcutDisplay()
-        refreshClipboardImagePinShortcutDisplay()
-        refreshClipboardTextPinShortcutDisplay()
-        refreshSelectedImageEditShortcutDisplay()
-        refreshClipboardImageEditShortcutDisplay()
         refreshTextRecognitionShortcutDisplay()
         refreshCopyImageTextShortcutDisplay()
         refreshScreenshotTranslationShortcutDisplay()
         refreshRecordShortcutDisplay()
-        refreshImageMergeShortcutDisplay()
-        refreshFinderUploadShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
-        refreshPreviousHistoryImageShortcutDisplay()
-        refreshNextHistoryImageShortcutDisplay()
-        refreshHistoryPanelShortcutDisplay()
-        refreshBottomAction()
         accessibilityBadge?.refreshTitle()
         screenRecordingBadge?.refreshTitle()
         microphoneBadge?.refreshTitle()

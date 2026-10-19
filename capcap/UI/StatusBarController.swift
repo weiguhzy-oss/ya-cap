@@ -79,7 +79,6 @@ class StatusBarController: NSObject {
         let colorPickerItem = NSMenuItem(title: L10n.colorPicker, action: #selector(colorPicker), keyEquivalent: "")
         colorPickerItem.target = self
         colorPickerItem.image = Self.menuIcon(systemName: "eyedropper")
-        HotkeyManager.applyColorPickerToMenuItem(colorPickerItem)
         menu.addItem(colorPickerItem)
 
         menu.addItem(NSMenuItem.separator())
@@ -88,7 +87,6 @@ class StatusBarController: NSObject {
             let historyPanelItem = NSMenuItem(title: L10n.historyPanelMenu, action: #selector(openHistoryPanel), keyEquivalent: "")
             historyPanelItem.target = self
             historyPanelItem.image = Self.menuIcon(systemName: "rectangle.stack")
-            HotkeyManager.applyHistoryPanelToMenuItem(historyPanelItem)
             menu.addItem(historyPanelItem)
 
             menu.addItem(NSMenuItem.separator())

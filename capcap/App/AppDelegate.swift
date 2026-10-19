@@ -21,7 +21,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var suspendedEditDraft: OverlayWindowController.SuspendedEditDraft?
     private var pendingReopenSettingsWorkItem: DispatchWorkItem?
     private var pendingOpenImageURLs: [URL] = []
-    private var startupDialogShown = false
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false
@@ -32,14 +31,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if appInitialized {
             flushPendingOpenImageURLs()
-        } else if LaunchAtLogin.isEnabled && AppPermissions.allRequiredGranted {
-            initializeApp()
-            flushPendingOpenImageURLs()
-        } else if !pendingOpenImageURLs.isEmpty {
-            initializeApp()
-            flushPendingOpenImageURLs()
         } else {
-            showStartupDialog()
+            initializeApp()
+            flushPendingOpenImageURLs()
         }
     }
 
@@ -61,8 +55,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         if appInitialized {
             scheduleSettingsOpenFromReopen()
-        } else {
-            showStartupDialog()
         }
         return false
     }
@@ -80,20 +72,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         sender.reply(toOpenOrPrint: handled ? .success : .failure)
     }
 
-    private func showStartupDialog() {
-        startupDialogShown = true
-        let settingsController = configuredSettingsController()
-        settingsController.showAsStartupDialog()
-    }
-
     private func configuredSettingsController() -> SettingsWindowController {
         let settingsController = SettingsWindowController.shared
         settingsController.onMenuBarToggle = { [weak self] visible in
             self?.statusBarController?.setMenuBarVisible(visible)
-        }
-        settingsController.onLaunch = { [weak self] in
-            self?.startupDialogShown = false
-            self?.initializeApp()
         }
         return settingsController
     }
@@ -211,53 +193,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         keyMonitor?.isRegularDoubleTapEnabled = needsDoubleTap
 
         // The pin hotkeys are independent of the screenshot hotkey.
-        if Defaults.hasCustomQuickPinHotkey {
-            HotkeyManager.shared.registerQuickPin { [weak self] in
-                self?.handleQuickPinTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterQuickPin()
-        }
-
-        if Defaults.hasCustomSelectedImagePinHotkey {
-            HotkeyManager.shared.registerSelectedImagePin { [weak self] in
-                self?.handleSelectedImagePinTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterSelectedImagePin()
-        }
-
-        if Defaults.hasCustomClipboardImagePinHotkey {
-            HotkeyManager.shared.registerClipboardImagePin { [weak self] in
-                self?.handleClipboardImagePinTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterClipboardImagePin()
-        }
-
-        if Defaults.hasCustomClipboardTextPinHotkey {
-            HotkeyManager.shared.registerClipboardTextPin { [weak self] in
-                self?.handleClipboardTextPinTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterClipboardTextPin()
-        }
-
-        if Defaults.hasCustomSelectedImageEditHotkey {
-            HotkeyManager.shared.registerSelectedImageEdit { [weak self] in
-                self?.handleSelectedImageEditTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterSelectedImageEdit()
-        }
-
-        if Defaults.hasCustomClipboardImageEditHotkey {
-            HotkeyManager.shared.registerClipboardImageEdit { [weak self] in
-                self?.handleClipboardImageEditTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterClipboardImageEdit()
-        }
 
         if Defaults.hasCustomTextRecognitionHotkey {
             HotkeyManager.shared.registerTextRecognition { [weak self] in
@@ -298,40 +233,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             HotkeyManager.shared.unregisterFullScreenScreenshot()
         }
-
-        if Defaults.hasCustomColorPickerHotkey {
-            HotkeyManager.shared.registerColorPicker { [weak self] in
-                self?.handleColorPickerTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterColorPicker()
-        }
-
-        if Defaults.hasCustomHistoryPanelHotkey {
-            HotkeyManager.shared.registerHistoryPanel { [weak self] in
-                self?.handleHistoryPanelTrigger(holdOpenUntilMouseEnters: true)
-            }
-        } else {
-            HotkeyManager.shared.unregisterHistoryPanel()
-        }
     }
 
     private func unregisterNonScreenshotHotkeys() {
-        HotkeyManager.shared.unregisterQuickPin()
-        HotkeyManager.shared.unregisterSelectedImagePin()
-        HotkeyManager.shared.unregisterClipboardImagePin()
-        HotkeyManager.shared.unregisterClipboardTextPin()
-        HotkeyManager.shared.unregisterSelectedImageEdit()
-        HotkeyManager.shared.unregisterClipboardImageEdit()
         HotkeyManager.shared.unregisterTextRecognition()
         HotkeyManager.shared.unregisterCopyImageText()
         HotkeyManager.shared.unregisterScreenshotTranslation()
         HotkeyManager.shared.unregisterRecord()
-        HotkeyManager.shared.unregisterImageMerge()
-        HotkeyManager.shared.unregisterFinderUpload()
         HotkeyManager.shared.unregisterFullScreenScreenshot()
-        HotkeyManager.shared.unregisterColorPicker()
-        HotkeyManager.shared.unregisterHistoryPanel()
     }
 
     @discardableResult
@@ -350,10 +259,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             flushPendingOpenImageURLs()
         } else {
             initializeApp()
-            if startupDialogShown {
-                SettingsWindowController.shared.dismissStartupDialogForExternalOpen()
-                startupDialogShown = false
-            }
             flushPendingOpenImageURLs()
         }
 
@@ -406,9 +311,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
 
-    private func handleHistoryPanelTrigger(holdOpenUntilMouseEnters: Bool = false) {
-        historyPanelController?.toggleFromUserRequest(holdOpenUntilMouseEnters: holdOpenUntilMouseEnters)
-    }
 
     /// KeyMonitor entry point for plain double-tap ⌘. While an overlay is
     /// active this is the default copy-to-clipboard hotkey; otherwise it falls
@@ -548,55 +450,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// Select a screen region and pin it immediately after capture.
-    func handleQuickPinTrigger() {
-        guard overlayController == nil, recordingEngine == nil, !countdownActive else { return }
-        startCapture(postCaptureAction: .quickPin)
-    }
-
-    /// Pin-hotkey trigger: pin Finder selection onto the screen. Skipped while
-    /// a capture overlay is up.
-    func handleSelectedImagePinTrigger() {
-        guard overlayController == nil, recordingEngine == nil else { return }
-        PinLauncher.pinSelectedImagesIfAvailable()
-    }
-
-    /// Contextual pin hotkey: pin the current edited screenshot while an
-    /// editor is active; otherwise pin the clipboard image.
-    func handleClipboardImagePinTrigger() {
-        if let overlayController {
-            _ = overlayController.pinFromKeyboard()
-            return
-        }
-        guard recordingEngine == nil else { return }
-        PinLauncher.pinClipboardImageIfAvailable()
-    }
-
-    /// Pin-hotkey trigger: render clipboard text into a desktop text pin.
-    /// Skipped while a capture overlay is up.
-    func handleClipboardTextPinTrigger() {
-        guard overlayController == nil, recordingEngine == nil else { return }
-        PinLauncher.pinClipboardTextIfAvailable()
-    }
-
-    func handleSelectedImageEditTrigger() {
-        guard overlayController == nil, recordingEngine == nil, !countdownActive else { return }
-        guard let controller = launchSelectedImageEdit() else {
-            ToastWindow.show(message: L10n.selectedImageEditNoImage)
-            return
-        }
-        overlayController = controller
-        applyHotkeyState()
-    }
-
-    func handleClipboardImageEditTrigger() {
-        guard overlayController == nil, recordingEngine == nil, !countdownActive else { return }
-        guard let controller = launchClipboardImageEdit() else {
-            ToastWindow.show(message: L10n.clipboardImageEditNoImage)
-            return
-        }
-        overlayController = controller
-        applyHotkeyState()
-    }
 
     @discardableResult
     func handlePinnedImageEditRequest(_ image: NSImage, beforePresent: () -> Void) -> Bool {
@@ -637,6 +490,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         startCapture(postCaptureAction: .screenshotTranslation)
     }
 
+    /// Menu-only entry point for the eyedropper. No global shortcut is bound.
     func handleColorPickerTrigger() {
         guard overlayController == nil, recordingEngine == nil, !countdownActive else { return }
         let focusRestorer = SourceAppFocusRestorer.captureFrontmostApplication()
@@ -647,6 +501,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !didStart {
             focusRestorer.restore()
         }
+    }
+
+    /// Menu-only entry point for the history panel. No global shortcut is bound.
+    private func handleHistoryPanelTrigger(holdOpenUntilMouseEnters: Bool = false) {
+        historyPanelController?.toggleFromUserRequest(holdOpenUntilMouseEnters: holdOpenUntilMouseEnters)
     }
 
     func handleFullScreenScreenshotTrigger(fromShortcut: Bool = false) {

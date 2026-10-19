@@ -44,24 +44,6 @@
 "shortcutNeedsModifierTitle" = "Un modificateur est requis";
 "shortcutNeedsModifier" = "Combinez ⌘/⌥/⇧/⌃ et une autre touche (ex. ⌘⇧8), ou F1–F12 seule";
 "shortcutRestore" = "Réinitialiser";
-"quickPinShortcutHeader" = "Épinglage rapide";
-"quickPinShortcutDefaultDisplay" = "Non défini";
-"quickPinShortcutClear" = "Effacer le raccourci d'épinglage rapide";
-"selectedImagePinShortcutHeader" = "Épingler l'image sélectionnée";
-"selectedImagePinShortcutDefaultDisplay" = "Non défini";
-"selectedImagePinShortcutClear" = "Effacer le raccourci d'épinglage de l'image sélectionnée";
-"clipboardImagePinShortcutHeader" = "Épingler l’image actuelle ou celle du presse-papiers";
-"clipboardImagePinShortcutDefaultDisplay" = "Non défini";
-"clipboardImagePinShortcutClear" = "Effacer le raccourci d’épinglage de l’image actuelle ou du presse-papiers";
-"clipboardTextPinShortcutHeader" = "Épingler le texte du presse-papiers";
-"clipboardTextPinShortcutDefaultDisplay" = "Non défini";
-"clipboardTextPinShortcutClear" = "Effacer le raccourci d'épinglage du texte du presse-papiers";
-"selectedImagePinNoImage" = "Aucune image Finder sélectionnée";
-"clipboardImagePinNoImage" = "Aucune image à épingler dans le presse-papiers";
-"clipboardTextPinNoText" = "Aucun texte dans le presse-papiers";
-"pinFromFinderHint" = "Image Finder épinglée, appuyez sur X pour fermer";
-"pinFromClipboardHint" = "Image du presse-papiers épinglée, appuyez sur X pour fermer";
-"pinFromClipboardTextHint" = "Texte du presse-papiers épinglé, double-cliquez pour modifier";
 "pinToolbarClose" = "Fermer l'image épinglée";
 "pinToolbarCopy" = "Copier l'image épinglée";
 "pinToolbarDrag" = "Faire glisser l'image épinglée";
@@ -69,12 +51,6 @@
 "pinToolbarEditText" = "Modifier le texte";
 
 /* Image-edit shortcuts */
-"selectedImageEditShortcutHeader" = "Modifier l'image sélectionnée";
-"selectedImageEditShortcutHint" = "Appuyez dessus pour modifier l'unique image sélectionnée dans le Finder. Non défini par défaut";
-"selectedImageEditShortcutDefaultDisplay" = "Non défini";
-"clipboardImageEditShortcutHeader" = "Modifier l'image du presse-papiers";
-"clipboardImageEditShortcutHint" = "Appuyez dessus pour modifier l'image actuellement dans le presse-papiers. Non défini par défaut";
-"clipboardImageEditShortcutDefaultDisplay" = "Non défini";
 "textRecognitionShortcutHeader" = "Reconnaissance de texte";
 "textRecognitionShortcutDefaultDisplay" = "Non défini";
 "copyImageTextShortcutHeader" = "Copier le texte de l'image";
@@ -85,8 +61,6 @@
 "recordShortcutDefaultDisplay" = "Non défini";
 "fullScreenScreenshotShortcutHeader" = "Capture plein écran";
 "fullScreenScreenshotShortcutDefaultDisplay" = "Non défini";
-"colorPickerShortcutHeader" = "Pipette";
-"colorPickerShortcutDefaultDisplay" = "Non défini";
 
 /* Copy-to-clipboard shortcut (editor confirm) */
 "clipboardShortcutHeader" = "Copier dans le presse-papiers";
@@ -96,32 +70,18 @@
 /* Save-to-file shortcut (editor save) */
 "fileSaveShortcutHeader" = "Enregistrer dans un fichier";
 "fileSaveShortcutHint" = "Appuyez dessus dans l'éditeur pour enregistrer la capture en PNG dans le dossier de captures configuré. ⌘S par défaut";
-"previousHistoryImageShortcutHeader" = "Capture précédente de l'historique";
-"nextHistoryImageShortcutHeader" = "Capture suivante de l'historique";
-"historyPanelShortcutHeader" = "Panneau d'historique";
-"historyPanelShortcutDefaultDisplay" = "Non défini";
 
 /* Shortcut conflict */
 "shortcutConflictTitle" = "Raccourci déjà utilisé";
 "shortcutConflictScreenshot" = "Cette combinaison de touches est déjà utilisée par le raccourci de capture d'écran. Veuillez en choisir une autre";
 "shortcutConflictCountdown" = "Cette combinaison de touches est déjà utilisée par le raccourci de capture avec compte à rebours (raccourci de capture + ⌥). Veuillez en choisir une autre";
-"shortcutConflictQuickPin" = "Cette combinaison de touches est déjà utilisée par le raccourci d'épinglage rapide. Veuillez en choisir une autre";
-"shortcutConflictSelectedImagePin" = "Cette combinaison de touches est déjà utilisée par le raccourci d'épinglage de l'image sélectionnée. Veuillez en choisir une autre";
-"shortcutConflictClipboardImagePin" = "Cette combinaison de touches est déjà utilisée par le raccourci d'épinglage de l'image du presse-papiers. Veuillez en choisir une autre";
-"shortcutConflictClipboardTextPin" = "Cette combinaison de touches est déjà utilisée par le raccourci d'épinglage du texte du presse-papiers. Veuillez en choisir une autre";
 "shortcutConflictClipboard" = "Cette combinaison de touches est déjà utilisée par le raccourci de copie dans le presse-papiers. Veuillez en choisir une autre";
 "shortcutConflictFileSave" = "Cette combinaison de touches est déjà utilisée par le raccourci d'enregistrement dans un fichier. Veuillez en choisir une autre";
-"shortcutConflictPreviousHistoryImage" = "Cette combinaison de touches est déjà utilisée par le raccourci Capture précédente de l'historique. Veuillez en choisir une autre";
-"shortcutConflictNextHistoryImage" = "Cette combinaison de touches est déjà utilisée par le raccourci Capture suivante de l'historique. Veuillez en choisir une autre";
-"shortcutConflictHistoryPanel" = "Cette combinaison de touches est déjà utilisée par le raccourci Panneau d'historique. Veuillez en choisir une autre";
-"shortcutConflictSelectedImageEdit" = "Cette combinaison de touches est déjà utilisée par le raccourci Modifier l'image sélectionnée. Veuillez en choisir une autre";
-"shortcutConflictClipboardImageEdit" = "Cette combinaison de touches est déjà utilisée par le raccourci Modifier l'image du presse-papiers. Veuillez en choisir une autre";
 "shortcutConflictTextRecognition" = "Cette combinaison de touches est déjà utilisée par le raccourci Reconnaissance de texte. Veuillez en choisir une autre";
 "shortcutConflictCopyImageText" = "Cette combinaison de touches est déjà utilisée par le raccourci Copier le texte de l'image. Veuillez en choisir une autre";
 "shortcutConflictScreenshotTranslation" = "Cette combinaison de touches est déjà utilisée par le raccourci Traduction de capture. Veuillez en choisir une autre";
 "shortcutConflictRecord" = "Cette combinaison de touches est déjà utilisée par le raccourci Enregistrer. Veuillez en choisir une autre";
 "shortcutConflictFullScreenScreenshot" = "Cette combinaison de touches est déjà utilisée par le raccourci Capture plein écran. Veuillez en choisir une autre";
-"shortcutConflictColorPicker" = "Cette combinaison de touches est déjà utilisée par le raccourci Pipette. Veuillez en choisir une autre";
 
 /* Menu bar */
 "takeScreenshot" = "Capturer l'écran";
@@ -196,7 +156,6 @@
 "historyPanelShortcutToggleGuide" = "Afficher ou masquer les raccourcis clavier";
 
 /* Cursor chip */
-"dragToQuickPin" = "Cliquez sur une fenêtre ou sélectionnez une zone pour l’épingler directement";
 "dragToScreenshot" = "Cliquez sur une fenêtre ou faites glisser pour capturer";
 "dragToScreenshotAspectFree" = "Cliquez sur une fenêtre ou faites glisser pour capturer · Sélection libre (R)";
 "dragToScreenshotAspect" = "Cliquez sur une fenêtre ou faites glisser pour capturer · Sélection %@ (R)";
@@ -222,8 +181,6 @@
 "editSuspendedResumeToast" = "Reprise de l'édition suspendue";
 "fullScreenScreenshotFailed" = "Échec de la capture plein écran";
 "openImageNoImage" = "Copiez une image dans le presse-papiers ou choisissez un fichier image";
-"selectedImageEditNoImage" = "Aucune image unique sélectionnée dans le Finder";
-"clipboardImageEditNoImage" = "Aucune image modifiable dans le presse-papiers";
 "recordingSaved" = "Enregistrement sauvegardé dans %@";
 "recordingCancelled" = "Enregistrement annulé";
 "recordingExportingGIF" = "Création du GIF";

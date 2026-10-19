@@ -44,24 +44,6 @@
 "shortcutNeedsModifierTitle" = "Shortcut Needs a Modifier";
 "shortcutNeedsModifier" = "Use ⌘/⌥/⇧/⌃ plus another key (e.g. ⌘⇧8), or F1–F12 alone";
 "shortcutRestore" = "Restore Default";
-"quickPinShortcutHeader" = "Quick Pin";
-"quickPinShortcutDefaultDisplay" = "Not set";
-"quickPinShortcutClear" = "Clear Quick Pin Shortcut";
-"selectedImagePinShortcutHeader" = "Pin Selected Image";
-"selectedImagePinShortcutDefaultDisplay" = "Not set";
-"selectedImagePinShortcutClear" = "Clear Pin Selected Image Shortcut";
-"clipboardImagePinShortcutHeader" = "Pin Current or Clipboard Image";
-"clipboardImagePinShortcutDefaultDisplay" = "Not set";
-"clipboardImagePinShortcutClear" = "Clear Pin Current or Clipboard Image Shortcut";
-"clipboardTextPinShortcutHeader" = "Pin Clipboard Text";
-"clipboardTextPinShortcutDefaultDisplay" = "Not set";
-"clipboardTextPinShortcutClear" = "Clear Pin Clipboard Text Shortcut";
-"selectedImagePinNoImage" = "No Finder image selected";
-"clipboardImagePinNoImage" = "No image on the clipboard";
-"clipboardTextPinNoText" = "No text on the clipboard";
-"pinFromFinderHint" = "Pinned Finder image, press X to close";
-"pinFromClipboardHint" = "Pinned clipboard image, press X to close";
-"pinFromClipboardTextHint" = "Pinned clipboard text, double-click to edit";
 "pinToolbarClose" = "Close pinned image";
 "pinToolbarCopy" = "Copy pinned image";
 "pinToolbarDrag" = "Drag pinned image";
@@ -69,12 +51,6 @@
 "pinToolbarEditText" = "Edit text";
 
 /* Image-edit shortcuts */
-"selectedImageEditShortcutHeader" = "Edit Selected Image";
-"selectedImageEditShortcutHint" = "Press it to edit the single image selected in Finder. Not set by default";
-"selectedImageEditShortcutDefaultDisplay" = "Not set";
-"clipboardImageEditShortcutHeader" = "Edit Clipboard Image";
-"clipboardImageEditShortcutHint" = "Press it to edit the current image on the clipboard. Not set by default";
-"clipboardImageEditShortcutDefaultDisplay" = "Not set";
 "textRecognitionShortcutHeader" = "Text Recognition";
 "textRecognitionShortcutDefaultDisplay" = "Not set";
 "copyImageTextShortcutHeader" = "Copy Image Text";
@@ -85,8 +61,6 @@
 "recordShortcutDefaultDisplay" = "Not set";
 "fullScreenScreenshotShortcutHeader" = "Full Screen Screenshot";
 "fullScreenScreenshotShortcutDefaultDisplay" = "Not set";
-"colorPickerShortcutHeader" = "Color Picker";
-"colorPickerShortcutDefaultDisplay" = "Not set";
 
 /* Copy-to-clipboard shortcut (editor confirm) */
 "clipboardShortcutHeader" = "Copy to Clipboard";
@@ -96,32 +70,18 @@
 /* Save-to-file shortcut (editor save) */
 "fileSaveShortcutHeader" = "Save to File";
 "fileSaveShortcutHint" = "Pressed inside the editor to save the screenshot as a PNG in the configured screenshot folder. Defaults to ⌘S";
-"previousHistoryImageShortcutHeader" = "Previous History Screenshot";
-"nextHistoryImageShortcutHeader" = "Next History Screenshot";
-"historyPanelShortcutHeader" = "History Panel";
-"historyPanelShortcutDefaultDisplay" = "Not Set";
 
 /* Shortcut conflict */
 "shortcutConflictTitle" = "Shortcut Already in Use";
 "shortcutConflictScreenshot" = "This key combination is already used by the screenshot shortcut. Please choose a different one";
 "shortcutConflictCountdown" = "This key combination is already used by the countdown screenshot shortcut (screenshot shortcut + ⌥). Please choose a different one";
-"shortcutConflictQuickPin" = "This key combination is already used by the Quick Pin shortcut. Please choose a different one";
-"shortcutConflictSelectedImagePin" = "This key combination is already used by the Pin Selected Image shortcut. Please choose a different one";
-"shortcutConflictClipboardImagePin" = "This key combination is already used by the Pin Clipboard Image shortcut. Please choose a different one";
-"shortcutConflictClipboardTextPin" = "This key combination is already used by the Pin Clipboard Text shortcut. Please choose a different one";
 "shortcutConflictClipboard" = "This key combination is already used by the Copy to Clipboard shortcut. Please choose a different one";
 "shortcutConflictFileSave" = "This key combination is already used by the Save to File shortcut. Please choose a different one";
-"shortcutConflictPreviousHistoryImage" = "This key combination is already used by the Previous History Screenshot shortcut. Please choose a different one";
-"shortcutConflictNextHistoryImage" = "This key combination is already used by the Next History Screenshot shortcut. Please choose a different one";
-"shortcutConflictHistoryPanel" = "This key combination is already used by the History Panel shortcut. Please choose a different one";
-"shortcutConflictSelectedImageEdit" = "This key combination is already used by the Edit Selected Image shortcut. Please choose a different one";
-"shortcutConflictClipboardImageEdit" = "This key combination is already used by the Edit Clipboard Image shortcut. Please choose a different one";
 "shortcutConflictTextRecognition" = "This key combination is already used by the Text Recognition shortcut. Please choose a different one";
 "shortcutConflictCopyImageText" = "This key combination is already used by the Copy Image Text shortcut. Please choose a different one";
 "shortcutConflictScreenshotTranslation" = "This key combination is already used by the Screenshot Translation shortcut. Please choose a different one";
 "shortcutConflictRecord" = "This key combination is already used by the Record shortcut. Please choose a different one";
 "shortcutConflictFullScreenScreenshot" = "This key combination is already used by the Full Screen Screenshot shortcut. Please choose a different one";
-"shortcutConflictColorPicker" = "This key combination is already used by the Color Picker shortcut. Please choose a different one";
 
 /* Menu bar */
 "takeScreenshot" = "Take Screenshot";
@@ -196,7 +156,6 @@
 "historyPanelShortcutToggleGuide" = "Show or hide keyboard shortcuts";
 
 /* Cursor chip */
-"dragToQuickPin" = "Click a window or drag to pin the selection";
 "dragToScreenshot" = "Click window or drag to screenshot";
 "dragToScreenshotAspectFree" = "Click window or drag to screenshot · Drag selection free ratio (R)";
 "dragToScreenshotAspect" = "Click window or drag to screenshot · Drag selection %@ (R)";
@@ -222,8 +181,6 @@
 "editSuspendedResumeToast" = "Continuing your suspended edit";
 "fullScreenScreenshotFailed" = "Full-screen screenshot failed";
 "openImageNoImage" = "Copy an image to the clipboard or choose an image file";
-"selectedImageEditNoImage" = "No single Finder image selected";
-"clipboardImageEditNoImage" = "No editable image on the clipboard";
 "recordingSaved" = "Recording saved to %@";
 "recordingCancelled" = "Recording cancelled";
 "recordingExportingGIF" = "Creating GIF";

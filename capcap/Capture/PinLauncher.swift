@@ -67,45 +67,6 @@ enum PinLauncher {
 
     /// Pins images currently selected in Finder. This shortcut is intentionally
     /// source-specific: it does not fall back to the clipboard.
-    @discardableResult
-    static func pinSelectedImagesIfAvailable() -> Bool {
-        let finderImages = FinderSelection.currentImageFileURLs().compactMap(loadImage)
-        guard !finderImages.isEmpty else {
-            ToastWindow.show(message: L10n.selectedImagePinNoImage)
-            return false
-        }
-
-        pin(images: finderImages, source: .finder)
-        ToastWindow.show(message: L10n.pinFromFinderHint)
-        return true
-    }
-
-    /// Pins the image currently on the clipboard. This shortcut is
-    /// source-specific: it does not check the Finder selection.
-    @discardableResult
-    static func pinClipboardImageIfAvailable() -> Bool {
-        guard let image = ClipboardImageSource.currentImage() else {
-            ToastWindow.show(message: L10n.clipboardImagePinNoImage)
-            return false
-        }
-
-        pin(image: image, source: .clipboard)
-        ToastWindow.show(message: L10n.pinFromClipboardHint)
-        return true
-    }
-
-    /// Pins plain text currently on the clipboard as an editable text view.
-    @discardableResult
-    static func pinClipboardTextIfAvailable() -> Bool {
-        guard let text = ClipboardTextSource.currentText() else {
-            ToastWindow.show(message: L10n.clipboardTextPinNoText)
-            return false
-        }
-
-        pin(text: text, source: .clipboardText)
-        ToastWindow.show(message: L10n.pinFromClipboardTextHint)
-        return true
-    }
 
     /// Creates a floating pinned window for `image`. When `origin` is nil the
     /// window is centered on the screen under the cursor. Oversized images are

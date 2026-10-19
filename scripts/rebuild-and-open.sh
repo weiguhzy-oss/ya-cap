@@ -4,7 +4,9 @@ set -e
 cd "$(dirname "$0")/.."
 PROJECT_ROOT="$(pwd)"
 
-APP_NAME="capcap"
+# The bundle, its executable, and therefore the running process are all named
+# "Ya cap" (with a space) — keep these in sync with scripts/bundle.sh.
+APP_NAME="Ya cap"
 APP_BUNDLE="build/$APP_NAME.app"
 
 echo "==> [1/4] Building $APP_NAME..."

@@ -44,24 +44,6 @@
 "shortcutNeedsModifierTitle" = "수정자 키가 필요합니다";
 "shortcutNeedsModifier" = "⌘/⌥/⇧/⌃ + 다른 키 조합(예: ⌘⇧8) 또는 F1–F12 단독";
 "shortcutRestore" = "기본값 복원";
-"quickPinShortcutHeader" = "빠른 고정";
-"quickPinShortcutDefaultDisplay" = "설정 안 됨";
-"quickPinShortcutClear" = "빠른 고정 단축키 지우기";
-"selectedImagePinShortcutHeader" = "선택 이미지 고정";
-"selectedImagePinShortcutDefaultDisplay" = "설정 안 됨";
-"selectedImagePinShortcutClear" = "선택 이미지 고정 단축키 지우기";
-"clipboardImagePinShortcutHeader" = "현재 또는 클립보드 이미지 고정";
-"clipboardImagePinShortcutDefaultDisplay" = "설정 안 됨";
-"clipboardImagePinShortcutClear" = "현재 또는 클립보드 이미지 고정 단축키 지우기";
-"clipboardTextPinShortcutHeader" = "클립보드 텍스트 고정";
-"clipboardTextPinShortcutDefaultDisplay" = "설정 안 됨";
-"clipboardTextPinShortcutClear" = "클립보드 텍스트 고정 단축키 지우기";
-"selectedImagePinNoImage" = "Finder에서 선택한 이미지가 없습니다";
-"clipboardImagePinNoImage" = "클립보드에 고정할 이미지가 없습니다";
-"clipboardTextPinNoText" = "클립보드에 텍스트가 없습니다";
-"pinFromFinderHint" = "Finder 이미지를 고정했습니다. X 키를 눌러 닫기";
-"pinFromClipboardHint" = "클립보드 이미지를 고정했습니다. X 키를 눌러 닫기";
-"pinFromClipboardTextHint" = "클립보드 텍스트를 고정했습니다. 더블 클릭하여 편집";
 "pinToolbarClose" = "고정 이미지 닫기";
 "pinToolbarCopy" = "고정 이미지 복사";
 "pinToolbarDrag" = "고정 이미지 드래그";
@@ -69,12 +51,6 @@
 "pinToolbarEditText" = "텍스트 편집";
 
 /* Image-edit shortcuts */
-"selectedImageEditShortcutHeader" = "선택 이미지 편집";
-"selectedImageEditShortcutHint" = "Finder에서 선택한 단일 이미지를 바로 편집합니다. 기본값은 설정되어 있지 않습니다";
-"selectedImageEditShortcutDefaultDisplay" = "설정 안 됨";
-"clipboardImageEditShortcutHeader" = "클립보드 이미지 편집";
-"clipboardImageEditShortcutHint" = "현재 클립보드에 있는 이미지를 바로 편집합니다. 기본값은 설정되어 있지 않습니다";
-"clipboardImageEditShortcutDefaultDisplay" = "설정 안 됨";
 "textRecognitionShortcutHeader" = "문자 인식";
 "textRecognitionShortcutDefaultDisplay" = "설정 안 됨";
 "copyImageTextShortcutHeader" = "이미지 텍스트 복사";
@@ -85,8 +61,6 @@
 "recordShortcutDefaultDisplay" = "설정 안 됨";
 "fullScreenScreenshotShortcutHeader" = "전체 화면 스크린샷";
 "fullScreenScreenshotShortcutDefaultDisplay" = "설정 안 됨";
-"colorPickerShortcutHeader" = "색상 추출기";
-"colorPickerShortcutDefaultDisplay" = "설정 안 됨";
 
 /* Copy-to-clipboard shortcut (editor confirm) */
 "clipboardShortcutHeader" = "클립보드에 복사";
@@ -96,32 +70,18 @@
 /* Save-to-file shortcut (editor save) */
 "fileSaveShortcutHeader" = "파일로 저장";
 "fileSaveShortcutHint" = "편집기에서 누르면 설정된 스크린샷 폴더에 PNG로 저장합니다. 기본값은 ⌘S입니다";
-"previousHistoryImageShortcutHeader" = "이전 기록 스크린샷";
-"nextHistoryImageShortcutHeader" = "다음 기록 스크린샷";
-"historyPanelShortcutHeader" = "기록 패널";
-"historyPanelShortcutDefaultDisplay" = "설정 안 됨";
 
 /* Shortcut conflict */
 "shortcutConflictTitle" = "단축키가 이미 사용 중입니다";
 "shortcutConflictScreenshot" = "이 키 조합은 이미 스크린샷 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 "shortcutConflictCountdown" = "이 키 조합은 이미 카운트다운 스크린샷 단축키(스크린샷 단축키 + ⌥)에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictQuickPin" = "이 키 조합은 이미 빠른 고정 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictSelectedImagePin" = "이 키 조합은 이미 선택 이미지 고정 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictClipboardImagePin" = "이 키 조합은 이미 클립보드 이미지 고정 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictClipboardTextPin" = "이 키 조합은 이미 클립보드 텍스트 고정 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 "shortcutConflictClipboard" = "이 키 조합은 이미 클립보드에 복사 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 "shortcutConflictFileSave" = "이 키 조합은 이미 파일로 저장 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictPreviousHistoryImage" = "이 키 조합은 이미 이전 기록 스크린샷 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictNextHistoryImage" = "이 키 조합은 이미 다음 기록 스크린샷 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictHistoryPanel" = "이 키 조합은 이미 기록 패널 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictSelectedImageEdit" = "이 키 조합은 이미 선택 이미지 편집 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictClipboardImageEdit" = "이 키 조합은 이미 클립보드 이미지 편집 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 "shortcutConflictTextRecognition" = "이 키 조합은 이미 문자 인식 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 "shortcutConflictCopyImageText" = "이 키 조합은 이미 이미지 텍스트 복사 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 "shortcutConflictScreenshotTranslation" = "이 키 조합은 이미 스크린샷 번역 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 "shortcutConflictRecord" = "이 키 조합은 이미 녹화 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 "shortcutConflictFullScreenScreenshot" = "이 키 조합은 이미 전체 화면 스크린샷 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
-"shortcutConflictColorPicker" = "이 키 조합은 이미 색상 추출기 단축키에 사용되고 있습니다. 다른 조합을 선택하세요";
 
 /* Menu bar */
 "takeScreenshot" = "스크린샷";
@@ -196,7 +156,6 @@
 "historyPanelShortcutToggleGuide" = "키보드 단축키 표시 또는 숨기기";
 
 /* Cursor chip */
-"dragToQuickPin" = "창을 클릭하거나 영역을 드래그해 바로 고정";
 "dragToScreenshot" = "창을 클릭하거나 드래그하여 스크린샷";
 "dragToScreenshotAspectFree" = "창을 클릭하거나 드래그하여 스크린샷 · 드래그 자유 비율(R)";
 "dragToScreenshotAspect" = "창을 클릭하거나 드래그하여 스크린샷 · 드래그 %@ (R)";
@@ -222,8 +181,6 @@
 "editSuspendedResumeToast" = "임시 저장한 편집을 이어서 진행";
 "fullScreenScreenshotFailed" = "전체 화면 스크린샷 실패";
 "openImageNoImage" = "클립보드에 이미지를 복사하거나 이미지 파일을 선택하세요";
-"selectedImageEditNoImage" = "Finder에서 단일 이미지가 선택되지 않았습니다";
-"clipboardImageEditNoImage" = "클립보드에 편집할 이미지가 없습니다";
 "recordingSaved" = "녹화가 %@에 저장되었습니다";
 "recordingCancelled" = "녹화가 취소되었습니다";
 "recordingExportingGIF" = "GIF 생성 중";

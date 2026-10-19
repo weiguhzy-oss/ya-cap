@@ -22,7 +22,6 @@ class OverlayWindowController {
 
     enum PostCaptureAction {
         case edit
-        case quickPin
         case textRecognition
         case copyImageText
         case screenshotTranslation
@@ -34,8 +33,6 @@ class OverlayWindowController {
                 return L10n.dragToRecord
             case .edit:
                 return L10n.dragToScreenshot
-            case .quickPin:
-                return L10n.dragToQuickPin
             case .textRecognition:
                 return L10n.dragToTextRecognition
             case .copyImageText:
@@ -938,7 +935,7 @@ class OverlayWindowController {
         switch postCaptureAction {
         case .edit, .record:
             return true
-        case .quickPin, .textRecognition, .copyImageText, .screenshotTranslation:
+        case .textRecognition, .copyImageText, .screenshotTranslation:
             return false
         }
     }
@@ -948,8 +945,6 @@ class OverlayWindowController {
         case .edit:
             guard let aspectRatio else { return L10n.dragToScreenshotAspectFree }
             return L10n.dragToScreenshotAspect(aspectRatioLabel(for: aspectRatio))
-        case .quickPin:
-            return action.cursorChipText
         case .record:
             guard let aspectRatio else { return L10n.dragToRecordAspectFree }
             return L10n.dragToRecordAspect(aspectRatioLabel(for: aspectRatio))
@@ -1322,7 +1317,7 @@ class OverlayWindowController {
     private var shouldShowMagnifierLensPanel: Bool {
         guard presetImage == nil,
               suspendedDraft == nil else { return false }
-        return postCaptureAction == .edit || postCaptureAction == .quickPin
+        return postCaptureAction == .edit
     }
 
     private func setupMagnifierLensPanel() {
@@ -1747,7 +1742,7 @@ extension OverlayWindowController: SelectionViewDelegate {
                 windowBaseImage: windowBaseImage,
                 isWindowCapture: shouldApplyWindowEffects
             )
-        case .quickPin, .textRecognition, .copyImageText, .screenshotTranslation:
+        case .textRecognition, .copyImageText, .screenshotTranslation:
             completeImmediateAction(request, preSnapshot: preSnapshot, windowBaseImage: windowBaseImage)
         case .record:
             tearDown()
@@ -1775,8 +1770,6 @@ extension OverlayWindowController: SelectionViewDelegate {
         }
 
         switch postCaptureAction {
-        case .quickPin:
-            PinLauncher.pin(image: baseImage, at: request.screenRect.origin)
         case .textRecognition:
             OCRTranslatePanel.presentTextRecognition(
                 image: baseImage,
@@ -1858,12 +1851,6 @@ extension OverlayWindowController: SelectionViewDelegate {
               !editController.blocksHistoryNavigation
         else {
             return false
-        }
-        if HotkeyManager.eventMatchesPreviousHistoryImageHotkey(event) {
-            return switchHistoryImage(offset: 1)
-        }
-        if HotkeyManager.eventMatchesNextHistoryImageHotkey(event) {
-            return switchHistoryImage(offset: -1)
         }
         return false
     }

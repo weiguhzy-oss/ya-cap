@@ -164,24 +164,6 @@ enum L10n {
     static var shortcutRestore: String { s("shortcutRestore") }
 
     // Pin-image shortcut
-    static var quickPinShortcutHeader: String { s("quickPinShortcutHeader") }
-    static var quickPinShortcutDefaultDisplay: String { s("quickPinShortcutDefaultDisplay") }
-    static var quickPinShortcutClear: String { s("quickPinShortcutClear") }
-    static var selectedImagePinShortcutHeader: String { s("selectedImagePinShortcutHeader") }
-    static var selectedImagePinShortcutDefaultDisplay: String { s("selectedImagePinShortcutDefaultDisplay") }
-    static var selectedImagePinShortcutClear: String { s("selectedImagePinShortcutClear") }
-    static var clipboardImagePinShortcutHeader: String { s("clipboardImagePinShortcutHeader") }
-    static var clipboardImagePinShortcutDefaultDisplay: String { s("clipboardImagePinShortcutDefaultDisplay") }
-    static var clipboardImagePinShortcutClear: String { s("clipboardImagePinShortcutClear") }
-    static var clipboardTextPinShortcutHeader: String { s("clipboardTextPinShortcutHeader") }
-    static var clipboardTextPinShortcutDefaultDisplay: String { s("clipboardTextPinShortcutDefaultDisplay") }
-    static var clipboardTextPinShortcutClear: String { s("clipboardTextPinShortcutClear") }
-    static var selectedImagePinNoImage: String { s("selectedImagePinNoImage") }
-    static var clipboardImagePinNoImage: String { s("clipboardImagePinNoImage") }
-    static var clipboardTextPinNoText: String { s("clipboardTextPinNoText") }
-    static var pinFromFinderHint: String { s("pinFromFinderHint") }
-    static var pinFromClipboardHint: String { s("pinFromClipboardHint") }
-    static var pinFromClipboardTextHint: String { s("pinFromClipboardTextHint") }
     static var pinToolbarClose: String { s("pinToolbarClose") }
     static var pinToolbarCopy: String { s("pinToolbarCopy") }
     static var pinToolbarDrag: String { s("pinToolbarDrag") }
@@ -189,12 +171,6 @@ enum L10n {
     static var pinToolbarEditText: String { s("pinToolbarEditText") }
 
     // Image-edit shortcuts
-    static var selectedImageEditShortcutHeader: String { s("selectedImageEditShortcutHeader") }
-    static var selectedImageEditShortcutHint: String { s("selectedImageEditShortcutHint") }
-    static var selectedImageEditShortcutDefaultDisplay: String { s("selectedImageEditShortcutDefaultDisplay") }
-    static var clipboardImageEditShortcutHeader: String { s("clipboardImageEditShortcutHeader") }
-    static var clipboardImageEditShortcutHint: String { s("clipboardImageEditShortcutHint") }
-    static var clipboardImageEditShortcutDefaultDisplay: String { s("clipboardImageEditShortcutDefaultDisplay") }
     static var textRecognitionShortcutHeader: String { s("textRecognitionShortcutHeader") }
     static var textRecognitionShortcutDefaultDisplay: String { s("textRecognitionShortcutDefaultDisplay") }
     static var copyImageTextShortcutHeader: String { s("copyImageTextShortcutHeader") }
@@ -203,14 +179,8 @@ enum L10n {
     static var screenshotTranslationShortcutDefaultDisplay: String { s("screenshotTranslationShortcutDefaultDisplay") }
     static var recordShortcutHeader: String { s("recordShortcutHeader") }
     static var recordShortcutDefaultDisplay: String { s("recordShortcutDefaultDisplay") }
-    static var imageMergeShortcutHeader: String { s("imageMergeShortcutHeader") }
-    static var imageMergeShortcutDefaultDisplay: String { s("imageMergeShortcutDefaultDisplay") }
-    static var fileUploadShortcutHeader: String { s("fileUploadShortcutHeader") }
-    static var finderUploadShortcutDefaultDisplay: String { s("finderUploadShortcutDefaultDisplay") }
     static var fullScreenScreenshotShortcutHeader: String { s("fullScreenScreenshotShortcutHeader") }
     static var fullScreenScreenshotShortcutDefaultDisplay: String { s("fullScreenScreenshotShortcutDefaultDisplay") }
-    static var colorPickerShortcutHeader: String { s("colorPickerShortcutHeader") }
-    static var colorPickerShortcutDefaultDisplay: String { s("colorPickerShortcutDefaultDisplay") }
 
     // Magnifier lens panel (overlay magnifier lens panel)
     static var magnifierLensPanelCoordinatesLabel: String { s("magnifierLensPanelCoordinatesLabel") }
@@ -232,10 +202,6 @@ enum L10n {
     static var clipboardShortcutDefaultDisplay: String { s("clipboardShortcutDefaultDisplay") }
 
     // History navigation shortcuts (editor)
-    static var previousHistoryImageShortcutHeader: String { s("previousHistoryImageShortcutHeader") }
-    static var nextHistoryImageShortcutHeader: String { s("nextHistoryImageShortcutHeader") }
-    static var historyPanelShortcutHeader: String { s("historyPanelShortcutHeader") }
-    static var historyPanelShortcutDefaultDisplay: String { s("historyPanelShortcutDefaultDisplay") }
 
     // Save-to-file shortcut (editor save)
     static var fileSaveShortcutHeader: String { s("fileSaveShortcutHeader") }
@@ -245,25 +211,13 @@ enum L10n {
     static var shortcutConflictTitle: String { s("shortcutConflictTitle") }
     static var shortcutConflictScreenshot: String { s("shortcutConflictScreenshot") }
     static var shortcutConflictCountdown: String { s("shortcutConflictCountdown") }
-    static var shortcutConflictQuickPin: String { s("shortcutConflictQuickPin") }
-    static var shortcutConflictSelectedImagePin: String { s("shortcutConflictSelectedImagePin") }
-    static var shortcutConflictClipboardImagePin: String { s("shortcutConflictClipboardImagePin") }
-    static var shortcutConflictClipboardTextPin: String { s("shortcutConflictClipboardTextPin") }
     static var shortcutConflictClipboard: String { s("shortcutConflictClipboard") }
     static var shortcutConflictFileSave: String { s("shortcutConflictFileSave") }
-    static var shortcutConflictPreviousHistoryImage: String { s("shortcutConflictPreviousHistoryImage") }
-    static var shortcutConflictNextHistoryImage: String { s("shortcutConflictNextHistoryImage") }
-    static var shortcutConflictHistoryPanel: String { s("shortcutConflictHistoryPanel") }
-    static var shortcutConflictSelectedImageEdit: String { s("shortcutConflictSelectedImageEdit") }
-    static var shortcutConflictClipboardImageEdit: String { s("shortcutConflictClipboardImageEdit") }
     static var shortcutConflictTextRecognition: String { s("shortcutConflictTextRecognition") }
     static var shortcutConflictCopyImageText: String { s("shortcutConflictCopyImageText") }
     static var shortcutConflictScreenshotTranslation: String { s("shortcutConflictScreenshotTranslation") }
     static var shortcutConflictRecord: String { s("shortcutConflictRecord") }
-    static var shortcutConflictImageMerge: String { s("shortcutConflictImageMerge") }
-    static var shortcutConflictFileUpload: String { s("shortcutConflictFileUpload") }
     static var shortcutConflictFullScreenScreenshot: String { s("shortcutConflictFullScreenScreenshot") }
-    static var shortcutConflictColorPicker: String { s("shortcutConflictColorPicker") }
 
     // Menu bar
     static var takeScreenshot: String { s("takeScreenshot") }
@@ -358,7 +312,6 @@ enum L10n {
 
     // Cursor chip
     static var dragToScreenshot: String { s("dragToScreenshot") }
-    static var dragToQuickPin: String { s("dragToQuickPin") }
     static var dragToScreenshotAspectFree: String { s("dragToScreenshotAspectFree") }
     static func dragToScreenshotAspect(_ ratio: String) -> String {
         String(format: s("dragToScreenshotAspect"), ratio)
@@ -387,14 +340,7 @@ enum L10n {
     static var editSuspendedResumeToast: String { s("editSuspendedResumeToast") }
     static var fullScreenScreenshotFailed: String { s("fullScreenScreenshotFailed") }
     static var openImageNoImage: String { s("openImageNoImage") }
-    static var selectedImageEditNoImage: String { s("selectedImageEditNoImage") }
-    static var clipboardImageEditNoImage: String { s("clipboardImageEditNoImage") }
     static var mergeEditExitHint: String { s("mergeEditExitHint") }
-    static var imageMergeNeedTwoImages: String { s("imageMergeNeedTwoImages") }
-    static var imageMergeSomeImagesSkipped: String { s("imageMergeSomeImagesSkipped") }
-    static var imageMergeNoClipboardImage: String { s("imageMergeNoClipboardImage") }
-    static var imageMergeFailed: String { s("imageMergeFailed") }
-    static var imageMergeSaved: String { s("imageMergeSaved") }
     static func recordingSaved(to path: String) -> String {
         String(format: s("recordingSaved"), path)
     }
@@ -728,32 +674,6 @@ enum L10n {
     static var uploadFieldAccountId: String { s("uploadFieldAccountId") }
     static var uploadTestImageFailed: String { s("uploadTestImageFailed") }
 
-    // Upload — file dialog
-    static var finderUploadDialogTitle: String { s("finderUploadDialogTitle") }
-    static var finderUploadDialogHeading: String { s("finderUploadDialogHeading") }
-    static func finderUploadSummary(_ count: Int, _ provider: String) -> String {
-        String(format: s("finderUploadSummary"), count, provider)
-    }
-    static var finderUploadSelectAll: String { s("finderUploadSelectAll") }
-    static func finderUploadAction(_ count: Int) -> String {
-        String(format: s("finderUploadAction"), count)
-    }
-    static func finderUploadRetryAction(_ count: Int) -> String {
-        String(format: s("finderUploadRetryAction"), count)
-    }
-    static func finderUploadingProgress(_ current: Int, _ total: Int) -> String {
-        String(format: s("finderUploadingProgress"), current, total)
-    }
-    static var finderUploadSucceeded: String { s("finderUploadSucceeded") }
-    static var finderUploadFailed: String { s("finderUploadFailed") }
-    static var finderUploadErrorLogTitle: String { s("finderUploadErrorLogTitle") }
-    static var finderUploadUnknownSize: String { s("finderUploadUnknownSize") }
-    static func finderUploadReadFailed(_ message: String) -> String {
-        String(format: s("finderUploadReadFailed"), message)
-    }
-    static func finderUploadCompleted(_ count: Int) -> String {
-        String(format: s("finderUploadCompleted"), count)
-    }
     // Upload — provider names
     static var providerTencentCOS: String { s("providerTencentCOS") }
     static var providerQiniuKodo: String { s("providerQiniuKodo") }
@@ -884,31 +804,8 @@ enum L10n {
     static var translationErrBadResponse: String { s("translationErrBadResponse") }
 
     // Image Merge workbench
-    static var imageMergeWindowTitle: String { s("imageMergeWindowTitle") }
-    static var imageMergeSources: String { s("imageMergeSources") }
-    static var imageMergeAddFiles: String { s("imageMergeAddFiles") }
-    static var imageMergeAddFromClipboard: String { s("imageMergeAddFromClipboard") }
-    static var imageMergeImageList: String { s("imageMergeImageList") }
-    static var imageMergeTemplate: String { s("imageMergeTemplate") }
-    static var imageMergeTemplateHorizontal: String { s("imageMergeTemplateHorizontal") }
-    static var imageMergeTemplateVertical: String { s("imageMergeTemplateVertical") }
-    static var imageMergeTemplateGrid: String { s("imageMergeTemplateGrid") }
-    static var imageMergeTemplateLongStitch: String { s("imageMergeTemplateLongStitch") }
-    static var imageMergeLayout: String { s("imageMergeLayout") }
-    static var imageMergeSpacing: String { s("imageMergeSpacing") }
-    static var imageMergeMargin: String { s("imageMergeMargin") }
-    static var imageMergeCornerRadius: String { s("imageMergeCornerRadius") }
-    static var imageMergeBackground: String { s("imageMergeBackground") }
-    static var imageMergeTransparent: String { s("imageMergeTransparent") }
-    static var imageMergeSolid: String { s("imageMergeSolid") }
-    static var imageMergeOutput: String { s("imageMergeOutput") }
-    static var imageMergeCopy: String { s("imageMergeCopy") }
-    static var imageMergeSave: String { s("imageMergeSave") }
     static var imageMergeContinueEditing: String { s("imageMergeContinueEditing") }
     static var imageMergeClose: String { s("imageMergeClose") }
-    static var imageMergeEmptyTitle: String { s("imageMergeEmptyTitle") }
-    static var imageMergeEmptyBody: String { s("imageMergeEmptyBody") }
-    static var imageMergeClipboardSourceName: String { s("imageMergeClipboardSourceName") }
 }
 
 struct Defaults {
@@ -992,148 +889,22 @@ struct Defaults {
     // defaults: users opt in from Settings. Quick Pin captures a screen
     // selection; the other shortcuts read Finder or clipboard content.
 
-    static var quickPinHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "quickPinHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "quickPinHotkeyKeyCode") }
-    }
-
-    static var quickPinHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "quickPinHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "quickPinHotkeyModifiers") }
-    }
-
-    static var hasCustomQuickPinHotkey: Bool {
-        defaults.object(forKey: "quickPinHotkeyKeyCode") != nil
-    }
-
-    static func clearQuickPinHotkey() {
-        defaults.removeObject(forKey: "quickPinHotkeyKeyCode")
-        defaults.removeObject(forKey: "quickPinHotkeyModifiers")
-    }
-
-    static var selectedImagePinHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "selectedImagePinHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "selectedImagePinHotkeyKeyCode") }
-    }
-
-    static var selectedImagePinHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "selectedImagePinHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "selectedImagePinHotkeyModifiers") }
-    }
-
-    static var hasCustomSelectedImagePinHotkey: Bool {
-        defaults.object(forKey: "selectedImagePinHotkeyKeyCode") != nil
-    }
-
-    static func clearSelectedImagePinHotkey() {
-        defaults.removeObject(forKey: "selectedImagePinHotkeyKeyCode")
-        defaults.removeObject(forKey: "selectedImagePinHotkeyModifiers")
-    }
-
-    static var clipboardImagePinHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "clipboardImagePinHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "clipboardImagePinHotkeyKeyCode") }
-    }
-
-    static var clipboardImagePinHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "clipboardImagePinHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "clipboardImagePinHotkeyModifiers") }
-    }
-
-    static var hasCustomClipboardImagePinHotkey: Bool {
-        defaults.object(forKey: "clipboardImagePinHotkeyKeyCode") != nil
-    }
-
-    static func clearClipboardImagePinHotkey() {
-        defaults.removeObject(forKey: "clipboardImagePinHotkeyKeyCode")
-        defaults.removeObject(forKey: "clipboardImagePinHotkeyModifiers")
-    }
-
-    static var clipboardTextPinHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "clipboardTextPinHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "clipboardTextPinHotkeyKeyCode") }
-    }
-
-    static var clipboardTextPinHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "clipboardTextPinHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "clipboardTextPinHotkeyModifiers") }
-    }
-
-    static var hasCustomClipboardTextPinHotkey: Bool {
-        defaults.object(forKey: "clipboardTextPinHotkeyKeyCode") != nil
-    }
-
-    static func clearClipboardTextPinHotkey() {
-        defaults.removeObject(forKey: "clipboardTextPinHotkeyKeyCode")
-        defaults.removeObject(forKey: "clipboardTextPinHotkeyModifiers")
-    }
-
     static func resetShortcutHotkeysToDefaults() {
         clearScreenshotHotkey()
         clearLegacyPinHotkey()
-        clearQuickPinHotkey()
-        clearSelectedImagePinHotkey()
-        clearClipboardImagePinHotkey()
-        clearClipboardTextPinHotkey()
-        clearSelectedImageEditHotkey()
-        clearClipboardImageEditHotkey()
         clearTextRecognitionHotkey()
         clearCopyImageTextHotkey()
         clearScreenshotTranslationHotkey()
         clearRecordHotkey()
-        clearImageMergeHotkey()
-        clearFinderUploadHotkey()
         clearFullScreenScreenshotHotkey()
-        clearColorPickerHotkey()
         clearClipboardHotkey()
         clearFileSaveHotkey()
-        clearPreviousHistoryImageHotkey()
-        clearNextHistoryImageHotkey()
-        clearHistoryPanelHotkey()
     }
 
     // Custom image-edit hotkeys. They are global Carbon hotkeys with no
     // defaults: users opt in from Settings. The selected-image shortcut reads
     // one image selected in Finder; the clipboard-image shortcut reads only
     // the clipboard image.
-
-    static var selectedImageEditHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "selectedImageEditHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "selectedImageEditHotkeyKeyCode") }
-    }
-
-    static var selectedImageEditHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "selectedImageEditHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "selectedImageEditHotkeyModifiers") }
-    }
-
-    static var hasCustomSelectedImageEditHotkey: Bool {
-        defaults.object(forKey: "selectedImageEditHotkeyKeyCode") != nil
-    }
-
-    static func clearSelectedImageEditHotkey() {
-        defaults.removeObject(forKey: "selectedImageEditHotkeyKeyCode")
-        defaults.removeObject(forKey: "selectedImageEditHotkeyModifiers")
-    }
-
-    static var clipboardImageEditHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "clipboardImageEditHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "clipboardImageEditHotkeyKeyCode") }
-    }
-
-    static var clipboardImageEditHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "clipboardImageEditHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "clipboardImageEditHotkeyModifiers") }
-    }
-
-    static var hasCustomClipboardImageEditHotkey: Bool {
-        defaults.object(forKey: "clipboardImageEditHotkeyKeyCode") != nil
-    }
-
-    static func clearClipboardImageEditHotkey() {
-        defaults.removeObject(forKey: "clipboardImageEditHotkeyKeyCode")
-        defaults.removeObject(forKey: "clipboardImageEditHotkeyModifiers")
-    }
 
     // Custom OCR/translation hotkeys. They are global Carbon hotkeys with no
     // defaults: users opt in from Settings, then select a region that is sent
@@ -1215,46 +986,6 @@ struct Defaults {
         defaults.removeObject(forKey: "recordHotkeyModifiers")
     }
 
-    static var imageMergeHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "imageMergeHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "imageMergeHotkeyKeyCode") }
-    }
-
-    static var imageMergeHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "imageMergeHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "imageMergeHotkeyModifiers") }
-    }
-
-    static var hasCustomImageMergeHotkey: Bool {
-        defaults.object(forKey: "imageMergeHotkeyKeyCode") != nil
-    }
-
-    static func clearImageMergeHotkey() {
-        defaults.removeObject(forKey: "imageMergeHotkeyKeyCode")
-        defaults.removeObject(forKey: "imageMergeHotkeyModifiers")
-    }
-
-    // Custom file upload shortcut. This is a global Carbon hotkey with
-    // no default so users can choose a combination that fits their workflow.
-    static var finderUploadHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "finderUploadHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "finderUploadHotkeyKeyCode") }
-    }
-
-    static var finderUploadHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "finderUploadHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "finderUploadHotkeyModifiers") }
-    }
-
-    static var hasCustomFinderUploadHotkey: Bool {
-        defaults.object(forKey: "finderUploadHotkeyKeyCode") != nil
-    }
-
-    static func clearFinderUploadHotkey() {
-        defaults.removeObject(forKey: "finderUploadHotkeyKeyCode")
-        defaults.removeObject(forKey: "finderUploadHotkeyModifiers")
-    }
-
     static var fullScreenScreenshotHotkeyKeyCode: Int {
         get { defaults.integer(forKey: "fullScreenScreenshotHotkeyKeyCode") }
         set { defaults.set(newValue, forKey: "fullScreenScreenshotHotkeyKeyCode") }
@@ -1272,25 +1003,6 @@ struct Defaults {
     static func clearFullScreenScreenshotHotkey() {
         defaults.removeObject(forKey: "fullScreenScreenshotHotkeyKeyCode")
         defaults.removeObject(forKey: "fullScreenScreenshotHotkeyModifiers")
-    }
-
-    static var colorPickerHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "colorPickerHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "colorPickerHotkeyKeyCode") }
-    }
-
-    static var colorPickerHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "colorPickerHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "colorPickerHotkeyModifiers") }
-    }
-
-    static var hasCustomColorPickerHotkey: Bool {
-        defaults.object(forKey: "colorPickerHotkeyKeyCode") != nil
-    }
-
-    static func clearColorPickerHotkey() {
-        defaults.removeObject(forKey: "colorPickerHotkeyKeyCode")
-        defaults.removeObject(forKey: "colorPickerHotkeyModifiers")
     }
 
     static var recordingSaveFormat: ScreenRecordingFormat {
@@ -1598,67 +1310,6 @@ struct Defaults {
     // History navigation hotkeys used inside the editor overlay. Defaults are
     // comma for previous and period for next. Like clipboard/save editor
     // hotkeys, bare keys are allowed because matching is local to the editor.
-
-    static var previousHistoryImageHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "previousHistoryImageHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "previousHistoryImageHotkeyKeyCode") }
-    }
-
-    static var previousHistoryImageHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "previousHistoryImageHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "previousHistoryImageHotkeyModifiers") }
-    }
-
-    static var hasCustomPreviousHistoryImageHotkey: Bool {
-        defaults.object(forKey: "previousHistoryImageHotkeyKeyCode") != nil
-    }
-
-    static func clearPreviousHistoryImageHotkey() {
-        defaults.removeObject(forKey: "previousHistoryImageHotkeyKeyCode")
-        defaults.removeObject(forKey: "previousHistoryImageHotkeyModifiers")
-    }
-
-    static var nextHistoryImageHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "nextHistoryImageHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "nextHistoryImageHotkeyKeyCode") }
-    }
-
-    static var nextHistoryImageHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "nextHistoryImageHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "nextHistoryImageHotkeyModifiers") }
-    }
-
-    static var hasCustomNextHistoryImageHotkey: Bool {
-        defaults.object(forKey: "nextHistoryImageHotkeyKeyCode") != nil
-    }
-
-    static func clearNextHistoryImageHotkey() {
-        defaults.removeObject(forKey: "nextHistoryImageHotkeyKeyCode")
-        defaults.removeObject(forKey: "nextHistoryImageHotkeyModifiers")
-    }
-
-    // History panel shortcut. Defaults to unset; users can opt in from
-    // Settings. The global hotkey opens the dialog mode when enabled, or the
-    // notch mode when dialog mode is disabled.
-
-    static var historyPanelHotkeyKeyCode: Int {
-        get { defaults.integer(forKey: "historyPanelHotkeyKeyCode") }
-        set { defaults.set(newValue, forKey: "historyPanelHotkeyKeyCode") }
-    }
-
-    static var historyPanelHotkeyModifiers: Int {
-        get { defaults.integer(forKey: "historyPanelHotkeyModifiers") }
-        set { defaults.set(newValue, forKey: "historyPanelHotkeyModifiers") }
-    }
-
-    static var hasCustomHistoryPanelHotkey: Bool {
-        defaults.object(forKey: "historyPanelHotkeyKeyCode") != nil
-    }
-
-    static func clearHistoryPanelHotkey() {
-        defaults.removeObject(forKey: "historyPanelHotkeyKeyCode")
-        defaults.removeObject(forKey: "historyPanelHotkeyModifiers")
-    }
 
     static var penColor: Int {
         get {

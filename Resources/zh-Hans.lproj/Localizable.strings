@@ -44,24 +44,6 @@
 "shortcutNeedsModifierTitle" = "快捷键需要修饰键";
 "shortcutNeedsModifier" = "需要组合键：⌘/⌥/⇧/⌃ + 其他按键（如 ⌘⇧8），或单独按 F1–F12";
 "shortcutRestore" = "恢复默认";
-"quickPinShortcutHeader" = "快捷钉图";
-"quickPinShortcutDefaultDisplay" = "未设置";
-"quickPinShortcutClear" = "清除快捷钉图快捷键";
-"selectedImagePinShortcutHeader" = "钉起选中的图片";
-"selectedImagePinShortcutDefaultDisplay" = "未设置";
-"selectedImagePinShortcutClear" = "清除钉起选中图片快捷键";
-"clipboardImagePinShortcutHeader" = "钉起当前或剪贴板图片";
-"clipboardImagePinShortcutDefaultDisplay" = "未设置";
-"clipboardImagePinShortcutClear" = "清除钉起当前或剪贴板图片快捷键";
-"clipboardTextPinShortcutHeader" = "钉起剪贴板文本";
-"clipboardTextPinShortcutDefaultDisplay" = "未设置";
-"clipboardTextPinShortcutClear" = "清除钉起剪贴板文本快捷键";
-"selectedImagePinNoImage" = "未找到 Finder 中选中的图片";
-"clipboardImagePinNoImage" = "剪贴板里没有可钉起的图片";
-"clipboardTextPinNoText" = "剪贴板里没有文本";
-"pinFromFinderHint" = "已钉起 Finder 选中的图片，按 X 关闭";
-"pinFromClipboardHint" = "已钉起剪贴板图片，按 X 关闭";
-"pinFromClipboardTextHint" = "已钉起剪贴板文本，双击可编辑";
 "pinToolbarClose" = "关闭钉图";
 "pinToolbarCopy" = "复制钉图";
 "pinToolbarDrag" = "拖拽钉图";
@@ -69,12 +51,6 @@
 "pinToolbarEditText" = "编辑文字";
 
 /* Image-edit shortcuts */
-"selectedImageEditShortcutHeader" = "编辑选中图片";
-"selectedImageEditShortcutHint" = "按下后直接编辑 Finder 中选中的单张图片。默认未设置";
-"selectedImageEditShortcutDefaultDisplay" = "未设置";
-"clipboardImageEditShortcutHeader" = "编辑剪贴板图片";
-"clipboardImageEditShortcutHint" = "按下后直接编辑当前剪贴板里的图片。默认未设置";
-"clipboardImageEditShortcutDefaultDisplay" = "未设置";
 "textRecognitionShortcutHeader" = "文字识别";
 "textRecognitionShortcutDefaultDisplay" = "未设置";
 "copyImageTextShortcutHeader" = "复制图中文字";
@@ -85,8 +61,6 @@
 "recordShortcutDefaultDisplay" = "未设置";
 "fullScreenScreenshotShortcutHeader" = "截全屏";
 "fullScreenScreenshotShortcutDefaultDisplay" = "未设置";
-"colorPickerShortcutHeader" = "取色器";
-"colorPickerShortcutDefaultDisplay" = "未设置";
 
 /* Copy-to-clipboard shortcut (editor confirm) */
 "clipboardShortcutHeader" = "复制到剪贴板";
@@ -96,32 +70,18 @@
 /* Save-to-file shortcut (editor save) */
 "fileSaveShortcutHeader" = "保存到文件";
 "fileSaveShortcutHint" = "在编辑器内按下后，把截图保存为 PNG 到设置的截图保存路径。默认 ⌘S";
-"previousHistoryImageShortcutHeader" = "上一张历史截图";
-"nextHistoryImageShortcutHeader" = "下一张历史截图";
-"historyPanelShortcutHeader" = "历史面板";
-"historyPanelShortcutDefaultDisplay" = "未设置";
 
 /* Shortcut conflict */
 "shortcutConflictTitle" = "快捷键已被占用";
 "shortcutConflictScreenshot" = "该按键组合已被截图快捷键占用，请换一个";
 "shortcutConflictCountdown" = "该按键组合已被倒计时截图快捷键（截图快捷键 + ⌥）占用，请换一个";
-"shortcutConflictQuickPin" = "该按键组合已被快捷钉图快捷键占用，请换一个";
-"shortcutConflictSelectedImagePin" = "该按键组合已被钉起选中图片快捷键占用，请换一个";
-"shortcutConflictClipboardImagePin" = "该按键组合已被钉起剪贴板图片快捷键占用，请换一个";
-"shortcutConflictClipboardTextPin" = "该按键组合已被钉起剪贴板文本快捷键占用，请换一个";
 "shortcutConflictClipboard" = "该按键组合已被复制到剪贴板快捷键占用，请换一个";
 "shortcutConflictFileSave" = "该按键组合已被保存到文件快捷键占用，请换一个";
-"shortcutConflictPreviousHistoryImage" = "该按键组合已被上一张历史截图快捷键占用，请换一个";
-"shortcutConflictNextHistoryImage" = "该按键组合已被下一张历史截图快捷键占用，请换一个";
-"shortcutConflictHistoryPanel" = "该按键组合已被历史面板快捷键占用，请换一个";
-"shortcutConflictSelectedImageEdit" = "该按键组合已被编辑选中图片快捷键占用，请换一个";
-"shortcutConflictClipboardImageEdit" = "该按键组合已被编辑剪贴板图片快捷键占用，请换一个";
 "shortcutConflictTextRecognition" = "该按键组合已被文字识别快捷键占用，请换一个";
 "shortcutConflictCopyImageText" = "该按键组合已被复制图中文字快捷键占用，请换一个";
 "shortcutConflictScreenshotTranslation" = "该按键组合已被截图翻译快捷键占用，请换一个";
 "shortcutConflictRecord" = "该按键组合已被录制快捷键占用，请换一个";
 "shortcutConflictFullScreenScreenshot" = "该按键组合已被截全屏快捷键占用，请换一个";
-"shortcutConflictColorPicker" = "该按键组合已被取色器快捷键占用，请换一个";
 
 /* Menu bar */
 "takeScreenshot" = "截图";
@@ -196,7 +156,6 @@
 "historyPanelShortcutToggleGuide" = "显示或隐藏快捷键说明";
 
 /* Cursor chip */
-"dragToQuickPin" = "点击窗口或框选区域并直接钉图";
 "dragToScreenshot" = "点击窗口或拖动以截图";
 "dragToScreenshotAspectFree" = "点击窗口或拖动以截图 · 框选自由比例（R）";
 "dragToScreenshotAspect" = "点击窗口或拖动以截图 · 框选 %@（R）";
@@ -222,8 +181,6 @@
 "editSuspendedResumeToast" = "已恢复上次未完成的编辑";
 "fullScreenScreenshotFailed" = "截全屏失败";
 "openImageNoImage" = "复制图片到剪贴板，或选择一个图片文件";
-"selectedImageEditNoImage" = "未找到 Finder 中选中的单张图片";
-"clipboardImageEditNoImage" = "剪贴板里没有可编辑的图片";
 "recordingSaved" = "录制已保存到 %@";
 "recordingCancelled" = "录制已取消";
 "recordingExportingGIF" = "正在生成 GIF";

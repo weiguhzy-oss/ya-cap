@@ -24,7 +24,17 @@ fi
 
 OUTPUT_DIR="$(dirname "$OUTPUT_DMG")"
 STAGE="$(mktemp -d "${TMPDIR:-/tmp}/capcap-dmg.XXXXXX")"
+LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
+
+# Both the staging copy and the mounted DMG volume get added to the
+# LaunchServices database, and each registration persists after the path is
+# gone — Launchpad then shows one extra "Ya cap" icon per leftover entry.
+# Unregister them explicitly on the way out.
 cleanup() {
+    if [ -x "$LSREGISTER" ]; then
+        "$LSREGISTER" -u "$STAGE/$APP_BUNDLE" >/dev/null 2>&1 || true
+        "$LSREGISTER" -u "/Volumes/$VOLNAME/$APP_BUNDLE" >/dev/null 2>&1 || true
+    fi
     rm -rf "$STAGE"
 }
 trap cleanup EXIT

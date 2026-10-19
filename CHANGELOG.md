@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-19
+
+### Changed
+- Sign local builds with a stable self-signed identity so Screen Recording and
+  Accessibility grants survive rebuilds
+- Remove the launch-at-login toggle from Settings; clicking the app icon starts it
+
+### Fixed
+- Stop leaving signing-stage and DMG-mount copies registered with LaunchServices,
+  which made Launchpad show duplicate app icons
+
+## [1.0.0] - 2026-10-19
+
+### Changed
+- Rebrand capcap as Ya cap with a new app and menu bar icon
+- Remove image merging, image-host upload, beautify presets, history quick search,
+  and clipboard text history
+- Trim the shortcut settings pane to the retained features
+
 ## [1.7.22] - 2026-10-16
 
 ### Added

@@ -1,0 +1,364 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'release-v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build macOS App
+    runs-on: macos-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      artifact_name: ${{ steps.package.outputs.artifact_name }}
+      artifact_sha256: ${{ steps.package.outputs.artifact_sha256 }}
+      dmg_name: ${{ steps.package.outputs.dmg_name }}
+      dmg_sha256: ${{ steps.package.outputs.dmg_sha256 }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#release-v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Releasing version: $VERSION (tag: $TAG)"
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Show toolchain info
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Build (release, universal)
+        run: |
+          set -euo pipefail
+          # Build for both architectures so we can ship a universal binary.
+          swift build -c release --arch arm64 --arch x86_64
+
+      - name: Run tests
+        run: |
+          set -euo pipefail
+          if swift test --list-tests 2>/dev/null | grep -q .; then
+            swift test -c release
+          else
+            echo "No tests defined; skipping."
+          fi
+        continue-on-error: false
+
+      - name: Assemble .app bundle
+        id: package
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+          MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          APP_NAME="capcap"
+          BUILD_DIR=".build/apple/Products/Release"
+          # Fallback if universal build path differs
+          if [ ! -f "$BUILD_DIR/$APP_NAME" ]; then
+            BUILD_DIR=".build/release"
+          fi
+
+          APP_DIR="build/${APP_NAME}.app"
+          CONTENTS="$APP_DIR/Contents"
+          MACOS="$CONTENTS/MacOS"
+          RESOURCES="$CONTENTS/Resources"
+          PLUGINS="$CONTENTS/PlugIns"
+          EXTENSION_PRODUCT_NAME="CapcapShareExtension"
+          EXTENSION_NAME="$EXTENSION_PRODUCT_NAME.appex"
+          EXTENSION_DIR="$PLUGINS/$EXTENSION_NAME"
+          EXTENSION_CONTENTS="$EXTENSION_DIR/Contents"
+          EXTENSION_MACOS="$EXTENSION_CONTENTS/MacOS"
+          EXTENSION_RESOURCES="$EXTENSION_CONTENTS/Resources"
+
+          rm -rf "$APP_DIR"
+          mkdir -p "$MACOS" "$RESOURCES" "$EXTENSION_MACOS" "$EXTENSION_RESOURCES"
+
+          cp "$BUILD_DIR/$APP_NAME" "$MACOS/$APP_NAME"
+          cp "capcap/App/Info.plist" "$CONTENTS/Info.plist"
+          bash scripts/inject-build-metadata.sh "$CONTENTS/Info.plist"
+
+          if [ ! -f "$BUILD_DIR/$EXTENSION_PRODUCT_NAME" ]; then
+            echo "error: share extension binary missing at $BUILD_DIR/$EXTENSION_PRODUCT_NAME" >&2
+            exit 1
+          fi
+          cp "$BUILD_DIR/$EXTENSION_PRODUCT_NAME" "$EXTENSION_MACOS/$EXTENSION_PRODUCT_NAME"
+          cp "capcap-share-extension/Info.plist" "$EXTENSION_CONTENTS/Info.plist"
+          APP_SHORT_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$CONTENTS/Info.plist")"
+          APP_BUNDLE_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$CONTENTS/Info.plist")"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $APP_SHORT_VERSION" "$EXTENSION_CONTENTS/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $APP_BUNDLE_VERSION" "$EXTENSION_CONTENTS/Info.plist"
+
+          # Copy app icon — Info.plist declares CFBundleIconFile=AppIcon, so the
+          # bundle needs Resources/AppIcon.icns or it ships with no icon.
+          if [ ! -f "Resources/AppIcon.icns" ]; then
+            echo "error: Resources/AppIcon.icns missing" >&2; exit 1
+          fi
+          cp "Resources/AppIcon.icns" "$RESOURCES/AppIcon.icns"
+          cp "Resources/AppIcon.icns" "$EXTENSION_RESOURCES/AppIcon.icns"
+
+          # Copy the status bar icon. StatusBarController loads this bundled
+          # SVG at runtime and falls back to the old SF Symbol when it is absent.
+          if [ ! -f "design/menuBarIcon.svg" ]; then
+            echo "error: design/menuBarIcon.svg missing" >&2; exit 1
+          fi
+          cp "design/menuBarIcon.svg" "$RESOURCES/MenuBarIcon.svg"
+
+          # Copy localization bundles (.lproj). The app loads these directly
+          # for its in-app language picker — see Localizer.swift. Without them
+          # every UI string falls back to its raw key.
+          shopt -s nullglob
+          LPROJ_COUNT=0
+          for lproj in Resources/*.lproj; do
+            [ -d "$lproj" ] || continue
+            cp -R "$lproj" "$RESOURCES/"
+            LPROJ_COUNT=$((LPROJ_COUNT + 1))
+          done
+          shopt -u nullglob
+          if [ "$LPROJ_COUNT" -eq 0 ]; then
+            echo "error: no Resources/*.lproj localization bundles found" >&2
+            exit 1
+          fi
+          echo "Copied $LPROJ_COUNT .lproj localization bundle(s)"
+
+          # Copy SwiftPM resource bundles. PermissionFlow uses Bundle.module
+          # when the authorization helper panel is rendered; shipping the
+          # binary without this bundle crashes at runtime on first access.
+          PERMISSION_FLOW_BUNDLE="$BUILD_DIR/${APP_NAME}_PermissionFlow.bundle"
+          if [ ! -d "$PERMISSION_FLOW_BUNDLE" ]; then
+            echo "error: missing SwiftPM resource bundle: $PERMISSION_FLOW_BUNDLE" >&2
+            exit 1
+          fi
+          cp -R "$PERMISSION_FLOW_BUNDLE" "$RESOURCES/"
+
+          # Fail fast if the shipped binary isn't a universal (arm64 + x86_64)
+          # slice — Intel Mac users can't run an arm64-only build.
+          ARCHS="$(lipo -archs "$MACOS/$APP_NAME")"
+          echo "Binary archs: $ARCHS"
+          case "$ARCHS" in
+            *arm64*x86_64*|*x86_64*arm64*) : ;;
+            *) echo "error: shipped binary is not universal (archs: $ARCHS)" >&2; exit 1 ;;
+          esac
+
+          EXTENSION_ARCHS="$(lipo -archs "$EXTENSION_MACOS/$EXTENSION_PRODUCT_NAME")"
+          echo "Share extension archs: $EXTENSION_ARCHS"
+          case "$EXTENSION_ARCHS" in
+            *arm64*x86_64*|*x86_64*arm64*) : ;;
+            *) echo "error: share extension binary is not universal (archs: $EXTENSION_ARCHS)" >&2; exit 1 ;;
+          esac
+
+          # Copy compiled asset catalog if present
+          if [ -d "$BUILD_DIR/${APP_NAME}_capcap.bundle" ]; then
+            cp -R "$BUILD_DIR/${APP_NAME}_capcap.bundle" "$RESOURCES/"
+          fi
+
+          # ---------------------------------------------------------------
+          # Code signing
+          # ---------------------------------------------------------------
+          # Sign every release with ONE reusable self-signed certificate so the
+          # app keeps a stable code-signing identity. macOS TCC keys Screen
+          # Recording / Accessibility grants to that identity, so users no
+          # longer have to re-authorize on every update.
+          #
+          # This is NOT a Developer ID cert — Gatekeeper still warns about an
+          # "unidentified developer" on first launch. To remove that too, get an
+          # Apple Developer account and switch to a notarized Developer ID cert.
+          #
+          # Generate the cert once with scripts/generate-signing-cert.sh, then
+          # set these GitHub repo secrets:
+          #   MACOS_CERTIFICATE       — base64 of capcap-signing.p12
+          #   MACOS_CERTIFICATE_PWD   — the .p12 export password
+          #   MACOS_SIGNING_IDENTITY  — cert common name, e.g. "capcap Self-Signed"
+          #   KEYCHAIN_PASSWORD       — any throwaway string
+          #
+          # If the secrets are absent the build falls back to ad-hoc signing
+          # (still launchable, but the re-authorize-every-update problem returns).
+          if [ -n "${MACOS_CERTIFICATE:-}" ]; then
+            echo "Signing with self-signed certificate: $MACOS_SIGNING_IDENTITY"
+            echo "$MACOS_CERTIFICATE" | base64 --decode > certificate.p12
+            security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+            security default-keychain -s build.keychain
+            security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+            security set-keychain-settings -lut 21600 build.keychain
+            security import certificate.p12 -k build.keychain \
+              -P "$MACOS_CERTIFICATE_PWD" -T /usr/bin/codesign
+            security set-key-partition-list -S apple-tool:,apple:,codesign: \
+              -s -k "$KEYCHAIN_PASSWORD" build.keychain
+            codesign --force \
+              --entitlements scripts/capcap-share-extension.entitlements \
+              --sign "$MACOS_SIGNING_IDENTITY" \
+              "$EXTENSION_DIR"
+            codesign --force \
+              --entitlements scripts/capcap.entitlements \
+              --sign "$MACOS_SIGNING_IDENTITY" \
+              "$APP_DIR"
+            codesign --verify --strict --verbose=2 "$EXTENSION_DIR"
+            codesign --verify --strict --verbose=2 "$APP_DIR"
+            rm -f certificate.p12
+          else
+            echo "warning: MACOS_CERTIFICATE secret not set — falling back to ad-hoc signing." >&2
+            echo "warning: users will have to re-authorize permissions on every update." >&2
+            codesign --force --entitlements scripts/capcap-share-extension.entitlements --sign - "$EXTENSION_DIR" || true
+            codesign --force --entitlements scripts/capcap.entitlements --sign - "$APP_DIR" || true
+          fi
+
+          # Package as zip
+          ARTIFACT="capcap-${VERSION}-macos.zip"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "$ARTIFACT"
+
+          # Compute checksum for transparency
+          SHA256="$(shasum -a 256 "$ARTIFACT" | awk '{print $1}')"
+          printf '%s  %s\n' "$SHA256" "$ARTIFACT" > "${ARTIFACT}.sha256"
+
+          # Package as a draggable DMG for users who prefer the native
+          # Applications-folder install flow.
+          DMG_ARTIFACT="capcap-${VERSION}-macos.dmg"
+          bash scripts/create-dmg.sh "$APP_DIR" "$DMG_ARTIFACT" "capcap"
+
+          DMG_SHA256="$(shasum -a 256 "$DMG_ARTIFACT" | awk '{print $1}')"
+          printf '%s  %s\n' "$DMG_SHA256" "$DMG_ARTIFACT" > "${DMG_ARTIFACT}.sha256"
+
+          echo "artifact_name=$ARTIFACT" >> "$GITHUB_OUTPUT"
+          echo "artifact_sha256=$SHA256" >> "$GITHUB_OUTPUT"
+          echo "dmg_name=$DMG_ARTIFACT" >> "$GITHUB_OUTPUT"
+          echo "dmg_sha256=$DMG_SHA256" >> "$GITHUB_OUTPUT"
+          ls -lh "$ARTIFACT" "${ARTIFACT}.sha256" "$DMG_ARTIFACT" "${DMG_ARTIFACT}.sha256"
+
+      # ---------------------------------------------------------------
+      # Notarization (DISABLED — uncomment when signing is enabled)
+      # ---------------------------------------------------------------
+      # Required GitHub Secrets:
+      #   AC_USERNAME    — Apple ID email
+      #   AC_PASSWORD    — app-specific password
+      #   AC_TEAM_ID     — Apple Developer Team ID
+      #
+      # - name: Notarize
+      #   env:
+      #     AC_USERNAME: ${{ secrets.AC_USERNAME }}
+      #     AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
+      #     AC_TEAM_ID:  ${{ secrets.AC_TEAM_ID }}
+      #   run: |
+      #     ARTIFACT="${{ steps.package.outputs.artifact_name }}"
+      #     xcrun notarytool submit "$ARTIFACT" \
+      #       --apple-id "$AC_USERNAME" \
+      #       --password "$AC_PASSWORD" \
+      #       --team-id  "$AC_TEAM_ID" \
+      #       --wait
+      #     # Staple the ticket so Gatekeeper accepts the app offline
+      #     ditto -x -k "$ARTIFACT" notarized
+      #     xcrun stapler staple "notarized/capcap.app"
+      #     rm "$ARTIFACT"
+      #     ditto -c -k --sequesterRsrc --keepParent "notarized/capcap.app" "$ARTIFACT"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: capcap-${{ steps.version.outputs.version }}
+          path: |
+            ${{ steps.package.outputs.artifact_name }}
+            ${{ steps.package.outputs.artifact_name }}.sha256
+            ${{ steps.package.outputs.dmg_name }}
+            ${{ steps.package.outputs.dmg_name }}.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (for CHANGELOG)
+        uses: actions/checkout@v6
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: capcap-${{ needs.build.outputs.version }}
+          path: dist
+
+      - name: Extract release notes from CHANGELOG
+        id: notes
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.build.outputs.version }}"
+          NOTES_FILE="release-notes.md"
+
+          if [ -f CHANGELOG.md ]; then
+            awk -v ver="$VERSION" '
+              BEGIN { found = 0 }
+              /^## \[/ {
+                if (found) { exit }
+                # Match e.g.  ## [1.2.3] - 2026-04-09  or  ## [1.2.3]
+                if ($0 ~ ("\\[" ver "\\]")) { found = 1; next }
+              }
+              found { print }
+            ' CHANGELOG.md > "$NOTES_FILE"
+          fi
+
+          if [ ! -s "$NOTES_FILE" ]; then
+            {
+              echo "Release v${VERSION}"
+              echo
+              echo "_See commit history for details._"
+            } > "$NOTES_FILE"
+          fi
+
+          echo "---- release notes ----"
+          cat "$NOTES_FILE"
+          echo "-----------------------"
+          echo "notes_file=$NOTES_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: v${{ needs.build.outputs.version }}
+          body_path: ${{ steps.notes.outputs.notes_file }}
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          files: |
+            dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Dispatch Homebrew tap bump
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          VERSION: ${{ needs.build.outputs.version }}
+          SHA256: ${{ needs.build.outputs.artifact_sha256 }}
+        run: |
+          set -euo pipefail
+          if [ -z "${HOMEBREW_TAP_TOKEN:-}" ]; then
+            echo "HOMEBREW_TAP_TOKEN is not set; skipping Homebrew tap dispatch."
+            exit 0
+          fi
+
+          payload="{\"event_type\":\"capcap_release_published\",\"client_payload\":{\"version\":\"${VERSION}\",\"sha256\":\"${SHA256}\"}}"
+
+          curl -fsSL \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${HOMEBREW_TAP_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/realskyrin/homebrew-tap/dispatches \
+            -d "${payload}"

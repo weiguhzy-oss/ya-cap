@@ -553,8 +553,6 @@ class EditWindowController {
             performScreenshotTranslation()
         case .save:
             save()
-        case .upload:
-            return false
         case .pin:
             pin()
         case .record:

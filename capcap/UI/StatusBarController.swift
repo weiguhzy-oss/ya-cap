@@ -6,7 +6,6 @@ class StatusBarController: NSObject {
     private let onTakeFullScreenScreenshot: () -> Void
     private let onRecord: () -> Void
     private let onColorPicker: () -> Void
-    private let onOpenHistoryPanel: () -> Void
     private let onOpenSettings: () -> Void
 
     init(
@@ -14,14 +13,12 @@ class StatusBarController: NSObject {
         onTakeFullScreenScreenshot: @escaping () -> Void,
         onRecord: @escaping () -> Void,
         onColorPicker: @escaping () -> Void,
-        onOpenHistoryPanel: @escaping () -> Void,
         onOpenSettings: @escaping () -> Void
     ) {
         self.onTakeScreenshot = onTakeScreenshot
         self.onTakeFullScreenScreenshot = onTakeFullScreenScreenshot
         self.onRecord = onRecord
         self.onColorPicker = onColorPicker
-        self.onOpenHistoryPanel = onOpenHistoryPanel
         self.onOpenSettings = onOpenSettings
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -83,15 +80,6 @@ class StatusBarController: NSObject {
 
         menu.addItem(NSMenuItem.separator())
 
-        if Defaults.isHistoryCacheAvailable {
-            let historyPanelItem = NSMenuItem(title: L10n.historyPanelMenu, action: #selector(openHistoryPanel), keyEquivalent: "")
-            historyPanelItem.target = self
-            historyPanelItem.image = Self.menuIcon(systemName: "rectangle.stack")
-            menu.addItem(historyPanelItem)
-
-            menu.addItem(NSMenuItem.separator())
-        }
-
         let settingsItem = NSMenuItem(title: L10n.settings, action: #selector(openSettings), keyEquivalent: ",")
         settingsItem.target = self
         settingsItem.image = Self.menuIcon(systemName: "gearshape")
@@ -150,10 +138,6 @@ class StatusBarController: NSObject {
 
     @objc private func openSettings() {
         onOpenSettings()
-    }
-
-    @objc private func openHistoryPanel() {
-        onOpenHistoryPanel()
     }
 
     /// Builds the update menu item — its title and action track the current

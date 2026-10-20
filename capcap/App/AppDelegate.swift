@@ -15,7 +15,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var recordingCancelLocalMonitor: Any?
     private var recordingCancelGlobalMonitor: Any?
     private var recordingCancelRequested = false
-    private var historyPanelController: HistoryPanelController?
     private var countdownActive = false
     private var appInitialized = false
     private var suspendedEditDraft: OverlayWindowController.SuspendedEditDraft?
@@ -99,9 +98,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if AppPermissions.screenRecordingGranted {
             ScreenSnapshotProvider.shared.prewarm()
         }
-        historyPanelController = HistoryPanelController { [weak self] entry in
-            _ = self?.launchImageFile(entry.fileURL)
-        }
 
         statusBarController = StatusBarController(
             onTakeScreenshot: { [weak self] in
@@ -112,7 +108,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             onTakeFullScreenScreenshot: { [weak self] in self?.handleFullScreenScreenshotTrigger() },
             onRecord: { [weak self] in self?.handleRecordingTrigger() },
             onColorPicker: { [weak self] in self?.handleColorPickerTrigger() },
-            onOpenHistoryPanel: { [weak self] in self?.handleHistoryPanelTrigger(holdOpenUntilMouseEnters: true) },
             onOpenSettings: { [weak self] in self?.openSettings() }
         )
         statusBarController.setMenuBarVisible(Defaults.showMenuBar)
@@ -194,30 +189,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // The pin hotkeys are independent of the screenshot hotkey.
 
-        if Defaults.hasCustomTextRecognitionHotkey {
-            HotkeyManager.shared.registerTextRecognition { [weak self] in
-                self?.handleTextRecognitionTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterTextRecognition()
-        }
-
-        if Defaults.hasCustomCopyImageTextHotkey {
-            HotkeyManager.shared.registerCopyImageText { [weak self] in
-                self?.handleCopyImageTextTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterCopyImageText()
-        }
-
-        if Defaults.hasCustomScreenshotTranslationHotkey {
-            HotkeyManager.shared.registerScreenshotTranslation { [weak self] in
-                self?.handleScreenshotTranslationTrigger()
-            }
-        } else {
-            HotkeyManager.shared.unregisterScreenshotTranslation()
-        }
-
         if Defaults.hasCustomRecordHotkey {
             HotkeyManager.shared.registerRecord { [weak self] in
                 self?.handleRecordingTrigger()
@@ -236,9 +207,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func unregisterNonScreenshotHotkeys() {
-        HotkeyManager.shared.unregisterTextRecognition()
-        HotkeyManager.shared.unregisterCopyImageText()
-        HotkeyManager.shared.unregisterScreenshotTranslation()
         HotkeyManager.shared.unregisterRecord()
         HotkeyManager.shared.unregisterFullScreenScreenshot()
     }
@@ -501,11 +469,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !didStart {
             focusRestorer.restore()
         }
-    }
-
-    /// Menu-only entry point for the history panel. No global shortcut is bound.
-    private func handleHistoryPanelTrigger(holdOpenUntilMouseEnters: Bool = false) {
-        historyPanelController?.toggleFromUserRequest(holdOpenUntilMouseEnters: holdOpenUntilMouseEnters)
     }
 
     func handleFullScreenScreenshotTrigger(fromShortcut: Bool = false) {

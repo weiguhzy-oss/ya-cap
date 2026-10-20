@@ -150,7 +150,6 @@
 "historyPanelShortcutCopyPreview" = "复制预览内容";
 "historyPanelShortcutEditImage" = "编辑图片";
 "historyPanelShortcutPinImage" = "贴图";
-"historyPanelShortcutUploadImage" = "上传图片";
 "historyPanelShortcutTranslateText" = "翻译文本";
 "historyPanelShortcutQRCode" = "生成二维码";
 "historyPanelShortcutToggleGuide" = "显示或隐藏快捷键说明";
@@ -299,7 +298,6 @@
 "settingsTabGeneral" = "通用";
 "settingsTabShortcuts" = "快捷键";
 "settingsTabPermissions" = "权限";
-"settingsTabUpload" = "图床";
 "settingsTabAbout" = "关于";
 "settingsTabTranslation" = "翻译";
 "settingsTabToolbar" = "工具栏";
@@ -396,23 +394,8 @@
 "quitConfirmCancel" = "取消";
 
 /* Upload — toolbar / toast / progress */
-"tipUpload" = "上传到图床";
-"uploadingTitle" = "上传中";
-"uploadCopied" = "已复制图片链接";
-"uploadCopiedMarkdown" = "已复制 Markdown 链接";
-"uploadNoProvider" = "请先在设置中配置图床";
-"uploadFailedPrefix" = "上传失败";
 
 /* Upload — settings tab */
-"uploadDefaultProvider" = "默认图床";
-"uploadDefaultNone" = "未启用";
-"uploadSetDefaultButton" = "设为默认";
-"uploadSaveButton" = "保存";
-"uploadClearButton" = "清空";
-"uploadSavedToast" = "已保存配置";
-"uploadCurrentDefault" = "当前默认";
-"uploadMarkdownToggleTitle" = "复制为 Markdown 链接";
-"uploadMarkdownToggleSubtitle" = "开启后上传完成自动复制 Markdown 图片格式（![](链接)），关闭则复制普通 URL。历史面板中，点击云图片按此设置复制，也可用悬浮按钮选择 MD 或普通链接";
 "filenameRuleTitle" = "文件名规则";
 "filenameRuleSubtitle" = "控制图片上传、图片保存默认名和录制保存默认名。扩展名会自动添加";
 "filenameRulePresetLabel" = "预设";
@@ -433,45 +416,15 @@
 "filenameRulePreview" = "%@";
 
 /* Upload — provider field labels */
-"uploadFieldBucket" = "存储桶";
-"uploadFieldBucketSpace" = "存储空间";
-"uploadFieldRegion" = "地域";
-"uploadFieldRegionOptional" = "可选区域";
-"uploadFieldPathOptional" = "可选路径";
-"uploadFieldCustomUrlOptional" = "可选自定义域名";
-"uploadFieldPublicDomain" = "外链域名";
-"uploadFieldEndpointArea" = "Endpoint 地域";
-"uploadFieldEndpointOptional" = "可选 Endpoint";
-"uploadFieldAccountId" = "账户 ID";
-"uploadTestImageFailed" = "无法生成测试图片";
 
 /* Upload — provider names */
-"providerTencentCOS" = "腾讯云 COS";
-"providerQiniuKodo" = "七牛云 Kodo";
-"providerAliyunOSS" = "阿里云 OSS";
 
 /* Upload — errors */
-"uploadErrMissingConfig" = "未配置上传图床";
-"uploadErrInvalidConfigPrefix" = "配置无效";
-"uploadErrNetworkPrefix" = "网络错误";
-"uploadErrServerPrefix" = "上传失败 代码 %d";
-"uploadErrUnexpectedResponsePrefix" = "响应异常";
 "missingField" = "缺少 %@";
 
 /* Upload — test/validation pill */
-"uploadStatusUntested" = "未测试";
-"uploadStatusTesting" = "测试中";
-"uploadStatusValid" = "已生效";
-"uploadStatusInvalid" = "无效的配置";
 
 /* Upload — log lines */
-"uploadLogStartingTest" = "开始测试上传";
-"uploadLogConfigSaved" = "已保存配置";
-"uploadLogMissingFields" = "缺少必填字段: %@";
-"uploadLogTestSucceeded" = "测试上传成功: %@";
-"uploadLogTestFailed" = "测试上传失败: %@";
-"uploadLogProviderDisabled" = "已停用该图床";
-"uploadLogConfigCleared" = "已清空配置";
 
 /* Permissions — status label */
 "permissionGranted" = "已授权";
@@ -578,14 +531,12 @@
 /* Screenshot quality */
 "screenshotQualityTitle" = "截图质量";
 "screenshotQualitySubtitle" = "上传、保存或复制前按所选档位处理截图，默认保留原图";
-"screenshotQualityUploadLabel" = "上传";
 "screenshotQualitySaveLabel" = "保存到文件";
 "screenshotQualityClipboardLabel" = "复制到剪贴板";
 "screenshotQualityOriginal" = "原图";
 "screenshotQualityOriginalHint" = "PNG 原尺寸无损画质，体积最大";
 "screenshotQualityCompressed" = "压缩";
 "screenshotQualityCompressedHint" = "保留原尺寸，做本地 PNG 压缩";
-"screenshotQualityCompressingUpload" = "正在压缩后上传";
 "screenshotQualityCompressingSave" = "正在压缩后保存";
 "screenshotQualityCompressingClipboard" = "正在压缩后复制";
 "screenshotCompressionFailed" = "图片压缩失败";
@@ -636,7 +587,6 @@
 "fileUploadShortcutHeader" = "上传文件";
 "finderUploadShortcutDefaultDisplay" = "未设置";
 "shortcutConflictFileUpload" = "该按键组合已被上传文件快捷键占用，请换一个";
-"uploadFilesMenu" = "上传文件";
 "finderUploadDialogTitle" = "上传至图床";
 "finderUploadDialogHeading" = "将要上传的文件";
 "finderUploadSummary" = "已选择 %d 个文件 · %@";

@@ -150,7 +150,6 @@
 "historyPanelShortcutCopyPreview" = "Copy preview content";
 "historyPanelShortcutEditImage" = "Edit image";
 "historyPanelShortcutPinImage" = "Pin image";
-"historyPanelShortcutUploadImage" = "Upload image";
 "historyPanelShortcutTranslateText" = "Translate text";
 "historyPanelShortcutQRCode" = "Create QR code";
 "historyPanelShortcutToggleGuide" = "Show or hide keyboard shortcuts";
@@ -299,7 +298,6 @@
 "settingsTabGeneral" = "General";
 "settingsTabShortcuts" = "Shortcuts";
 "settingsTabPermissions" = "Permissions";
-"settingsTabUpload" = "Upload";
 "settingsTabAbout" = "About";
 "settingsTabTranslation" = "Translation";
 "settingsTabToolbar" = "Toolbar";
@@ -396,23 +394,8 @@
 "quitConfirmCancel" = "Cancel";
 
 /* Upload — toolbar / toast / progress */
-"tipUpload" = "Upload to image host";
-"uploadingTitle" = "Uploading";
-"uploadCopied" = "Image URL copied";
-"uploadCopiedMarkdown" = "Markdown link copied";
-"uploadNoProvider" = "Configure an uploader in Settings first";
-"uploadFailedPrefix" = "Upload failed";
 
 /* Upload — settings tab */
-"uploadDefaultProvider" = "Default Uploader";
-"uploadDefaultNone" = "Disabled";
-"uploadSetDefaultButton" = "Set Default";
-"uploadSaveButton" = "Save";
-"uploadClearButton" = "Clear";
-"uploadSavedToast" = "Config saved";
-"uploadCurrentDefault" = "Current default";
-"uploadMarkdownToggleTitle" = "Copy as Markdown link";
-"uploadMarkdownToggleSubtitle" = "When on, copies a Markdown image tag (![](url)) after upload; when off, copies a plain URL. In History Panel, cloud images follow this setting on click, with hover buttons for MD or plain links";
 "filenameRuleTitle" = "File name rules";
 "filenameRuleSubtitle" = "Controls image uploads, image save defaults, and recording save defaults. Extensions are added automatically";
 "filenameRulePresetLabel" = "Preset";
@@ -433,45 +416,15 @@
 "filenameRulePreview" = "%@";
 
 /* Upload — provider field labels */
-"uploadFieldBucket" = "Bucket";
-"uploadFieldBucketSpace" = "Bucket";
-"uploadFieldRegion" = "Region";
-"uploadFieldRegionOptional" = "Optional region";
-"uploadFieldPathOptional" = "Optional path";
-"uploadFieldCustomUrlOptional" = "Optional custom URL";
-"uploadFieldPublicDomain" = "Public Domain";
-"uploadFieldEndpointArea" = "Endpoint";
-"uploadFieldEndpointOptional" = "Optional endpoint";
-"uploadFieldAccountId" = "Account ID";
-"uploadTestImageFailed" = "Failed to build test image";
 
 /* Upload — provider names */
-"providerTencentCOS" = "Tencent COS";
-"providerQiniuKodo" = "Qiniu Kodo";
-"providerAliyunOSS" = "Aliyun OSS";
 
 /* Upload — errors */
-"uploadErrMissingConfig" = "No uploader configured";
-"uploadErrInvalidConfigPrefix" = "Invalid config";
-"uploadErrNetworkPrefix" = "Network error";
-"uploadErrServerPrefix" = "Upload failed code %d";
-"uploadErrUnexpectedResponsePrefix" = "Unexpected response";
 "missingField" = "Missing %@";
 
 /* Upload — test/validation pill */
-"uploadStatusUntested" = "Not tested";
-"uploadStatusTesting" = "Testing";
-"uploadStatusValid" = "Active";
-"uploadStatusInvalid" = "Invalid config";
 
 /* Upload — log lines */
-"uploadLogStartingTest" = "Starting test upload";
-"uploadLogConfigSaved" = "Config saved";
-"uploadLogMissingFields" = "Missing required fields: %@";
-"uploadLogTestSucceeded" = "Test upload succeeded: %@";
-"uploadLogTestFailed" = "Test upload failed: %@";
-"uploadLogProviderDisabled" = "Provider disabled";
-"uploadLogConfigCleared" = "Config cleared";
 
 /* Permissions — status label */
 "permissionGranted" = "Granted";
@@ -578,14 +531,12 @@
 /* Screenshot quality */
 "screenshotQualityTitle" = "Screenshot quality";
 "screenshotQualitySubtitle" = "Screenshots are processed before upload, save, or copy, original is the default";
-"screenshotQualityUploadLabel" = "Upload";
 "screenshotQualitySaveLabel" = "Save to file";
 "screenshotQualityClipboardLabel" = "Copy to clipboard";
 "screenshotQualityOriginal" = "Original";
 "screenshotQualityOriginalHint" = "PNG at full size and lossless quality, largest file";
 "screenshotQualityCompressed" = "Compressed";
 "screenshotQualityCompressedHint" = "Keeps original dimensions and uses local PNG compression";
-"screenshotQualityCompressingUpload" = "Compressing before upload";
 "screenshotQualityCompressingSave" = "Compressing before save";
 "screenshotQualityCompressingClipboard" = "Compressing before copy";
 "screenshotCompressionFailed" = "Image compression failed";
@@ -636,7 +587,6 @@
 "fileUploadShortcutHeader" = "Upload Files";
 "finderUploadShortcutDefaultDisplay" = "Not set";
 "shortcutConflictFileUpload" = "This key combination is already used by the Upload Files shortcut. Please choose a different one";
-"uploadFilesMenu" = "Upload Files";
 "finderUploadDialogTitle" = "Upload to Image Host";
 "finderUploadDialogHeading" = "Files to Upload";
 "finderUploadSummary" = "%d files selected · %@";

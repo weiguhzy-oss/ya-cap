@@ -9,43 +9,27 @@ final class HotkeyManager {
 
     private var hotKeyRef: EventHotKeyRef?
     private var countdownHotKeyRef: EventHotKeyRef?
-    private var textRecognitionHotKeyRef: EventHotKeyRef?
-    private var copyImageTextHotKeyRef: EventHotKeyRef?
-    private var screenshotTranslationHotKeyRef: EventHotKeyRef?
     private var recordHotKeyRef: EventHotKeyRef?
     private var fullScreenScreenshotHotKeyRef: EventHotKeyRef?
-    private var historyPreviewHotKeyRef: EventHotKeyRef?
     private var callback: ((CaptureTriggerContext) -> Void)?
     private var countdownCallback: (() -> Void)?
-    private var textRecognitionCallback: (() -> Void)?
-    private var copyImageTextCallback: (() -> Void)?
-    private var screenshotTranslationCallback: (() -> Void)?
     private var recordCallback: (() -> Void)?
     private var fullScreenScreenshotCallback: (() -> Void)?
-    private var historyPreviewCallback: (() -> Void)?
     private var eventHandlerRef: EventHandlerRef?
 
     private static let regularHotKeySignature: OSType = OSType(0x4341_5043) // 'CAPC'
     private static let regularHotKeyID: UInt32 = 1
     private static let countdownHotKeyID: UInt32 = 2
-    private static let textRecognitionHotKeyID: UInt32 = 7
-    private static let screenshotTranslationHotKeyID: UInt32 = 8
     private static let recordHotKeyID: UInt32 = 9
     private static let fullScreenScreenshotHotKeyID: UInt32 = 11
-    private static let copyImageTextHotKeyID: UInt32 = 13
-    private static let historyPreviewHotKeyID: UInt32 = 16
 
     private init() {}
 
     deinit {
         unregister()
         unregisterCountdown()
-        unregisterTextRecognition()
-        unregisterCopyImageText()
-        unregisterScreenshotTranslation()
         unregisterRecord()
         unregisterFullScreenScreenshot()
-        unregisterHistoryPreview()
         if let handler = eventHandlerRef {
             RemoveEventHandler(handler)
             eventHandlerRef = nil
@@ -110,84 +94,6 @@ final class HotkeyManager {
     }
 
 
-    /// Register the saved text-recognition hotkey, if any.
-    func registerTextRecognition(callback: @escaping () -> Void) {
-        self.textRecognitionCallback = callback
-        unregisterTextRecognition()
-
-        guard let (keyCode, modifiers) = currentTextRecognitionHotkey() else { return }
-
-        installEventHandlerIfNeeded()
-        var ref: EventHotKeyRef?
-        let id = EventHotKeyID(signature: Self.regularHotKeySignature, id: Self.textRecognitionHotKeyID)
-        let status = RegisterEventHotKey(
-            keyCode, modifiers, id,
-            GetApplicationEventTarget(), 0, &ref
-        )
-        if status == noErr, let ref = ref {
-            textRecognitionHotKeyRef = ref
-        }
-    }
-
-    func unregisterTextRecognition() {
-        if let ref = textRecognitionHotKeyRef {
-            UnregisterEventHotKey(ref)
-            textRecognitionHotKeyRef = nil
-        }
-    }
-
-    /// Register the saved copy-image-text hotkey, if any.
-    func registerCopyImageText(callback: @escaping () -> Void) {
-        self.copyImageTextCallback = callback
-        unregisterCopyImageText()
-
-        guard let (keyCode, modifiers) = currentCopyImageTextHotkey() else { return }
-
-        installEventHandlerIfNeeded()
-        var ref: EventHotKeyRef?
-        let id = EventHotKeyID(signature: Self.regularHotKeySignature, id: Self.copyImageTextHotKeyID)
-        let status = RegisterEventHotKey(
-            keyCode, modifiers, id,
-            GetApplicationEventTarget(), 0, &ref
-        )
-        if status == noErr, let ref = ref {
-            copyImageTextHotKeyRef = ref
-        }
-    }
-
-    func unregisterCopyImageText() {
-        if let ref = copyImageTextHotKeyRef {
-            UnregisterEventHotKey(ref)
-            copyImageTextHotKeyRef = nil
-        }
-    }
-
-    /// Register the saved screenshot-translation hotkey, if any.
-    func registerScreenshotTranslation(callback: @escaping () -> Void) {
-        self.screenshotTranslationCallback = callback
-        unregisterScreenshotTranslation()
-
-        guard let (keyCode, modifiers) = currentScreenshotTranslationHotkey() else { return }
-
-        installEventHandlerIfNeeded()
-        var ref: EventHotKeyRef?
-        let id = EventHotKeyID(signature: Self.regularHotKeySignature, id: Self.screenshotTranslationHotKeyID)
-        let status = RegisterEventHotKey(
-            keyCode, modifiers, id,
-            GetApplicationEventTarget(), 0, &ref
-        )
-        if status == noErr, let ref = ref {
-            screenshotTranslationHotKeyRef = ref
-        }
-    }
-
-    func unregisterScreenshotTranslation() {
-        if let ref = screenshotTranslationHotKeyRef {
-            UnregisterEventHotKey(ref)
-            screenshotTranslationHotKeyRef = nil
-        }
-    }
-
     /// Register the saved recording hotkey, if any.
     func registerRecord(callback: @escaping () -> Void) {
         self.recordCallback = callback
@@ -240,38 +146,6 @@ final class HotkeyManager {
         }
     }
 
-    /// Register the saved color-picker hotkey, if any.
-
-    /// Temporarily captures an unmodified Space press while a history tile is
-    /// hovered. Carbon hotkeys work even though the history panel intentionally
-    /// remains a non-activating panel.
-    @discardableResult
-    func registerHistoryPreview(callback: @escaping () -> Void) -> Bool {
-        unregisterHistoryPreview()
-        historyPreviewCallback = callback
-        installEventHandlerIfNeeded()
-        var ref: EventHotKeyRef?
-        let id = EventHotKeyID(signature: Self.regularHotKeySignature, id: Self.historyPreviewHotKeyID)
-        let status = RegisterEventHotKey(
-            UInt32(kVK_Space), 0, id,
-            GetApplicationEventTarget(), 0, &ref
-        )
-        if status == noErr, let ref {
-            historyPreviewHotKeyRef = ref
-            return true
-        }
-        historyPreviewCallback = nil
-        return false
-    }
-
-    func unregisterHistoryPreview() {
-        if let ref = historyPreviewHotKeyRef {
-            UnregisterEventHotKey(ref)
-            historyPreviewHotKeyRef = nil
-        }
-        historyPreviewCallback = nil
-    }
-
     /// Returns the (keyCode, modifiers) for the countdown variant — user hotkey + ⌥.
     /// Returns nil if no custom hotkey is set or the saved hotkey already contains ⌥.
     func currentCountdownHotkey() -> (keyCode: UInt32, modifiers: UInt32)? {
@@ -288,9 +162,6 @@ final class HotkeyManager {
         isRecording = true
         unregister()
         unregisterCountdown()
-        unregisterTextRecognition()
-        unregisterCopyImageText()
-        unregisterScreenshotTranslation()
         unregisterRecord()
         unregisterFullScreenScreenshot()
         NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
@@ -320,54 +191,6 @@ final class HotkeyManager {
         return modifierString(mods) + keyString(kc)
     }
 
-
-    /// Returns (keyCode, carbonModifiers) for the saved text-recognition
-    /// hotkey, or nil when the user hasn't bound one.
-    func currentTextRecognitionHotkey() -> (keyCode: UInt32, modifiers: UInt32)? {
-        guard Defaults.hasCustomTextRecognitionHotkey else { return nil }
-        let kc = UInt32(Defaults.textRecognitionHotkeyKeyCode)
-        let mods = UInt32(Defaults.textRecognitionHotkeyModifiers)
-        guard mods != 0 || Self.isFunctionKey(kc) else { return nil }
-        return (kc, mods)
-    }
-
-    /// Display string for the text-recognition hotkey, or nil if not set.
-    static func currentTextRecognitionDisplayString() -> String? {
-        guard let (kc, mods) = HotkeyManager.shared.currentTextRecognitionHotkey() else { return nil }
-        return modifierString(mods) + keyString(kc)
-    }
-
-    /// Returns (keyCode, carbonModifiers) for the saved copy-image-text
-    /// hotkey, or nil when the user hasn't bound one.
-    func currentCopyImageTextHotkey() -> (keyCode: UInt32, modifiers: UInt32)? {
-        guard Defaults.hasCustomCopyImageTextHotkey else { return nil }
-        let kc = UInt32(Defaults.copyImageTextHotkeyKeyCode)
-        let mods = UInt32(Defaults.copyImageTextHotkeyModifiers)
-        guard mods != 0 || Self.isFunctionKey(kc) else { return nil }
-        return (kc, mods)
-    }
-
-    /// Display string for the copy-image-text hotkey, or nil if not set.
-    static func currentCopyImageTextDisplayString() -> String? {
-        guard let (kc, mods) = HotkeyManager.shared.currentCopyImageTextHotkey() else { return nil }
-        return modifierString(mods) + keyString(kc)
-    }
-
-    /// Returns (keyCode, carbonModifiers) for the saved screenshot-translation
-    /// hotkey, or nil when the user hasn't bound one.
-    func currentScreenshotTranslationHotkey() -> (keyCode: UInt32, modifiers: UInt32)? {
-        guard Defaults.hasCustomScreenshotTranslationHotkey else { return nil }
-        let kc = UInt32(Defaults.screenshotTranslationHotkeyKeyCode)
-        let mods = UInt32(Defaults.screenshotTranslationHotkeyModifiers)
-        guard mods != 0 || Self.isFunctionKey(kc) else { return nil }
-        return (kc, mods)
-    }
-
-    /// Display string for the screenshot-translation hotkey, or nil if not set.
-    static func currentScreenshotTranslationDisplayString() -> String? {
-        guard let (kc, mods) = HotkeyManager.shared.currentScreenshotTranslationHotkey() else { return nil }
-        return modifierString(mods) + keyString(kc)
-    }
 
     /// Returns (keyCode, carbonModifiers) for the saved recording hotkey.
     func currentRecordHotkey() -> (keyCode: UInt32, modifiers: UInt32)? {
@@ -474,11 +297,8 @@ final class HotkeyManager {
     /// A user-configurable hotkey slot in Settings.
     enum HotkeySlot {
         case screenshot
-        case textRecognition
-        case copyImageText
-        case screenshotTranslation
-        case record
         case fullScreenScreenshot
+        case record
         case clipboard
         case fileSave
     }
@@ -500,39 +320,6 @@ final class HotkeyManager {
             }
             if let (kc, m) = currentCountdownHotkey(), kc == keyCode, m == modifiers {
                 return L10n.shortcutConflictCountdown
-            }
-        }
-        if slot != .textRecognition,
-           let (kc, m) = currentTextRecognitionHotkey(),
-           kc == keyCode {
-            if m == modifiers {
-                return L10n.shortcutConflictTextRecognition
-            }
-            if slot == .screenshot, modifiers & UInt32(optionKey) == 0,
-               m == modifiers | UInt32(optionKey) {
-                return L10n.shortcutConflictTextRecognition
-            }
-        }
-        if slot != .copyImageText,
-           let (kc, m) = currentCopyImageTextHotkey(),
-           kc == keyCode {
-            if m == modifiers {
-                return L10n.shortcutConflictCopyImageText
-            }
-            if slot == .screenshot, modifiers & UInt32(optionKey) == 0,
-               m == modifiers | UInt32(optionKey) {
-                return L10n.shortcutConflictCopyImageText
-            }
-        }
-        if slot != .screenshotTranslation,
-           let (kc, m) = currentScreenshotTranslationHotkey(),
-           kc == keyCode {
-            if m == modifiers {
-                return L10n.shortcutConflictScreenshotTranslation
-            }
-            if slot == .screenshot, modifiers & UInt32(optionKey) == 0,
-               m == modifiers | UInt32(optionKey) {
-                return L10n.shortcutConflictScreenshotTranslation
             }
         }
         if slot != .record,
@@ -606,18 +393,10 @@ final class HotkeyManager {
                 switch hkID.id {
                 case HotkeyManager.countdownHotKeyID:
                     callback = mgr.countdownCallback
-                case HotkeyManager.textRecognitionHotKeyID:
-                    callback = mgr.textRecognitionCallback
-                case HotkeyManager.copyImageTextHotKeyID:
-                    callback = mgr.copyImageTextCallback
-                case HotkeyManager.screenshotTranslationHotKeyID:
-                    callback = mgr.screenshotTranslationCallback
                 case HotkeyManager.recordHotKeyID:
                     callback = mgr.recordCallback
                 case HotkeyManager.fullScreenScreenshotHotKeyID:
                     callback = mgr.fullScreenScreenshotCallback
-                case HotkeyManager.historyPreviewHotKeyID:
-                    callback = mgr.historyPreviewCallback
                 default:
                     callback = nil
                 }

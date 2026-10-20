@@ -140,14 +140,12 @@ enum L10n {
     static var chooseScreenshotSavePathTitle: String { s("chooseScreenshotSavePathTitle") }
     static var screenshotQualityTitle: String { s("screenshotQualityTitle") }
     static var screenshotQualitySubtitle: String { s("screenshotQualitySubtitle") }
-    static var screenshotQualityUploadLabel: String { s("screenshotQualityUploadLabel") }
     static var screenshotQualitySaveLabel: String { s("screenshotQualitySaveLabel") }
     static var screenshotQualityClipboardLabel: String { s("screenshotQualityClipboardLabel") }
     static var screenshotQualityOriginal: String { s("screenshotQualityOriginal") }
     static var screenshotQualityOriginalHint: String { s("screenshotQualityOriginalHint") }
     static var screenshotQualityCompressed: String { s("screenshotQualityCompressed") }
     static var screenshotQualityCompressedHint: String { s("screenshotQualityCompressedHint") }
-    static var screenshotQualityCompressingUpload: String { s("screenshotQualityCompressingUpload") }
     static var screenshotQualityCompressingSave: String { s("screenshotQualityCompressingSave") }
     static var screenshotQualityCompressingClipboard: String { s("screenshotQualityCompressingClipboard") }
     static var screenshotCompressionFailed: String { s("screenshotCompressionFailed") }
@@ -223,8 +221,6 @@ enum L10n {
     static var takeScreenshot: String { s("takeScreenshot") }
     static var takeFullScreenScreenshot: String { s("takeFullScreenScreenshot") }
     static var record: String { s("record") }
-    static var mergeImages: String { s("mergeImages") }
-    static var uploadFilesMenu: String { s("uploadFilesMenu") }
     static var colorPicker: String { s("colorPicker") }
     static var settings: String { s("settings") }
     static var quitApp: String { s("quitApp") }
@@ -305,7 +301,6 @@ enum L10n {
     static var historyPanelShortcutCopyPreview: String { s("historyPanelShortcutCopyPreview") }
     static var historyPanelShortcutEditImage: String { s("historyPanelShortcutEditImage") }
     static var historyPanelShortcutPinImage: String { s("historyPanelShortcutPinImage") }
-    static var historyPanelShortcutUploadImage: String { s("historyPanelShortcutUploadImage") }
     static var historyPanelShortcutTranslateText: String { s("historyPanelShortcutTranslateText") }
     static var historyPanelShortcutQRCode: String { s("historyPanelShortcutQRCode") }
     static var historyPanelShortcutToggleGuide: String { s("historyPanelShortcutToggleGuide") }
@@ -503,7 +498,6 @@ enum L10n {
     static var settingsGeneralFiles: String { s("settingsGeneralFiles") }
     static var settingsTabShortcuts: String { s("settingsTabShortcuts") }
     static var settingsTabPermissions: String { s("settingsTabPermissions") }
-    static var settingsTabUpload: String { s("settingsTabUpload") }
     static var settingsTabAbout: String { s("settingsTabAbout") }
     static var settingsTabTranslation: String { s("settingsTabTranslation") }
     static var settingsTabToolbar: String { s("settingsTabToolbar") }
@@ -622,24 +616,7 @@ enum L10n {
     static var quitConfirmAction: String { s("quitConfirmAction") }
     static var quitConfirmCancel: String { s("quitConfirmCancel") }
 
-    // Upload — toolbar / toast / progress
-    static var tipUpload: String { s("tipUpload") }
-    static var uploadingTitle: String { s("uploadingTitle") }
-    static var uploadCopied: String { s("uploadCopied") }
-    static var uploadCopiedMarkdown: String { s("uploadCopiedMarkdown") }
-    static var uploadNoProvider: String { s("uploadNoProvider") }
-    static var uploadFailedPrefix: String { s("uploadFailedPrefix") }
-
-    // Upload — settings tab
-    static var uploadDefaultProvider: String { s("uploadDefaultProvider") }
-    static var uploadDefaultNone: String { s("uploadDefaultNone") }
-    static var uploadSetDefaultButton: String { s("uploadSetDefaultButton") }
-    static var uploadSaveButton: String { s("uploadSaveButton") }
-    static var uploadClearButton: String { s("uploadClearButton") }
-    static var uploadSavedToast: String { s("uploadSavedToast") }
-    static var uploadCurrentDefault: String { s("uploadCurrentDefault") }
-    static var uploadMarkdownToggleTitle: String { s("uploadMarkdownToggleTitle") }
-    static var uploadMarkdownToggleSubtitle: String { s("uploadMarkdownToggleSubtitle") }
+    // Filename rule — settings tab
     static var filenameRuleTitle: String { s("filenameRuleTitle") }
     static var filenameRuleSubtitle: String { s("filenameRuleSubtitle") }
     static var filenameRulePresetLabel: String { s("filenameRulePresetLabel") }
@@ -660,57 +637,6 @@ enum L10n {
     static func filenameRulePreview(_ value: String) -> String {
         String(format: s("filenameRulePreview"), value)
     }
-
-    // Upload — provider field labels
-    static var uploadFieldBucket: String { s("uploadFieldBucket") }
-    static var uploadFieldBucketSpace: String { s("uploadFieldBucketSpace") }
-    static var uploadFieldRegion: String { s("uploadFieldRegion") }
-    static var uploadFieldRegionOptional: String { s("uploadFieldRegionOptional") }
-    static var uploadFieldPathOptional: String { s("uploadFieldPathOptional") }
-    static var uploadFieldCustomUrlOptional: String { s("uploadFieldCustomUrlOptional") }
-    static var uploadFieldPublicDomain: String { s("uploadFieldPublicDomain") }
-    static var uploadFieldEndpointArea: String { s("uploadFieldEndpointArea") }
-    static var uploadFieldEndpointOptional: String { s("uploadFieldEndpointOptional") }
-    static var uploadFieldAccountId: String { s("uploadFieldAccountId") }
-    static var uploadTestImageFailed: String { s("uploadTestImageFailed") }
-
-    // Upload — provider names
-    static var providerTencentCOS: String { s("providerTencentCOS") }
-    static var providerQiniuKodo: String { s("providerQiniuKodo") }
-    static var providerAliyunOSS: String { s("providerAliyunOSS") }
-
-    // Upload — errors
-    static var uploadErrMissingConfig: String { s("uploadErrMissingConfig") }
-    static var uploadErrInvalidConfigPrefix: String { s("uploadErrInvalidConfigPrefix") }
-    static var uploadErrNetworkPrefix: String { s("uploadErrNetworkPrefix") }
-    static func uploadErrServerPrefix(_ code: Int) -> String {
-        String(format: s("uploadErrServerPrefix"), code)
-    }
-    static var uploadErrUnexpectedResponsePrefix: String { s("uploadErrUnexpectedResponsePrefix") }
-    static func missingField(_ key: String) -> String {
-        String(format: s("missingField"), key)
-    }
-
-    // Upload — test/validation pill
-    static var uploadStatusUntested: String { s("uploadStatusUntested") }
-    static var uploadStatusTesting: String { s("uploadStatusTesting") }
-    static var uploadStatusValid: String { s("uploadStatusValid") }
-    static var uploadStatusInvalid: String { s("uploadStatusInvalid") }
-
-    // Upload — log lines
-    static var uploadLogStartingTest: String { s("uploadLogStartingTest") }
-    static var uploadLogConfigSaved: String { s("uploadLogConfigSaved") }
-    static func uploadLogMissingFields(_ keys: [String]) -> String {
-        String(format: s("uploadLogMissingFields"), keys.joined(separator: ", "))
-    }
-    static func uploadLogTestSucceeded(_ url: String) -> String {
-        String(format: s("uploadLogTestSucceeded"), url)
-    }
-    static func uploadLogTestFailed(_ message: String) -> String {
-        String(format: s("uploadLogTestFailed"), message)
-    }
-    static var uploadLogProviderDisabled: String { s("uploadLogProviderDisabled") }
-    static var uploadLogConfigCleared: String { s("uploadLogConfigCleared") }
 
     // Permissions — status label
     static var permissionGranted: String { s("permissionGranted") }
@@ -1136,11 +1062,6 @@ struct Defaults {
         set {
             defaults.set(newValue.standardizedFileURL.path, forKey: "screenshotSaveDirectory")
         }
-    }
-
-    static var screenshotUploadQuality: ScreenshotImageQuality {
-        get { screenshotQuality(forKey: "screenshotUploadQuality") }
-        set { defaults.set(newValue.rawValue, forKey: "screenshotUploadQuality") }
     }
 
     static var screenshotSaveQuality: ScreenshotImageQuality {

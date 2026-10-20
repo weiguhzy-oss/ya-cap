@@ -150,7 +150,6 @@
 "historyPanelShortcutCopyPreview" = "複製預覽內容";
 "historyPanelShortcutEditImage" = "編輯圖片";
 "historyPanelShortcutPinImage" = "釘選圖片";
-"historyPanelShortcutUploadImage" = "上傳圖片";
 "historyPanelShortcutTranslateText" = "翻譯文字";
 "historyPanelShortcutQRCode" = "產生二維碼";
 "historyPanelShortcutToggleGuide" = "顯示或隱藏快速鍵說明";
@@ -299,7 +298,6 @@
 "settingsTabGeneral" = "一般";
 "settingsTabShortcuts" = "快捷鍵";
 "settingsTabPermissions" = "權限";
-"settingsTabUpload" = "上傳";
 "settingsTabAbout" = "關於";
 "settingsTabTranslation" = "翻譯";
 "settingsTabToolbar" = "工具列";
@@ -396,23 +394,8 @@
 "quitConfirmCancel" = "取消";
 
 /* Upload — toolbar / toast / progress */
-"tipUpload" = "上傳到圖床";
-"uploadingTitle" = "上傳中";
-"uploadCopied" = "已複製圖片網址";
-"uploadCopiedMarkdown" = "已複製 Markdown 連結";
-"uploadNoProvider" = "請先在設定中設定上傳服務";
-"uploadFailedPrefix" = "上傳失敗";
 
 /* Upload — settings tab */
-"uploadDefaultProvider" = "預設上傳服務";
-"uploadDefaultNone" = "停用";
-"uploadSetDefaultButton" = "設為預設";
-"uploadSaveButton" = "儲存";
-"uploadClearButton" = "清除";
-"uploadSavedToast" = "設定已儲存";
-"uploadCurrentDefault" = "目前預設";
-"uploadMarkdownToggleTitle" = "複製為 Markdown 連結";
-"uploadMarkdownToggleSubtitle" = "開啟後，上傳完成會複製 Markdown 圖片標籤（![](url)）；關閉則複製純網址。歷史面板中，點選雲端圖片會依此設定複製，也可用懸浮按鈕選擇 MD 或純網址";
 "filenameRuleTitle" = "檔名規則";
 "filenameRuleSubtitle" = "控制圖片上傳、圖片儲存預設檔名和錄製儲存預設檔名。副檔名會自動加入";
 "filenameRulePresetLabel" = "預設";
@@ -433,45 +416,15 @@
 "filenameRulePreview" = "%@";
 
 /* Upload — provider field labels */
-"uploadFieldBucket" = "Bucket";
-"uploadFieldBucketSpace" = "儲存空間";
-"uploadFieldRegion" = "區域";
-"uploadFieldRegionOptional" = "選填區域";
-"uploadFieldPathOptional" = "選填路徑";
-"uploadFieldCustomUrlOptional" = "選填自訂網址";
-"uploadFieldPublicDomain" = "公開網域";
-"uploadFieldEndpointArea" = "Endpoint 區域";
-"uploadFieldEndpointOptional" = "選填 Endpoint";
-"uploadFieldAccountId" = "帳號 ID";
-"uploadTestImageFailed" = "無法建立測試圖片";
 
 /* Upload — provider names */
-"providerTencentCOS" = "騰訊雲 COS";
-"providerQiniuKodo" = "七牛雲 Kodo";
-"providerAliyunOSS" = "阿里雲 OSS";
 
 /* Upload — errors */
-"uploadErrMissingConfig" = "尚未設定上傳服務";
-"uploadErrInvalidConfigPrefix" = "設定無效";
-"uploadErrNetworkPrefix" = "網路錯誤";
-"uploadErrServerPrefix" = "上傳失敗 代碼 %d";
-"uploadErrUnexpectedResponsePrefix" = "非預期的回應";
 "missingField" = "缺少 %@";
 
 /* Upload — test/validation pill */
-"uploadStatusUntested" = "尚未測試";
-"uploadStatusTesting" = "測試中";
-"uploadStatusValid" = "可用";
-"uploadStatusInvalid" = "設定無效";
 
 /* Upload — log lines */
-"uploadLogStartingTest" = "開始測試上傳";
-"uploadLogConfigSaved" = "設定已儲存";
-"uploadLogMissingFields" = "缺少必要欄位：%@";
-"uploadLogTestSucceeded" = "測試上傳成功：%@";
-"uploadLogTestFailed" = "測試上傳失敗：%@";
-"uploadLogProviderDisabled" = "上傳服務已停用";
-"uploadLogConfigCleared" = "設定已清除";
 
 /* Permissions — status label */
 "permissionGranted" = "已允許";
@@ -578,14 +531,12 @@
 /* Screenshot quality */
 "screenshotQualityTitle" = "截圖品質";
 "screenshotQualitySubtitle" = "上傳、儲存或複製前依所選檔位處理截圖，預設保留原圖";
-"screenshotQualityUploadLabel" = "上傳";
 "screenshotQualitySaveLabel" = "儲存到檔案";
 "screenshotQualityClipboardLabel" = "複製到剪貼簿";
 "screenshotQualityOriginal" = "原圖";
 "screenshotQualityOriginalHint" = "PNG 原尺寸無損畫質，檔案最大";
 "screenshotQualityCompressed" = "壓縮";
 "screenshotQualityCompressedHint" = "保留原尺寸，做本地 PNG 壓縮";
-"screenshotQualityCompressingUpload" = "正在壓縮後上傳";
 "screenshotQualityCompressingSave" = "正在壓縮後儲存";
 "screenshotQualityCompressingClipboard" = "正在壓縮後複製";
 "screenshotCompressionFailed" = "圖片壓縮失敗";
@@ -636,7 +587,6 @@
 "fileUploadShortcutHeader" = "上傳檔案";
 "finderUploadShortcutDefaultDisplay" = "未設定";
 "shortcutConflictFileUpload" = "此按鍵組合已被上傳檔案快速鍵使用，請換一個";
-"uploadFilesMenu" = "上傳檔案";
 "finderUploadDialogTitle" = "上傳至圖床";
 "finderUploadDialogHeading" = "即將上傳的檔案";
 "finderUploadSummary" = "已選擇 %d 個檔案 · %@";

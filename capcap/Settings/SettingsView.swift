@@ -65,11 +65,6 @@ enum SettingsTab: CaseIterable {
     }
 }
 
-private enum HistoryPanelSettingsMode {
-    case dialog
-    case notch
-}
-
 class SettingsView: NSView {
 
     var onMenuBarToggle: ((Bool) -> Void)?
@@ -88,9 +83,6 @@ class SettingsView: NSView {
     private var historyCacheValueLabel: NSTextField!
     private var clipboardTextHistoryLimitSlider: SettingsTickSlider!
     private var clipboardTextHistoryLimitValueLabel: NSTextField!
-    private var historyPanelModePreview: HistoryPanelModePreviewView!
-    private var historyPanelDialogOption: HistoryPanelModeOptionView!
-    private var historyPanelNotchOption: HistoryPanelModeOptionView!
     private var historyNotchTriggerLabel: NSTextField?
     private var historyNotchTriggerPopup: NSPopUpButton?
     private var countdownSlider: SettingsTickSlider!
@@ -136,27 +128,6 @@ class SettingsView: NSView {
     private var fileSaveShortcutRestoreButton: NSButton!
     private var fileSaveShortcutRecordingMonitor: Any?
 
-    // Text recognition shortcut card
-    private var textRecognitionShortcutTitleLabel: NSTextField!
-    private var textRecognitionShortcutField: NSTextField!
-    private var textRecognitionShortcutSetButton: NSButton!
-    private var textRecognitionShortcutRestoreButton: NSButton!
-    private var textRecognitionShortcutRecordingMonitor: Any?
-
-    // Copy image text shortcut card
-    private var copyImageTextShortcutTitleLabel: NSTextField!
-    private var copyImageTextShortcutField: NSTextField!
-    private var copyImageTextShortcutSetButton: NSButton!
-    private var copyImageTextShortcutRestoreButton: NSButton!
-    private var copyImageTextShortcutRecordingMonitor: Any?
-
-    // Screenshot translation shortcut card
-    private var screenshotTranslationShortcutTitleLabel: NSTextField!
-    private var screenshotTranslationShortcutField: NSTextField!
-    private var screenshotTranslationShortcutSetButton: NSButton!
-    private var screenshotTranslationShortcutRestoreButton: NSButton!
-    private var screenshotTranslationShortcutRecordingMonitor: Any?
-
     // Record shortcut card
     private var recordShortcutTitleLabel: NSTextField!
     private var recordShortcutField: NSTextField!
@@ -184,12 +155,6 @@ class SettingsView: NSView {
     private var clipboardTextCacheToggleHintLabel: NSTextField?
     private var clipboardTextHistoryLimitTitleLabel: NSTextField!
     private var historyCacheTitleLabel: NSTextField!
-    private var historyPanelDisplayModeTitleLabel: NSTextField!
-    private var historyPanelDisplayModeHintLabel: NSTextField!
-    private var historyPanelDialogModeTitleLabel: NSTextField!
-    private var historyPanelDialogModeHintLabel: NSTextField?
-    private var historyPanelNotchModeTitleLabel: NSTextField!
-    private var historyPanelNotchModeHintLabel: NSTextField?
     private var permHeaderSubtitleLabel: NSTextField?
     private var accessibilityNameLabel: NSTextField!
     private var accessibilityDescLabel: NSTextField!
@@ -235,9 +200,6 @@ class SettingsView: NSView {
     private var filenameRuleCard: FilenameRuleCard?
     private var screenshotQualityTitleLabel: NSTextField!
     private var screenshotQualitySubtitleLabel: NSTextField!
-    private var screenshotQualityUploadTitleLabel: NSTextField!
-    private var screenshotQualityUploadHintLabel: NSTextField!
-    private var screenshotQualityUploadPopup: NSPopUpButton!
     private var screenshotQualitySaveTitleLabel: NSTextField!
     private var screenshotQualitySaveHintLabel: NSTextField!
     private var screenshotQualitySavePopup: NSPopUpButton!
@@ -378,9 +340,6 @@ class SettingsView: NSView {
         refreshPermissionStatus()
         refreshShortcutDisplay()
         refreshFullScreenScreenshotShortcutDisplay()
-        refreshTextRecognitionShortcutDisplay()
-        refreshCopyImageTextShortcutDisplay()
-        refreshScreenshotTranslationShortcutDisplay()
         refreshRecordShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
@@ -785,36 +744,6 @@ class SettingsView: NSView {
         clipboardTextHistoryLimitValueLabel?.textColor = NSColor.white.withAlphaComponent(textOn ? 0.88 : 0.4)
     }
 
-    private func updateHistoryPanelModeControlsEnabled() {
-        let on = Defaults.isHistoryCacheAvailable
-        let notchAvailable = Defaults.historyPanelNotchAvailable
-        let dialogEnabled = on
-        let notchEnabled = on && notchAvailable
-        let mode = selectedHistoryPanelMode()
-        historyPanelModePreview?.mode = mode
-        historyPanelModePreview?.isEffectEnabled = on
-        historyPanelDialogOption?.isEnabled = dialogEnabled
-        historyPanelNotchOption?.isEnabled = notchEnabled
-        historyPanelDialogOption?.isSelected = mode == .dialog
-        historyPanelNotchOption?.isSelected = mode == .notch
-        let triggerEnabled = notchEnabled && mode == .notch
-        historyNotchTriggerPopup?.isEnabled = triggerEnabled
-        historyNotchTriggerPopup?.selectItem(at: Defaults.HistoryNotchTriggerMode.allCases.firstIndex(of: Defaults.historyNotchTriggerMode) ?? 0)
-        historyNotchTriggerRow?.isHidden = mode != .notch
-        historyNotchTriggerLabel?.textColor = NSColor.white.withAlphaComponent(triggerEnabled ? 0.94 : 0.4)
-
-        historyPanelDisplayModeTitleLabel?.textColor = NSColor.white.withAlphaComponent(on ? 0.94 : 0.4)
-        historyPanelDisplayModeHintLabel?.textColor = NSColor.white.withAlphaComponent(on ? 0.58 : 0.35)
-        historyPanelDialogModeTitleLabel?.textColor = NSColor.white.withAlphaComponent(dialogEnabled ? 0.94 : 0.4)
-        historyPanelDialogModeHintLabel?.textColor = NSColor.white.withAlphaComponent(dialogEnabled ? 0.58 : 0.35)
-        historyPanelNotchModeTitleLabel?.textColor = NSColor.white.withAlphaComponent(notchEnabled ? 0.94 : 0.4)
-        historyPanelNotchModeHintLabel?.textColor = NSColor.white.withAlphaComponent(notchEnabled ? 0.58 : 0.35)
-    }
-
-    private func selectedHistoryPanelMode() -> HistoryPanelSettingsMode {
-        Defaults.historyPanelNotchEnabled ? .notch : .dialog
-    }
-
     private func refreshSavePathControls() {
         recordingSavePathValueLabel?.stringValue = SaveDestination.displayPath(Defaults.recordingSaveDirectory)
         screenshotSavePathValueLabel?.stringValue = SaveDestination.displayPath(Defaults.screenshotSaveDirectory)
@@ -824,11 +753,8 @@ class SettingsView: NSView {
     }
 
     private func refreshScreenshotQualityControls() {
-        refreshScreenshotQualityPopup(screenshotQualityUploadPopup, selected: Defaults.screenshotUploadQuality)
         refreshScreenshotQualityPopup(screenshotQualitySavePopup, selected: Defaults.screenshotSaveQuality)
         refreshScreenshotQualityPopup(screenshotQualityClipboardPopup, selected: Defaults.screenshotClipboardQuality)
-        screenshotQualityUploadHintLabel?.stringValue = Defaults.screenshotUploadQuality.localizedHint
-        screenshotQualityUploadPopup?.toolTip = Defaults.screenshotUploadQuality.localizedHint
         screenshotQualitySaveHintLabel?.stringValue = Defaults.screenshotSaveQuality.localizedHint
         screenshotQualitySavePopup?.toolTip = Defaults.screenshotSaveQuality.localizedHint
         screenshotQualityClipboardHintLabel?.stringValue = Defaults.screenshotClipboardQuality.localizedHint
@@ -1084,8 +1010,6 @@ class SettingsView: NSView {
         stack.addArrangedSubview(historyCard)
         historyCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
 
-        buildHistoryPanelModeCard(into: stack)
-
     }
 
     private func buildCountdownCard(into stack: NSStackView) {
@@ -1139,92 +1063,6 @@ class SettingsView: NSView {
         countdownCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
     }
 
-    private func buildHistoryPanelModeCard(into stack: NSStackView) {
-        let card = CardView()
-        let inner = NSStackView()
-        inner.orientation = .vertical
-        inner.alignment = .leading
-        inner.spacing = 14
-        inner.translatesAutoresizingMaskIntoConstraints = false
-        card.addSubview(inner)
-        pin(inner, to: card, insets: NSEdgeInsets(top: 14, left: 16, bottom: 16, right: 16))
-
-        historyPanelDisplayModeTitleLabel = primaryLabel(L10n.historyPanelDisplayModeLabel)
-        historyPanelDisplayModeHintLabel = secondaryLabel(L10n.historyPanelDisplayModeHint, wrapping: true)
-        inner.addArrangedSubview(historyPanelDisplayModeTitleLabel)
-        inner.addArrangedSubview(historyPanelDisplayModeHintLabel)
-        historyPanelDisplayModeHintLabel.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let preview = HistoryPanelModePreviewView(mode: selectedHistoryPanelMode())
-        preview.translatesAutoresizingMaskIntoConstraints = false
-        historyPanelModePreview = preview
-        inner.addArrangedSubview(preview)
-        NSLayoutConstraint.activate([
-            preview.widthAnchor.constraint(equalTo: inner.widthAnchor),
-            preview.heightAnchor.constraint(equalToConstant: 136),
-        ])
-
-        let optionRow = NSStackView()
-        optionRow.orientation = .horizontal
-        optionRow.alignment = .top
-        optionRow.distribution = .fillEqually
-        optionRow.spacing = 12
-        optionRow.translatesAutoresizingMaskIntoConstraints = false
-
-        let dialog = HistoryPanelModeOptionView(
-            mode: .dialog,
-            title: L10n.historyPanelDialogMode,
-            subtitle: L10n.historyPanelDialogModeHint
-        )
-        historyPanelDialogModeTitleLabel = dialog.title
-        historyPanelDialogModeHintLabel = dialog.subtitle
-        historyPanelDialogOption = dialog
-        dialog.target = self
-        dialog.action = #selector(historyPanelModeOptionClicked(_:))
-
-        let notch = HistoryPanelModeOptionView(
-            mode: .notch,
-            title: L10n.historyPanelNotchMode,
-            subtitle: L10n.historyPanelNotchModeHint
-        )
-        historyPanelNotchModeTitleLabel = notch.title
-        historyPanelNotchModeHintLabel = notch.subtitle
-        historyPanelNotchOption = notch
-        notch.target = self
-        notch.action = #selector(historyPanelModeOptionClicked(_:))
-
-        optionRow.addArrangedSubview(dialog)
-        optionRow.addArrangedSubview(notch)
-        inner.addArrangedSubview(optionRow)
-        optionRow.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let triggerRow = NSStackView()
-        triggerRow.orientation = .horizontal
-        triggerRow.alignment = .centerY
-        triggerRow.spacing = 10
-        historyNotchTriggerRow = triggerRow
-        let triggerLabel = primaryLabel(L10n.historyNotchTriggerLabel)
-        historyNotchTriggerLabel = triggerLabel
-        triggerRow.addArrangedSubview(triggerLabel)
-        triggerRow.addArrangedSubview(flexSpacer())
-        let triggerPopup = NSPopUpButton(frame: .zero, pullsDown: false)
-        triggerPopup.controlSize = .small
-        triggerPopup.font = NSFont.systemFont(ofSize: 12)
-        triggerPopup.addItems(withTitles: Defaults.HistoryNotchTriggerMode.allCases.map { $0.localizedTitle })
-        triggerPopup.setAccessibilityLabel(L10n.historyNotchTriggerLabel)
-        triggerPopup.target = self
-        triggerPopup.action = #selector(historyNotchTriggerChanged(_:))
-        historyNotchTriggerPopup = triggerPopup
-        triggerRow.addArrangedSubview(triggerPopup)
-        inner.addArrangedSubview(triggerRow)
-        triggerRow.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        updateHistoryPanelModeControlsEnabled()
-
-        stack.addArrangedSubview(card)
-        card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-    }
-
     private func buildScreenshotQualityCard(into stack: NSStackView) {
         let card = CardView()
         let inner = NSStackView()
@@ -1251,21 +1089,6 @@ class SettingsView: NSView {
         let topDivider = rowDivider()
         inner.addArrangedSubview(topDivider)
         topDivider.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let upload = makeScreenshotQualityRow(
-            title: L10n.screenshotQualityUploadLabel,
-            quality: Defaults.screenshotUploadQuality,
-            action: #selector(screenshotUploadQualityChanged(_:))
-        )
-        screenshotQualityUploadTitleLabel = upload.title
-        screenshotQualityUploadHintLabel = upload.hint
-        screenshotQualityUploadPopup = upload.popup
-        inner.addArrangedSubview(upload.row)
-        upload.row.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let uploadDivider = rowDivider()
-        inner.addArrangedSubview(uploadDivider)
-        uploadDivider.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
 
         let save = makeScreenshotQualityRow(
             title: L10n.screenshotQualitySaveLabel,
@@ -2645,12 +2468,6 @@ class SettingsView: NSView {
         Defaults.recordingSavePreference = preference
     }
 
-    @objc private func screenshotUploadQualityChanged(_ sender: NSPopUpButton) {
-        guard let quality = selectedScreenshotQuality(from: sender) else { return }
-        Defaults.screenshotUploadQuality = quality
-        refreshScreenshotQualityControls()
-    }
-
     @objc private func screenshotSaveQualityChanged(_ sender: NSPopUpButton) {
         guard let quality = selectedScreenshotQuality(from: sender) else { return }
         Defaults.screenshotSaveQuality = quality
@@ -2772,38 +2589,17 @@ class SettingsView: NSView {
     @objc private func historyCacheToggled(_ sender: NSSwitch) {
         Defaults.historyCacheEnabled = sender.state == .on
         updateHistoryCacheControlsEnabled()
-        updateHistoryPanelModeControlsEnabled()
     }
 
     @objc private func clipboardTextCacheToggled(_ sender: NSSwitch) {
         Defaults.clipboardTextCacheEnabled = sender.state == .on
         updateHistoryCacheControlsEnabled()
-        updateHistoryPanelModeControlsEnabled()
     }
 
     @objc private func historyNotchTriggerChanged(_ sender: NSPopUpButton) {
         let modes = Defaults.HistoryNotchTriggerMode.allCases
         guard modes.indices.contains(sender.indexOfSelectedItem) else { return }
         Defaults.historyNotchTriggerMode = modes[sender.indexOfSelectedItem]
-    }
-
-    @objc private func historyPanelModeOptionClicked(_ sender: HistoryPanelModeOptionView) {
-        guard Defaults.isHistoryCacheAvailable else { return }
-        switch sender.mode {
-        case .dialog:
-            Defaults.historyPanelDialogEnabled = true
-        case .notch:
-            guard Defaults.historyPanelNotchAvailable else {
-                updateHistoryPanelModeControlsEnabled()
-                return
-            }
-            Defaults.historyPanelNotchEnabled = true
-        }
-        updateHistoryPanelModeControlsEnabled()
-    }
-
-    @objc private func screenParametersChanged() {
-        updateHistoryPanelModeControlsEnabled()
     }
 
     @objc private func countdownSliderChanged(_ sender: SettingsTickSlider) {
@@ -2985,15 +2781,6 @@ class SettingsView: NSView {
         }
         if slot != .fullScreenScreenshot, fullScreenScreenshotShortcutRecordingMonitor != nil {
             cancelFullScreenScreenshotShortcutRecording()
-        }
-        if slot != .textRecognition, textRecognitionShortcutRecordingMonitor != nil {
-            cancelTextRecognitionShortcutRecording()
-        }
-        if slot != .copyImageText, copyImageTextShortcutRecordingMonitor != nil {
-            cancelCopyImageTextShortcutRecording()
-        }
-        if slot != .screenshotTranslation, screenshotTranslationShortcutRecordingMonitor != nil {
-            cancelScreenshotTranslationShortcutRecording()
         }
         if slot != .record, recordShortcutRecordingMonitor != nil {
             cancelRecordShortcutRecording()
@@ -3183,273 +2970,6 @@ class SettingsView: NSView {
         } else {
             fullScreenScreenshotShortcutField?.stringValue = L10n.fullScreenScreenshotShortcutDefaultDisplay
             fullScreenScreenshotShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func textRecognitionShortcutSetClicked() {
-        if textRecognitionShortcutRecordingMonitor != nil {
-            cancelTextRecognitionShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .textRecognition)
-        HotkeyManager.shared.beginRecording()
-        textRecognitionShortcutSetButton.title = L10n.shortcutCancel
-        textRecognitionShortcutField.stringValue = L10n.shortcutWaiting
-        textRecognitionShortcutRestoreButton.isHidden = true
-
-        textRecognitionShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelTextRecognitionShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelTextRecognitionShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .textRecognition) {
-                self.cancelTextRecognitionShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.textRecognitionHotkeyKeyCode = Int(keyCode)
-            Defaults.textRecognitionHotkeyModifiers = Int(carbonMods)
-            self.finishTextRecognitionShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func textRecognitionShortcutRestoreClicked() {
-        if textRecognitionShortcutRecordingMonitor != nil {
-            cancelTextRecognitionShortcutRecording()
-        }
-        Defaults.clearTextRecognitionHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshTextRecognitionShortcutDisplay()
-    }
-
-    private func finishTextRecognitionShortcutRecording() {
-        if let m = textRecognitionShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            textRecognitionShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshTextRecognitionShortcutDisplay()
-    }
-
-    func cancelTextRecognitionShortcutRecording() {
-        guard textRecognitionShortcutRecordingMonitor != nil else { return }
-        if let m = textRecognitionShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            textRecognitionShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshTextRecognitionShortcutDisplay()
-    }
-
-    private func refreshTextRecognitionShortcutDisplay() {
-        textRecognitionShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentTextRecognitionDisplayString() {
-            textRecognitionShortcutField?.stringValue = display
-            textRecognitionShortcutRestoreButton?.isHidden = false
-        } else {
-            textRecognitionShortcutField?.stringValue = L10n.textRecognitionShortcutDefaultDisplay
-            textRecognitionShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func copyImageTextShortcutSetClicked() {
-        if copyImageTextShortcutRecordingMonitor != nil {
-            cancelCopyImageTextShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .copyImageText)
-        HotkeyManager.shared.beginRecording()
-        copyImageTextShortcutSetButton.title = L10n.shortcutCancel
-        copyImageTextShortcutField.stringValue = L10n.shortcutWaiting
-        copyImageTextShortcutRestoreButton.isHidden = true
-
-        copyImageTextShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelCopyImageTextShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelCopyImageTextShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .copyImageText) {
-                self.cancelCopyImageTextShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.copyImageTextHotkeyKeyCode = Int(keyCode)
-            Defaults.copyImageTextHotkeyModifiers = Int(carbonMods)
-            self.finishCopyImageTextShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func copyImageTextShortcutRestoreClicked() {
-        if copyImageTextShortcutRecordingMonitor != nil {
-            cancelCopyImageTextShortcutRecording()
-        }
-        Defaults.clearCopyImageTextHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshCopyImageTextShortcutDisplay()
-    }
-
-    private func finishCopyImageTextShortcutRecording() {
-        if let m = copyImageTextShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            copyImageTextShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshCopyImageTextShortcutDisplay()
-    }
-
-    func cancelCopyImageTextShortcutRecording() {
-        guard copyImageTextShortcutRecordingMonitor != nil else { return }
-        if let m = copyImageTextShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            copyImageTextShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshCopyImageTextShortcutDisplay()
-    }
-
-    private func refreshCopyImageTextShortcutDisplay() {
-        copyImageTextShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentCopyImageTextDisplayString() {
-            copyImageTextShortcutField?.stringValue = display
-            copyImageTextShortcutRestoreButton?.isHidden = false
-        } else {
-            copyImageTextShortcutField?.stringValue = L10n.copyImageTextShortcutDefaultDisplay
-            copyImageTextShortcutRestoreButton?.isHidden = true
-        }
-    }
-
-    @objc private func screenshotTranslationShortcutSetClicked() {
-        if screenshotTranslationShortcutRecordingMonitor != nil {
-            cancelScreenshotTranslationShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .screenshotTranslation)
-        HotkeyManager.shared.beginRecording()
-        screenshotTranslationShortcutSetButton.title = L10n.shortcutCancel
-        screenshotTranslationShortcutField.stringValue = L10n.shortcutWaiting
-        screenshotTranslationShortcutRestoreButton.isHidden = true
-
-        screenshotTranslationShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelScreenshotTranslationShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelScreenshotTranslationShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .screenshotTranslation) {
-                self.cancelScreenshotTranslationShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.screenshotTranslationHotkeyKeyCode = Int(keyCode)
-            Defaults.screenshotTranslationHotkeyModifiers = Int(carbonMods)
-            self.finishScreenshotTranslationShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func screenshotTranslationShortcutRestoreClicked() {
-        if screenshotTranslationShortcutRecordingMonitor != nil {
-            cancelScreenshotTranslationShortcutRecording()
-        }
-        Defaults.clearScreenshotTranslationHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshScreenshotTranslationShortcutDisplay()
-    }
-
-    private func finishScreenshotTranslationShortcutRecording() {
-        if let m = screenshotTranslationShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            screenshotTranslationShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshScreenshotTranslationShortcutDisplay()
-    }
-
-    func cancelScreenshotTranslationShortcutRecording() {
-        guard screenshotTranslationShortcutRecordingMonitor != nil else { return }
-        if let m = screenshotTranslationShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            screenshotTranslationShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshScreenshotTranslationShortcutDisplay()
-    }
-
-    private func refreshScreenshotTranslationShortcutDisplay() {
-        screenshotTranslationShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentScreenshotTranslationDisplayString() {
-            screenshotTranslationShortcutField?.stringValue = display
-            screenshotTranslationShortcutRestoreButton?.isHidden = false
-        } else {
-            screenshotTranslationShortcutField?.stringValue = L10n.screenshotTranslationShortcutDefaultDisplay
-            screenshotTranslationShortcutRestoreButton?.isHidden = true
         }
     }
 
@@ -3711,9 +3231,6 @@ class SettingsView: NSView {
     @objc private func shortcutsResetClicked() {
         cancelShortcutRecording()
         cancelFullScreenScreenshotShortcutRecording()
-        cancelTextRecognitionShortcutRecording()
-        cancelCopyImageTextShortcutRecording()
-        cancelScreenshotTranslationShortcutRecording()
         cancelRecordShortcutRecording()
         cancelClipboardShortcutRecording()
         cancelFileSaveShortcutRecording()
@@ -3722,9 +3239,6 @@ class SettingsView: NSView {
         NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
         refreshShortcutDisplay()
         refreshFullScreenScreenshotShortcutDisplay()
-        refreshTextRecognitionShortcutDisplay()
-        refreshCopyImageTextShortcutDisplay()
-        refreshScreenshotTranslationShortcutDisplay()
         refreshRecordShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
@@ -3743,7 +3257,6 @@ class SettingsView: NSView {
         screenshotQualityTitleLabel?.stringValue = L10n.screenshotQualityTitle
         screenshotQualitySubtitleLabel?.stringValue = L10n.screenshotQualitySubtitle
         screenshotQualityTitleLabel?.toolTip = L10n.screenshotQualitySubtitle
-        screenshotQualityUploadTitleLabel?.stringValue = L10n.screenshotQualityUploadLabel
         screenshotQualitySaveTitleLabel?.stringValue = L10n.screenshotQualitySaveLabel
         screenshotQualityClipboardTitleLabel?.stringValue = L10n.screenshotQualityClipboardLabel
         refreshScreenshotQualityControls()
@@ -3788,18 +3301,11 @@ class SettingsView: NSView {
         clipboardTextCacheToggleHintLabel?.stringValue = L10n.clipboardTextCacheToggleHint
         clipboardTextHistoryLimitTitleLabel?.stringValue = L10n.clipboardTextHistoryLimitLabel
         historyCacheTitleLabel?.stringValue = L10n.historyCacheLabel
-        historyPanelDisplayModeTitleLabel?.stringValue = L10n.historyPanelDisplayModeLabel
-        historyPanelDisplayModeHintLabel?.stringValue = L10n.historyPanelDisplayModeHint
-        historyPanelDialogModeTitleLabel?.stringValue = L10n.historyPanelDialogMode
-        historyPanelDialogModeHintLabel?.stringValue = L10n.historyPanelDialogModeHint
-        historyPanelNotchModeTitleLabel?.stringValue = L10n.historyPanelNotchMode
-        historyPanelNotchModeHintLabel?.stringValue = L10n.historyPanelNotchModeHint
         historyNotchTriggerLabel?.stringValue = L10n.historyNotchTriggerLabel
         historyNotchTriggerPopup?.setAccessibilityLabel(L10n.historyNotchTriggerLabel)
         for (index, mode) in Defaults.HistoryNotchTriggerMode.allCases.enumerated() {
             historyNotchTriggerPopup?.item(at: index)?.title = mode.localizedTitle
         }
-        updateHistoryPanelModeControlsEnabled()
         windowShadowTitleLabel?.stringValue = L10n.windowShadowToggleLabel
         windowShadowSubtitleLabel?.stringValue = L10n.windowShadowToggleHint
         windowShadowSizeTitleLabel?.stringValue = L10n.shadowSizeLabel
@@ -3811,12 +3317,6 @@ class SettingsView: NSView {
         shortcutRestoreButton?.toolTip = L10n.shortcutRestore
         fullScreenScreenshotShortcutTitleLabel?.stringValue = L10n.fullScreenScreenshotShortcutHeader
         fullScreenScreenshotShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        textRecognitionShortcutTitleLabel?.stringValue = L10n.textRecognitionShortcutHeader
-        textRecognitionShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        copyImageTextShortcutTitleLabel?.stringValue = L10n.copyImageTextShortcutHeader
-        copyImageTextShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        screenshotTranslationShortcutTitleLabel?.stringValue = L10n.screenshotTranslationShortcutHeader
-        screenshotTranslationShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         recordShortcutTitleLabel?.stringValue = L10n.recordShortcutHeader
         recordShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         clipboardShortcutTitleLabel?.stringValue = L10n.clipboardShortcutHeader
@@ -3843,9 +3343,6 @@ class SettingsView: NSView {
         refreshUpdateRow()
         refreshShortcutDisplay()
         refreshFullScreenScreenshotShortcutDisplay()
-        refreshTextRecognitionShortcutDisplay()
-        refreshCopyImageTextShortcutDisplay()
-        refreshScreenshotTranslationShortcutDisplay()
         refreshRecordShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
@@ -4567,356 +4064,6 @@ private final class ShadowPreviewView: NSView {
         NSColor.black.withAlphaComponent(0.08).setStroke()
         cardPath.lineWidth = 1
         cardPath.stroke()
-    }
-}
-
-private final class HistoryPanelModePreviewView: NSView {
-    var mode: HistoryPanelSettingsMode {
-        didSet { needsDisplay = true }
-    }
-
-    var isEffectEnabled: Bool = true {
-        didSet { needsDisplay = true }
-    }
-
-    private let accentBlue = NSColor(
-        calibratedRed: 0x11 / 255.0,
-        green: 0x7D / 255.0,
-        blue: 0xFF / 255.0,
-        alpha: 1.0
-    )
-    private let surfaceColor = NSColor.black
-
-    init(mode: HistoryPanelSettingsMode) {
-        self.mode = mode
-        super.init(frame: .zero)
-        wantsLayer = true
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        guard let ctx = NSGraphicsContext.current else { return }
-
-        let rect = bounds
-        let backdrop = NSBezierPath(roundedRect: rect, xRadius: 16, yRadius: 16)
-        ctx.saveGraphicsState()
-        backdrop.addClip()
-
-        NSColor(calibratedRed: 0.14, green: 0.15, blue: 0.18, alpha: 1).setFill()
-        backdrop.fill()
-        ctx.cgContext.setAlpha(isEffectEnabled ? 1 : 0.42)
-        switch mode {
-        case .dialog:
-            drawDialogPreview(in: rect.insetBy(dx: 24, dy: 18))
-        case .notch:
-            drawNotchPreview(in: rect.insetBy(dx: 24, dy: 0))
-        }
-        ctx.restoreGraphicsState()
-
-        NSColor.white.withAlphaComponent(isEffectEnabled ? 0.08 : 0.04).setStroke()
-        backdrop.lineWidth = 1
-        backdrop.stroke()
-    }
-
-    private func drawDialogPreview(in rect: NSRect) {
-        let panelWidth = min(rect.width * 0.82, 560)
-        let panelHeight = min(rect.height - 14, 86)
-        let panelRect = NSRect(
-            x: rect.midX - panelWidth / 2,
-            y: rect.midY - panelHeight / 2 - 6,
-            width: panelWidth,
-            height: panelHeight
-        )
-        drawFloatingSurface(in: panelRect, radius: 18, shadow: true)
-        drawToolbarLine(in: panelRect)
-        drawTileRow(in: panelRect.insetBy(dx: 18, dy: 16), count: 4)
-    }
-
-    private func drawNotchPreview(in rect: NSRect) {
-        let panelWidth = min(rect.width * 0.88, 620)
-        let panelHeight = min(rect.height * 0.78, 106)
-        let panelRect = NSRect(
-            x: rect.midX - panelWidth / 2,
-            y: rect.maxY - panelHeight,
-            width: panelWidth,
-            height: panelHeight
-        )
-
-        drawTopAttachedSurface(in: panelRect)
-
-        drawToolbarLine(in: panelRect, leadingInset: 36)
-        drawTileRow(in: panelRect.insetBy(dx: 34, dy: 16), count: 5)
-    }
-
-    private func drawFloatingSurface(in rect: NSRect, radius: CGFloat, shadow: Bool) {
-        let path = NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius)
-
-        guard let ctx = NSGraphicsContext.current else { return }
-        ctx.saveGraphicsState()
-        if shadow {
-            let panelShadow = NSShadow()
-            panelShadow.shadowColor = NSColor.black.withAlphaComponent(0.34)
-            panelShadow.shadowBlurRadius = 18
-            panelShadow.shadowOffset = NSSize(width: 0, height: -6)
-            panelShadow.set()
-        }
-        surfaceColor.withAlphaComponent(0.92).setFill()
-        path.fill()
-        ctx.restoreGraphicsState()
-
-        NSColor.white.withAlphaComponent(0.14).setStroke()
-        path.lineWidth = 1
-        path.stroke()
-    }
-
-    private func drawTopAttachedSurface(in rect: NSRect) {
-        let path = notchPath(in: rect, flare: 14, bottomRadius: 18)
-        surfaceColor.withAlphaComponent(0.92).setFill()
-        path.fill()
-
-        NSColor.white.withAlphaComponent(0.14).setStroke()
-        path.lineWidth = 1
-        path.stroke()
-    }
-
-    private func drawToolbarLine(in panelRect: NSRect, leadingInset: CGFloat = 18) {
-        let y = panelRect.maxY - 22
-        let active = NSRect(x: panelRect.minX + leadingInset, y: y, width: 46, height: 10)
-        accentBlue.setFill()
-        NSBezierPath(roundedRect: active, xRadius: 5, yRadius: 5).fill()
-
-        var x = active.maxX + 10
-        for _ in 0..<3 {
-            let pill = NSRect(x: x, y: y, width: 34, height: 10)
-            NSColor.white.withAlphaComponent(0.16).setFill()
-            NSBezierPath(roundedRect: pill, xRadius: 5, yRadius: 5).fill()
-            x += 44
-        }
-    }
-
-    private func drawTileRow(in rect: NSRect, count: Int) {
-        let contentRect = NSRect(
-            x: rect.minX,
-            y: rect.minY,
-            width: rect.width,
-            height: max(28, rect.height - 28)
-        )
-        let gap: CGFloat = 10
-        let tileWidth = max(34, (contentRect.width - gap * CGFloat(count - 1)) / CGFloat(count))
-        for index in 0..<count {
-            let tileRect = NSRect(
-                x: contentRect.minX + CGFloat(index) * (tileWidth + gap),
-                y: contentRect.minY,
-                width: tileWidth,
-                height: contentRect.height
-            )
-            NSColor.white.withAlphaComponent(0.10).setFill()
-            NSBezierPath(roundedRect: tileRect, xRadius: 8, yRadius: 8).fill()
-
-            let bar = NSRect(
-                x: tileRect.minX + 8,
-                y: tileRect.midY - 4,
-                width: max(18, tileRect.width - 16),
-                height: 8
-            )
-            (index == 0 ? accentBlue : NSColor.white.withAlphaComponent(0.24)).setFill()
-            NSBezierPath(roundedRect: bar, xRadius: 4, yRadius: 4).fill()
-        }
-    }
-
-    private func notchPath(in rect: NSRect, flare: CGFloat, bottomRadius: CGFloat) -> NSBezierPath {
-        let flare = max(0, min(flare, rect.width * 0.25, rect.height))
-        let bodyLeft = rect.minX + flare
-        let bodyRight = rect.maxX - flare
-        let bottom = max(0, min(bottomRadius, (bodyRight - bodyLeft) * 0.5, rect.height))
-        let path = NSBezierPath()
-        path.move(to: NSPoint(x: rect.minX, y: rect.maxY))
-        path.line(to: NSPoint(x: rect.maxX, y: rect.maxY))
-        path.curve(
-            to: NSPoint(x: bodyRight, y: rect.maxY - flare),
-            controlPoint1: NSPoint(x: rect.maxX - flare * 0.5, y: rect.maxY),
-            controlPoint2: NSPoint(x: bodyRight, y: rect.maxY - flare * 0.5)
-        )
-        path.line(to: NSPoint(x: bodyRight, y: rect.minY + bottom))
-        path.curve(
-            to: NSPoint(x: bodyRight - bottom, y: rect.minY),
-            controlPoint1: NSPoint(x: bodyRight, y: rect.minY + bottom * 0.45),
-            controlPoint2: NSPoint(x: bodyRight - bottom * 0.45, y: rect.minY)
-        )
-        path.line(to: NSPoint(x: bodyLeft + bottom, y: rect.minY))
-        path.curve(
-            to: NSPoint(x: bodyLeft, y: rect.minY + bottom),
-            controlPoint1: NSPoint(x: bodyLeft + bottom * 0.45, y: rect.minY),
-            controlPoint2: NSPoint(x: bodyLeft, y: rect.minY + bottom * 0.45)
-        )
-        path.line(to: NSPoint(x: bodyLeft, y: rect.maxY - flare))
-        path.curve(
-            to: NSPoint(x: rect.minX, y: rect.maxY),
-            controlPoint1: NSPoint(x: bodyLeft, y: rect.maxY - flare * 0.5),
-            controlPoint2: NSPoint(x: rect.minX + flare * 0.5, y: rect.maxY)
-        )
-        path.close()
-        return path
-    }
-
-}
-
-private final class HistoryPanelModeOptionView: NSControl {
-    let mode: HistoryPanelSettingsMode
-    let title: NSTextField
-    let subtitle: NSTextField
-
-    var isSelected: Bool = false {
-        didSet { applyAppearance() }
-    }
-
-    override var isEnabled: Bool {
-        didSet { applyAppearance() }
-    }
-
-    private let checkView = NSImageView()
-    private var trackingArea: NSTrackingArea?
-    private var isHovered = false {
-        didSet { applyAppearance() }
-    }
-
-    private let accentBlue = NSColor(
-        calibratedRed: 0x11 / 255.0,
-        green: 0x7D / 255.0,
-        blue: 0xFF / 255.0,
-        alpha: 1.0
-    )
-
-    init(mode: HistoryPanelSettingsMode, title: String, subtitle: String) {
-        self.mode = mode
-        self.title = NSTextField(labelWithString: title)
-        self.subtitle = NSTextField(wrappingLabelWithString: subtitle)
-        super.init(frame: .zero)
-        commonInit()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func commonInit() {
-        translatesAutoresizingMaskIntoConstraints = false
-        wantsLayer = true
-        layer?.cornerRadius = 13
-        layer?.cornerCurve = .continuous
-
-        title.font = NSFont.systemFont(ofSize: 13, weight: .semibold)
-        title.isEditable = false
-        title.isSelectable = false
-        title.refusesFirstResponder = true
-        title.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(title)
-
-        subtitle.font = NSFont.systemFont(ofSize: 11, weight: .medium)
-        subtitle.isEditable = false
-        subtitle.isSelectable = false
-        subtitle.refusesFirstResponder = true
-        subtitle.lineBreakMode = .byWordWrapping
-        subtitle.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(subtitle)
-
-        checkView.translatesAutoresizingMaskIntoConstraints = false
-        checkView.image = NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: nil)
-        checkView.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
-        checkView.imageScaling = .scaleProportionallyUpOrDown
-        addSubview(checkView)
-
-        NSLayoutConstraint.activate([
-            heightAnchor.constraint(greaterThanOrEqualToConstant: 92),
-
-            checkView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
-            checkView.topAnchor.constraint(equalTo: topAnchor, constant: 18),
-            checkView.widthAnchor.constraint(equalToConstant: 18),
-            checkView.heightAnchor.constraint(equalToConstant: 18),
-
-            title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
-            title.topAnchor.constraint(equalTo: topAnchor, constant: 18),
-            title.trailingAnchor.constraint(lessThanOrEqualTo: checkView.leadingAnchor, constant: -8),
-
-            subtitle.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
-            subtitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 4),
-            subtitle.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
-            subtitle.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -14),
-        ])
-
-        setContentCompressionResistancePriority(.required, for: .vertical)
-        applyAppearance()
-    }
-
-    override func hitTest(_ point: NSPoint) -> NSView? {
-        let result = super.hitTest(point)
-        guard let result else { return nil }
-        return result === self ? result : self
-    }
-
-    override func updateTrackingAreas() {
-        super.updateTrackingAreas()
-        if let trackingArea {
-            removeTrackingArea(trackingArea)
-        }
-        let area = NSTrackingArea(
-            rect: bounds,
-            options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect],
-            owner: self,
-            userInfo: nil
-        )
-        trackingArea = area
-        addTrackingArea(area)
-    }
-
-    override func mouseEntered(with event: NSEvent) {
-        guard isEnabled else { return }
-        isHovered = true
-    }
-
-    override func mouseExited(with event: NSEvent) {
-        isHovered = false
-    }
-
-    override func mouseDown(with event: NSEvent) {
-        guard isEnabled else { return }
-        sendAction(action, to: target)
-    }
-
-    override var acceptsFirstResponder: Bool { isEnabled }
-
-    override func keyDown(with event: NSEvent) {
-        guard isEnabled else { return }
-        let keyCode = Int(event.keyCode)
-        if keyCode == kVK_Space || keyCode == kVK_Return {
-            sendAction(action, to: target)
-        } else {
-            super.keyDown(with: event)
-        }
-    }
-
-    private func applyAppearance() {
-        let enabledAlpha: CGFloat = isEnabled ? 1 : 0.42
-        let backgroundAlpha: CGFloat
-        if isSelected {
-            backgroundAlpha = 0.052
-        } else if isHovered {
-            backgroundAlpha = 0.044
-        } else {
-            backgroundAlpha = 0.018
-        }
-
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(backgroundAlpha * enabledAlpha).cgColor
-        layer?.borderColor = (isSelected ? accentBlue : NSColor.white.withAlphaComponent(0.09 * enabledAlpha)).cgColor
-        layer?.borderWidth = isSelected ? 2 : 1
-
-        title.textColor = NSColor.white.withAlphaComponent(isEnabled ? 0.94 : 0.4)
-        subtitle.textColor = NSColor.white.withAlphaComponent(isEnabled ? 0.58 : 0.35)
-        checkView.isHidden = !isSelected
-        checkView.contentTintColor = accentBlue.withAlphaComponent(enabledAlpha)
     }
 }
 

@@ -78,11 +78,7 @@ class OverlayWindowController {
     private var editController: EditWindowController?
     private var activeSelectionView: SelectionView?
     private var activeScreen: NSScreen?
-    private var historyEntries: [HistoryEntry] = []
-    private var historyEntryIndex: Int?
-    private var historyEditorDrafts: [URL: EditWindowController.RestorableState] = [:]
     private var activeEditorContext: ActiveEditorContext?
-    private var currentEditHistoryDraft: CurrentEditHistoryDraft?
     private let windowDetector = WindowDetector()
     private let windowSnapshotLoader: WindowSnapshotLoader
     private let windowImageLoader: WindowImageLoader
@@ -147,20 +143,6 @@ class OverlayWindowController {
         let overrideBaseImage: NSImage?
         let windowBaseImage: NSImage?
         let isWindowCapture: Bool
-    }
-
-    private struct CurrentEditHistoryDraft {
-        let captureRect: CGRect
-        let screen: NSScreen
-        let selectionRect: NSRect
-        let selectionViewRect: NSRect
-        weak var hostSelectionView: SelectionView?
-        let selectionViewState: SelectionViewState
-        let preSnapshot: CGImage?
-        let overrideBaseImage: NSImage?
-        let windowBaseImage: NSImage?
-        let isWindowCapture: Bool
-        var editorState: EditWindowController.RestorableState?
     }
 
     private struct SelectionViewState {
@@ -745,9 +727,6 @@ class OverlayWindowController {
             if self?.editController?.deleteSelectedAnnotationFromKeyboard(for: event) == true {
                 return nil
             }
-            if self?.switchHistoryImageFromKeyboard(for: event) == true {
-                return nil
-            }
             if event.keyCode == 53 { // Escape
                 if self?.colorSamplerActiveProvider() == true {
                     return event
@@ -1289,10 +1268,6 @@ class OverlayWindowController {
         activeSelectionView = nil
         activeScreen = nil
         activeEditorContext = nil
-        currentEditHistoryDraft = nil
-        historyEditorDrafts.removeAll()
-        historyEntries.removeAll()
-        historyEntryIndex = nil
     }
 
     // MARK: - Coordinate Conversion
@@ -1401,12 +1376,9 @@ class OverlayWindowController {
             ClipboardManager.copyColorToClipboard(hex: hex)
         case .rgb:
             value = rgb
-            ClipboardManager.copyToClipboard(text: rgb, skipHistory: true)
+            ClipboardManager.copyToClipboard(text: rgb)
         }
-        if Defaults.historyCacheEnabled {
-            HistoryManager.shared.addColor(hex: hex)
-            Defaults.lastPickedColorHex = hex
-        }
+        Defaults.lastPickedColorHex = hex
         let toastScreen = NSScreen.screens.first(where: { $0.frame.contains(NSEvent.mouseLocation) }) ?? NSScreen.main
         ToastWindow.show(message: L10n.colorCopied(value), on: toastScreen)
     }
@@ -1503,9 +1475,6 @@ extension OverlayWindowController: SelectionViewDelegate {
         if editController != nil {
             // Selection was adjusted — it no longer matches the clicked
             // window's bounds, so window-only effects no longer apply.
-            historyEntryIndex = nil
-            currentEditHistoryDraft = nil
-            historyEditorDrafts.removeAll()
             editController?.isWindowCapture = false
             editController?.updateLayout(
                 selectionRect: screenRect,
@@ -1845,186 +1814,9 @@ extension OverlayWindowController: SelectionViewDelegate {
         editController?.show()
     }
 
-    private func switchHistoryImageFromKeyboard(for event: NSEvent) -> Bool {
-        guard postCaptureAction == .edit,
-              let editController,
-              !editController.blocksHistoryNavigation
-        else {
-            return false
-        }
-        return false
-    }
-
-    private func switchHistoryImage(offset: Int) -> Bool {
-        refreshHistoryEntriesIfNeeded()
-        guard !historyEntries.isEmpty else { return false }
-
-        if historyEntryIndex == nil {
-            guard offset > 0 else { return true }
-            captureCurrentEditHistoryDraftIfNeeded()
-        } else if historyEntryIndex == currentEditDraftIndex {
-            currentEditHistoryDraft?.editorState = editController?.restorableState()
-        } else {
-            captureCurrentHistoryEditorDraftIfNeeded()
-        }
-
-        var nextIndex: Int
-        if let currentIndex = historyEntryIndex {
-            nextIndex = currentIndex + offset
-        } else {
-            guard offset > 0 else { return true }
-            nextIndex = 0
-        }
-        let minimumIndex = currentEditHistoryDraft == nil ? 0 : -1
-        guard nextIndex >= minimumIndex, nextIndex < historyEntries.count else { return true }
-
-        if nextIndex == currentEditDraftIndex {
-            return restoreCurrentEditHistoryDraft(at: nextIndex)
-        }
-
-        var image: NSImage?
-        while nextIndex >= 0, nextIndex < historyEntries.count {
-            image = HistoryManager.shared.image(for: historyEntries[nextIndex])
-            if image != nil {
-                break
-            }
-            nextIndex += offset
-        }
-        if nextIndex == currentEditDraftIndex {
-            return restoreCurrentEditHistoryDraft(at: nextIndex)
-        }
-        guard let image else {
-            return true
-        }
-        guard let screen = activeScreen ?? NSScreen.screens.first,
-              let window = windows.first(where: { $0.screen == screen }),
-              let selectionView = window.contentView as? SelectionView
-        else { return false }
-
-        editController?.tearDown()
-        editController = nil
-
-        let displayMetrics = Self.displayMetrics(for: image.size, on: screen)
-        let visibleRect = Self.visibleRectInSelectionView(for: screen)
-        let viewRect = NSRect(
-            x: visibleRect.midX - displayMetrics.viewportSize.width / 2,
-            y: visibleRect.midY - displayMetrics.viewportSize.height / 2,
-            width: displayMetrics.viewportSize.width,
-            height: displayMetrics.viewportSize.height
-        )
-        let screenRect = convertToScreenRect(viewRect, view: selectionView)
-        let cgRect = convertToCGRect(screenRect)
-
-        selectionView.updateSelectionRect(viewRect)
-        selectionView.selectionSizeLabelOverride = Self.scaleLabelText(
-            imageSize: image.size,
-            displaySize: displayMetrics.canvasSize
-        )
-        selectionView.selectionLocked = true
-        selectionView.selectionInteractionEnabled = true
-        selectionView.selectionAdjustmentBounds = viewRect
-
-        activeSelectionView = selectionView
-        activeScreen = screen
-        historyEntryIndex = nextIndex
-        let historyDraft = historyEditorDrafts[historyEntries[nextIndex].fileURL]
-
-        showEditor(
-            captureRect: cgRect,
-            screen: screen,
-            selectionRect: screenRect,
-            selectionViewRect: viewRect,
-            hostSelectionView: selectionView,
-            preSnapshot: nil,
-            overrideBaseImage: image,
-            windowBaseImage: nil,
-            isWindowCapture: false
-        )
-        if let historyDraft {
-            editController?.restoreState(historyDraft)
-        }
-        return true
-    }
-
-    private var currentEditDraftIndex: Int? {
-        currentEditHistoryDraft == nil ? nil : -1
-    }
-
-    private func captureCurrentEditHistoryDraftIfNeeded() {
-        guard currentEditHistoryDraft == nil,
-              let editController,
-              let context = activeEditorContext,
-              let activeSelectionView = context.hostSelectionView
-        else { return }
-
-        currentEditHistoryDraft = CurrentEditHistoryDraft(
-            captureRect: context.captureRect,
-            screen: context.screen,
-            selectionRect: context.selectionRect,
-            selectionViewRect: context.selectionViewRect,
-            hostSelectionView: activeSelectionView,
-            selectionViewState: SelectionViewState(selectionView: activeSelectionView),
-            preSnapshot: context.preSnapshot,
-            overrideBaseImage: context.overrideBaseImage,
-            windowBaseImage: context.windowBaseImage,
-            isWindowCapture: editController.isWindowCapture,
-            editorState: editController.restorableState()
-        )
-    }
-
-    private func captureCurrentHistoryEditorDraftIfNeeded() {
-        guard let historyEntryIndex,
-              historyEntryIndex >= 0,
-              historyEntryIndex < historyEntries.count,
-              let editorState = editController?.restorableState()
-        else { return }
-
-        historyEditorDrafts[historyEntries[historyEntryIndex].fileURL] = editorState
-    }
-
-    private func restoreCurrentEditHistoryDraft(at index: Int) -> Bool {
-        guard let draft = currentEditHistoryDraft,
-              let selectionView = draft.hostSelectionView
-        else { return true }
-
-        editController?.tearDown()
-        editController = nil
-
-        selectionView.updateSelectionRect(draft.selectionViewRect)
-        draft.selectionViewState.apply(to: selectionView)
-
-        activeSelectionView = selectionView
-        activeScreen = draft.screen
-        historyEntryIndex = index
-
-        showEditor(
-            captureRect: draft.captureRect,
-            screen: draft.screen,
-            selectionRect: draft.selectionRect,
-            selectionViewRect: draft.selectionViewRect,
-            hostSelectionView: selectionView,
-            preSnapshot: draft.preSnapshot,
-            overrideBaseImage: draft.overrideBaseImage,
-            windowBaseImage: draft.windowBaseImage,
-            isWindowCapture: draft.isWindowCapture
-        )
-        if let editorState = draft.editorState {
-            editController?.restoreState(editorState)
-        }
-        return true
-    }
-
-    private func refreshHistoryEntriesIfNeeded() {
-        guard historyEntries.isEmpty else { return }
-        historyEntries = HistoryManager.shared.imageEntries()
-    }
-
     func selectionDidChange(rect: NSRect, inView view: NSView) {
         guard let _ = view.window else { return }
         // A resize/move drag changes the rect away from the clicked window.
-        historyEntryIndex = nil
-        currentEditHistoryDraft = nil
-        historyEditorDrafts.removeAll()
         editController?.isWindowCapture = false
         let screenRect = convertToScreenRect(rect, view: view)
         let cgRect = convertToCGRect(screenRect)

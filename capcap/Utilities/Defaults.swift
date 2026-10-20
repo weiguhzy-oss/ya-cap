@@ -71,13 +71,7 @@ enum AppLanguage: String, CaseIterable {
 
 extension Notification.Name {
     static let languageDidChange = Notification.Name("capcap.languageDidChange")
-    static let historyCacheEnabledDidChange = Notification.Name("capcap.historyCacheEnabledDidChange")
-    static let clipboardTextCacheEnabledDidChange = Notification.Name("capcap.clipboardTextCacheEnabledDidChange")
-    static let historyCacheLimitDidChange = Notification.Name("capcap.historyCacheLimitDidChange")
-    static let clipboardTextHistoryLimitDidChange = Notification.Name("capcap.clipboardTextHistoryLimitDidChange")
-    static let historyDidUpdate = Notification.Name("capcap.historyDidUpdate")
     static let recordingSaveDirectoryDidChange = Notification.Name("capcap.recordingSaveDirectoryDidChange")
-    static let historyPanelDisplayModesDidChange = Notification.Name("capcap.historyPanelDisplayModesDidChange")
     static let hotkeyDidChange = Notification.Name("capcap.hotkeyDidChange")
     static let editorShortcutsDidChange = Notification.Name("capcap.editorShortcutsDidChange")
     static let translationConfigDidChange = Notification.Name("capcap.translationConfigDidChange")
@@ -103,21 +97,6 @@ enum L10n {
     static var launchAtLogin: String { s("launchAtLogin") }
     static var pinAcrossSpaces: String { s("pinAcrossSpaces") }
     static var pinAcrossSpacesHint: String { s("pinAcrossSpacesHint") }
-    static var historyCacheToggleLabel: String { s("historyCacheToggleLabel") }
-    static var historyCacheToggleHint: String { s("historyCacheToggleHint") }
-    static var clipboardTextCacheToggleLabel: String { s("clipboardTextCacheToggleLabel") }
-    static var clipboardTextCacheToggleHint: String { s("clipboardTextCacheToggleHint") }
-    static var clipboardTextHistoryLimitLabel: String { s("clipboardTextHistoryLimitLabel") }
-    static var historyCacheLabel: String { s("historyCacheLabel") }
-    static var historyPanelDisplayModeLabel: String { s("historyPanelDisplayModeLabel") }
-    static var historyPanelDisplayModeHint: String { s("historyPanelDisplayModeHint") }
-    static var historyPanelDialogMode: String { s("historyPanelDialogMode") }
-    static var historyPanelDialogModeHint: String { s("historyPanelDialogModeHint") }
-    static var historyPanelNotchMode: String { s("historyPanelNotchMode") }
-    static var historyPanelNotchModeHint: String { s("historyPanelNotchModeHint") }
-    static var historyNotchTriggerLabel: String { s("historyNotchTriggerLabel") }
-    static var historyNotchTriggerHover: String { s("historyNotchTriggerHover") }
-    static var historyNotchTriggerClick: String { s("historyNotchTriggerClick") }
     static var countdownLabel: String { s("countdownLabel") }
     static var countdownHint: String { s("countdownHint") }
     static var countdownSecondsSuffix: String { s("countdownSecondsSuffix") }
@@ -199,8 +178,6 @@ enum L10n {
     static var clipboardShortcutHint: String { s("clipboardShortcutHint") }
     static var clipboardShortcutDefaultDisplay: String { s("clipboardShortcutDefaultDisplay") }
 
-    // History navigation shortcuts (editor)
-
     // Save-to-file shortcut (editor save)
     static var fileSaveShortcutHeader: String { s("fileSaveShortcutHeader") }
     static var fileSaveShortcutHint: String { s("fileSaveShortcutHint") }
@@ -224,86 +201,8 @@ enum L10n {
     static var colorPicker: String { s("colorPicker") }
     static var settings: String { s("settings") }
     static var quitApp: String { s("quitApp") }
-    static var historyMenu: String { s("historyMenu") }
-    static var historyClear: String { s("historyClear") }
-    static var historyCleared: String { s("historyCleared") }
-    static var historyShowInFinder: String { s("historyShowInFinder") }
-    static var historyPanelLock: String { s("historyPanelLock") }
-    static var historyPanelUnlock: String { s("historyPanelUnlock") }
-    static var historyPanelMenu: String { s("historyPanelMenu") }
-    static var historyPanelDeleteAll: String { s("historyPanelDeleteAll") }
-    static func historyPanelDeleteSelected(_ count: Int) -> String {
-        let key = count == 1 ? "historyPanelDeleteSelectedOne" : "historyPanelDeleteSelected"
-        return String(format: s(key), count)
-    }
-    static func historyPanelDeletedSelected(_ count: Int) -> String {
-        let key = count == 1 ? "historyPanelDeletedSelectedOne" : "historyPanelDeletedSelected"
-        return String(format: s(key), count)
-    }
-    static var historyPanelFavorite: String { s("historyPanelFavorite") }
-    static var historyPanelUnfavorite: String { s("historyPanelUnfavorite") }
-    static var historyPanelItemFavorited: String { s("historyPanelItemFavorited") }
-    static var historyPanelItemUnfavorited: String { s("historyPanelItemUnfavorited") }
-    static var historyPanelFavoriteFailed: String { s("historyPanelFavoriteFailed") }
-    static func historyDeletedSkippingFavorites(removed: Int, skipped: Int) -> String {
-        String(format: s("historyDeletedSkippingFavorites"), removed, skipped)
-    }
-    static var historyPanelFilterAll: String { s("historyPanelFilterAll") }
-    static var historyPanelFilterScreenshots: String { s("historyPanelFilterScreenshots") }
-    static var historyPanelFilterGIF: String { s("historyPanelFilterGIF") }
-    static var historyPanelFilterMP4: String { s("historyPanelFilterMP4") }
-    static var historyPanelFilterColors: String { s("historyPanelFilterColors") }
-    static var historyPanelFilterText: String { s("historyPanelFilterText") }
-    static var historyPanelFilterFiles: String { s("historyPanelFilterFiles") }
-    static var historyPanelFolder: String { s("historyPanelFolder") }
-    static var historyPanelSearchFiles: String { s("historyPanelSearchFiles") }
-    static var historyPanelSourceUnavailable: String { s("historyPanelSourceUnavailable") }
-    static var historyPanelSourceUnavailableHint: String { s("historyPanelSourceUnavailableHint") }
-    static var historyFilePreviewPrevious: String { s("historyFilePreviewPrevious") }
-    static var historyFilePreviewNext: String { s("historyFilePreviewNext") }
-    static var historyFilePreviewLoading: String { s("historyFilePreviewLoading") }
-    static var historyFilePreviewRetry: String { s("historyFilePreviewRetry") }
-    static var historyFilePreviewUnavailable: String { s("historyFilePreviewUnavailable") }
-    static var historyPanelSearchColorsAndText: String { s("historyPanelSearchColorsAndText") }
-    static var historyPanelSearchColors: String { s("historyPanelSearchColors") }
-    static var historyPanelSearchText: String { s("historyPanelSearchText") }
-    static var historyPanelClearSearch: String { s("historyPanelClearSearch") }
-    static var historyPanelSearchNoResults: String { s("historyPanelSearchNoResults") }
-    static var historyPreviewTextSaveFailed: String { s("historyPreviewTextSaveFailed") }
-    static var historyPreviewCopyText: String { s("historyPreviewCopyText") }
-    static var historyPreviewTranslateText: String { s("historyPreviewTranslateText") }
-    static var historyPreviewConvertToQRCode: String { s("historyPreviewConvertToQRCode") }
-    static var historyPreviewQRCodeTooLong: String { s("historyPreviewQRCodeTooLong") }
     static var historyPreviewOriginalText: String { s("historyPreviewOriginalText") }
     static var historyPreviewQRCodeTitle: String { s("historyPreviewQRCodeTitle") }
-    static var historyPanelCopyHint: String { s("historyPanelCopyHint") }
-    static var historyPanelCopyDragHint: String { s("historyPanelCopyDragHint") }
-    static var historyPanelCopyMarkdownLink: String { s("historyPanelCopyMarkdownLink") }
-    static var historyPanelCopyPlainLink: String { s("historyPanelCopyPlainLink") }
-    static var historyPanelEmpty: String { s("historyPanelEmpty") }
-    static var historyPanelShortcutGuide: String { s("historyPanelShortcutGuide") }
-    static var historyPanelShortcutGuideHide: String { s("historyPanelShortcutGuideHide") }
-    static var historyPanelShortcutKeyClick: String { s("historyPanelShortcutKeyClick") }
-    static var historyPanelShortcutKeyDrag: String { s("historyPanelShortcutKeyDrag") }
-    static var historyPanelShortcutKeySpace: String { s("historyPanelShortcutKeySpace") }
-    static var historyPanelShortcutSearch: String { s("historyPanelShortcutSearch") }
-    static var historyPanelShortcutSwitchFilter: String { s("historyPanelShortcutSwitchFilter") }
-    static var historyPanelShortcutSwitchItem: String { s("historyPanelShortcutSwitchItem") }
-    static var historyPanelShortcutToggleSelection: String { s("historyPanelShortcutToggleSelection") }
-    static var historyPanelShortcutRangeSelection: String { s("historyPanelShortcutRangeSelection") }
-    static var historyPanelShortcutSelectAll: String { s("historyPanelShortcutSelectAll") }
-    static var historyPanelShortcutCancel: String { s("historyPanelShortcutCancel") }
-    static var historyPanelShortcutCopyItem: String { s("historyPanelShortcutCopyItem") }
-    static var historyPanelShortcutDragItem: String { s("historyPanelShortcutDragItem") }
-    static var historyPanelShortcutOpenPreview: String { s("historyPanelShortcutOpenPreview") }
-    static var historyPanelShortcutBrowsePreview: String { s("historyPanelShortcutBrowsePreview") }
-    static var historyPanelShortcutClosePreview: String { s("historyPanelShortcutClosePreview") }
-    static var historyPanelShortcutCopyPreview: String { s("historyPanelShortcutCopyPreview") }
-    static var historyPanelShortcutEditImage: String { s("historyPanelShortcutEditImage") }
-    static var historyPanelShortcutPinImage: String { s("historyPanelShortcutPinImage") }
-    static var historyPanelShortcutTranslateText: String { s("historyPanelShortcutTranslateText") }
-    static var historyPanelShortcutQRCode: String { s("historyPanelShortcutQRCode") }
-    static var historyPanelShortcutToggleGuide: String { s("historyPanelShortcutToggleGuide") }
 
     // Cursor chip
     static var dragToScreenshot: String { s("dragToScreenshot") }
@@ -494,7 +393,6 @@ enum L10n {
     static var settingsGeneralBasic: String { s("settingsGeneralBasic") }
     static var settingsGeneralCapture: String { s("settingsGeneralCapture") }
     static var settingsGeneralRecording: String { s("settingsGeneralRecording") }
-    static var settingsGeneralHistory: String { s("settingsGeneralHistory") }
     static var settingsGeneralFiles: String { s("settingsGeneralFiles") }
     static var settingsTabShortcuts: String { s("settingsTabShortcuts") }
     static var settingsTabPermissions: String { s("settingsTabPermissions") }
@@ -1228,10 +1126,6 @@ struct Defaults {
         defaults.removeObject(forKey: "fileSaveHotkeyModifiers")
     }
 
-    // History navigation hotkeys used inside the editor overlay. Defaults are
-    // comma for previous and period for next. Like clipboard/save editor
-    // hotkeys, bare keys are allowed because matching is local to the editor.
-
     static var penColor: Int {
         get {
             let val = defaults.integer(forKey: "penColor")
@@ -1452,8 +1346,7 @@ struct Defaults {
 
     static var lastPickedColorHex: String? {
         get {
-            guard historyCacheEnabled else { return nil }
-            return normalizedHexColor(defaults.string(forKey: "lastPickedColorHex"))
+            normalizedHexColor(defaults.string(forKey: "lastPickedColorHex"))
         }
         set {
             if let normalized = normalizedHexColor(newValue) {
@@ -1596,32 +1489,6 @@ struct Defaults {
         set {
             defaults.set(newValue, forKey: "lastBeautifyEnabled")
             defaults.removeObject(forKey: "beautifyAutoEnabled")
-        }
-    }
-
-    static let historyCacheMin: Int = 10
-    static let historyCacheMax: Int = 200
-    static let historyCacheStep: Int = 10
-    static let clipboardTextHistoryLimitMin: Int = 50
-    static let clipboardTextHistoryLimitMax: Int = 500
-    static let clipboardTextHistoryLimitStep: Int = 50
-
-    static var historyCacheEnabled: Bool {
-        get {
-            if defaults.object(forKey: "historyCacheEnabled") == nil {
-                return true
-            }
-            return defaults.bool(forKey: "historyCacheEnabled")
-        }
-        set {
-            let oldValue = historyCacheEnabled
-            defaults.set(newValue, forKey: "historyCacheEnabled")
-            if !newValue {
-                lastPickedColorHex = nil
-            }
-            if oldValue != newValue {
-                NotificationCenter.default.post(name: .historyCacheEnabledDidChange, object: nil)
-            }
         }
     }
 
@@ -1813,43 +1680,6 @@ struct Defaults {
         set { defaults.set(min(30, max(1, newValue)), forKey: "magnifierLensPanelCrosshairWidth") }
     }
 
-    static var clipboardTextCacheEnabled: Bool {
-        get {
-            if defaults.object(forKey: "clipboardTextCacheEnabled") == nil {
-                return false
-            }
-            return defaults.bool(forKey: "clipboardTextCacheEnabled")
-        }
-        set {
-            let oldValue = clipboardTextCacheEnabled
-            defaults.set(newValue, forKey: "clipboardTextCacheEnabled")
-            if oldValue != newValue {
-                NotificationCenter.default.post(name: .clipboardTextCacheEnabledDidChange, object: nil)
-            }
-        }
-    }
-
-    static var clipboardTextHistoryLimit: Int {
-        get {
-            if defaults.object(forKey: "clipboardTextHistoryLimit") == nil {
-                return 100
-            }
-            let value = defaults.integer(forKey: "clipboardTextHistoryLimit")
-            return normalizedClipboardTextHistoryLimit(value)
-        }
-        set {
-            defaults.set(
-                normalizedClipboardTextHistoryLimit(newValue),
-                forKey: "clipboardTextHistoryLimit"
-            )
-            NotificationCenter.default.post(name: .clipboardTextHistoryLimitDidChange, object: nil)
-        }
-    }
-
-    static var isHistoryCacheAvailable: Bool {
-        historyCacheEnabled || clipboardTextCacheEnabled || HistoryManager.shared.hasFavoriteEntries()
-    }
-
     static let countdownSecondsMin: Int = 3
     static let countdownSecondsMax: Int = 10
 
@@ -1864,110 +1694,6 @@ struct Defaults {
         set {
             let clamped = min(max(newValue, countdownSecondsMin), countdownSecondsMax)
             defaults.set(clamped, forKey: "countdownSeconds")
-        }
-    }
-
-    static var historyCacheLimit: Int {
-        get {
-            if defaults.object(forKey: "historyCacheLimit") == nil {
-                return 10
-            }
-            let val = defaults.integer(forKey: "historyCacheLimit")
-            return normalizedHistoryCacheLimit(val)
-        }
-        set {
-            defaults.set(normalizedHistoryCacheLimit(newValue), forKey: "historyCacheLimit")
-            NotificationCenter.default.post(name: .historyCacheLimitDidChange, object: nil)
-        }
-    }
-
-    private static func normalizedHistoryCacheLimit(_ value: Int) -> Int {
-        let clamped = min(max(value, historyCacheMin), historyCacheMax)
-        let offset = clamped - historyCacheMin
-        let snapped = historyCacheMin + ((offset + historyCacheStep / 2) / historyCacheStep) * historyCacheStep
-        return min(max(snapped, historyCacheMin), historyCacheMax)
-    }
-
-    private static func normalizedClipboardTextHistoryLimit(_ value: Int) -> Int {
-        let clamped = min(max(value, clipboardTextHistoryLimitMin), clipboardTextHistoryLimitMax)
-        let offset = clamped - clipboardTextHistoryLimitMin
-        let snapped = clipboardTextHistoryLimitMin
-            + ((offset + clipboardTextHistoryLimitStep / 2) / clipboardTextHistoryLimitStep)
-            * clipboardTextHistoryLimitStep
-        return min(max(snapped, clipboardTextHistoryLimitMin), clipboardTextHistoryLimitMax)
-    }
-
-    enum HistoryNotchTriggerMode: String, CaseIterable {
-        case hover
-        case click
-
-        var localizedTitle: String {
-            switch self {
-            case .hover: return L10n.historyNotchTriggerHover
-            case .click: return L10n.historyNotchTriggerClick
-            }
-        }
-    }
-
-    static var historyNotchTriggerMode: HistoryNotchTriggerMode {
-        get {
-            HistoryNotchTriggerMode(rawValue: defaults.string(forKey: "historyNotchTriggerMode") ?? "") ?? .hover
-        }
-        set { defaults.set(newValue.rawValue, forKey: "historyNotchTriggerMode") }
-    }
-
-    static var historyPanelDialogEnabled: Bool {
-        get {
-            historyPanelDisplayMode == .dialog
-        }
-        set {
-            if newValue {
-                setHistoryPanelDisplayMode(.dialog)
-            }
-        }
-    }
-
-    static var historyPanelNotchEnabled: Bool {
-        get {
-            historyPanelDisplayMode == .notch
-        }
-        set {
-            if newValue {
-                setHistoryPanelDisplayMode(historyPanelNotchAvailable ? .notch : .dialog)
-            }
-        }
-    }
-
-    static var historyPanelNotchAvailable: Bool {
-        DisplayCapabilities.supportsHistoryPanelNotch
-    }
-
-    private enum HistoryPanelDisplayMode {
-        case dialog
-        case notch
-    }
-
-    private static var historyPanelDisplayMode: HistoryPanelDisplayMode {
-        let hasDialog = defaults.object(forKey: "historyPanelDialogEnabled") != nil
-        let hasNotch = defaults.object(forKey: "historyPanelNotchEnabled") != nil
-        guard hasDialog || hasNotch else {
-            return historyPanelNotchAvailable ? .notch : .dialog
-        }
-
-        let dialog = hasDialog ? defaults.bool(forKey: "historyPanelDialogEnabled") : false
-        let notch = hasNotch ? defaults.bool(forKey: "historyPanelNotchEnabled") : false
-        if dialog { return .dialog }
-        if notch, historyPanelNotchAvailable { return .notch }
-        return .dialog
-    }
-
-    private static func setHistoryPanelDisplayMode(_ mode: HistoryPanelDisplayMode) {
-        let mode = mode == .notch && !historyPanelNotchAvailable ? .dialog : mode
-        let oldMode = historyPanelDisplayMode
-        defaults.set(mode == .dialog, forKey: "historyPanelDialogEnabled")
-        defaults.set(mode == .notch, forKey: "historyPanelNotchEnabled")
-        if oldMode != mode {
-            NotificationCenter.default.post(name: .historyPanelDisplayModesDidChange, object: nil)
         }
     }
 

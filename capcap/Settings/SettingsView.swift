@@ -10,7 +10,6 @@ enum SettingsTab: CaseIterable {
     case toolbar
     case capture
     case recording
-    case history
     case files
     case ocr
     case translation
@@ -23,7 +22,6 @@ enum SettingsTab: CaseIterable {
         case .shortcuts: return L10n.settingsTabShortcuts
         case .capture: return L10n.settingsGeneralCapture
         case .recording: return L10n.settingsGeneralRecording
-        case .history: return L10n.settingsGeneralHistory
         case .files: return L10n.settingsGeneralFiles
         case .toolbar: return L10n.settingsTabToolbar
         case .ocr: return L10n.settingsTabOCR
@@ -39,7 +37,6 @@ enum SettingsTab: CaseIterable {
         case .shortcuts: return "keyboard"
         case .capture: return "crop"
         case .recording: return "record.circle"
-        case .history: return "clock"
         case .files: return "doc"
         case .toolbar: return "slider.horizontal.3"
         case .ocr: return "text.viewfinder"
@@ -51,16 +48,12 @@ enum SettingsTab: CaseIterable {
 
     var iconTint: NSColor {
         switch self {
-        case .general: return NSColor(calibratedRed: 0.62, green: 0.66, blue: 0.72, alpha: 1.0)
-        case .shortcuts, .capture:
-            return NSColor(calibratedRed: 0.36, green: 0.66, blue: 0.98, alpha: 1.0)
-        case .toolbar, .recording:
-            return NSColor(calibratedRed: 0.95, green: 0.54, blue: 0.62, alpha: 1.0)
-        case .translation, .files, .ocr:
-            return NSColor(calibratedRed: 0.38, green: 0.80, blue: 0.78, alpha: 1.0)
-        case .permissions: return NSColor(calibratedRed: 0.36, green: 0.78, blue: 0.50, alpha: 1.0)
-        case .about, .history:
-            return NSColor(calibratedRed: 0.70, green: 0.56, blue: 0.96, alpha: 1.0)
+        case .general: return DesignTokens.Colors.tabGray
+        case .shortcuts, .capture: return DesignTokens.Colors.tabBlue
+        case .toolbar, .recording: return DesignTokens.Colors.tabPink
+        case .translation, .files, .ocr: return DesignTokens.Colors.tabCyan
+        case .permissions: return DesignTokens.Colors.tabGreen
+        case .about: return DesignTokens.Colors.tabPurple
         }
     }
 }
@@ -76,15 +69,7 @@ class SettingsView: NSView {
 
     // Picker & slider
     private var langPicker: NSPopUpButton!
-    private var historyCacheSwitch: NSSwitch!
-    private var clipboardTextCacheSwitch: NSSwitch!
 
-    private var historyCacheSlider: SettingsTickSlider!
-    private var historyCacheValueLabel: NSTextField!
-    private var clipboardTextHistoryLimitSlider: SettingsTickSlider!
-    private var clipboardTextHistoryLimitValueLabel: NSTextField!
-    private var historyNotchTriggerLabel: NSTextField?
-    private var historyNotchTriggerPopup: NSPopUpButton?
     private var countdownSlider: SettingsTickSlider!
     private var countdownValueLabel: NSTextField!
     private var countdownTitleLabel: NSTextField!
@@ -149,12 +134,6 @@ class SettingsView: NSView {
     private var pinAcrossSpacesTitleLabel: NSTextField!
     private var pinAcrossSpacesSubtitleLabel: NSTextField!
     private var langTitleLabel: NSTextField!
-    private var historyCacheToggleTitleLabel: NSTextField!
-    private var historyCacheToggleHintLabel: NSTextField?
-    private var clipboardTextCacheToggleTitleLabel: NSTextField!
-    private var clipboardTextCacheToggleHintLabel: NSTextField?
-    private var clipboardTextHistoryLimitTitleLabel: NSTextField!
-    private var historyCacheTitleLabel: NSTextField!
     private var permHeaderSubtitleLabel: NSTextField?
     private var accessibilityNameLabel: NSTextField!
     private var accessibilityDescLabel: NSTextField!
@@ -192,7 +171,6 @@ class SettingsView: NSView {
     private var tabButtons: [TabButton] = []
     private var detailTitleLabel: NSTextField!
     private var detailScrollView: NSScrollView!
-    private var historyNotchTriggerRow: NSView?
 
     private var paneContainer: NSView!
     private var paneViews: [SettingsTab: NSView] = [:]
@@ -288,9 +266,9 @@ class SettingsView: NSView {
     private func setupBackground() {
         let gradient = CAGradientLayer()
         gradient.colors = [
-            NSColor(calibratedRed: 0.10, green: 0.13, blue: 0.17, alpha: 1.0).cgColor,
-            NSColor(calibratedRed: 0.08, green: 0.10, blue: 0.14, alpha: 1.0).cgColor,
-            NSColor(calibratedRed: 0.11, green: 0.10, blue: 0.10, alpha: 1.0).cgColor,
+            DesignTokens.Colors.windowGradientStart.cgColor,
+            DesignTokens.Colors.windowGradientMid.cgColor,
+            DesignTokens.Colors.windowGradientEnd.cgColor,
         ]
         gradient.startPoint = CGPoint(x: 0, y: 1)
         gradient.endPoint = CGPoint(x: 1, y: 0)
@@ -426,22 +404,22 @@ class SettingsView: NSView {
 
         let badge = NSView()
         badge.wantsLayer = true
-        badge.layer?.cornerRadius = 4
+        badge.layer?.cornerRadius = DesignTokens.BorderRadius.small
         badge.layer?.cornerCurve = .continuous
         badge.layer?.backgroundColor = color.withAlphaComponent(0.18).cgColor
         badge.translatesAutoresizingMaskIntoConstraints = false
 
         let label = NSTextField(labelWithString: title)
-        label.font = NSFont.systemFont(ofSize: 9, weight: .semibold)
+        label.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.tiny - 1, weight: DesignTokens.Typography.FontWeight.semibold)
         label.textColor = color
         label.translatesAutoresizingMaskIntoConstraints = false
         badge.addSubview(label)
 
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: badge.topAnchor, constant: 2),
-            label.bottomAnchor.constraint(equalTo: badge.bottomAnchor, constant: -2),
-            label.leadingAnchor.constraint(equalTo: badge.leadingAnchor, constant: 6),
-            label.trailingAnchor.constraint(equalTo: badge.trailingAnchor, constant: -6),
+            label.topAnchor.constraint(equalTo: badge.topAnchor, constant: DesignTokens.Spacing.xs / 2),
+            label.bottomAnchor.constraint(equalTo: badge.bottomAnchor, constant: -DesignTokens.Spacing.xs / 2),
+            label.leadingAnchor.constraint(equalTo: badge.leadingAnchor, constant: DesignTokens.Spacing.s - 2),
+            label.trailingAnchor.constraint(equalTo: badge.trailingAnchor, constant: -(DesignTokens.Spacing.s - 2)),
         ])
         badge.setContentHuggingPriority(.required, for: .horizontal)
         badge.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -494,8 +472,8 @@ class SettingsView: NSView {
 
         // Title
         let title = NSTextField(labelWithString: SettingsTab.general.title)
-        title.font = NSFont.systemFont(ofSize: 20, weight: .bold)
-        title.textColor = NSColor.white.withAlphaComponent(0.96)
+        title.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.header + 4, weight: DesignTokens.Typography.FontWeight.bold)
+        title.textColor = DesignTokens.Colors.textPrimary
         title.translatesAutoresizingMaskIntoConstraints = false
         panel.addSubview(title)
         detailTitleLabel = title
@@ -542,7 +520,6 @@ class SettingsView: NSView {
         let basic = paneStack()
         let capture = paneStack()
         let recording = paneStack()
-        let history = paneStack()
         let files = paneStack()
 
         let togglesCard = CardView()
@@ -565,7 +542,7 @@ class SettingsView: NSView {
         langPicker.target = self
         langPicker.action = #selector(languageChanged(_:))
         langPicker.controlSize = .small
-        langPicker.font = NSFont.systemFont(ofSize: 12)
+        langPicker.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
         langRow.addArrangedSubview(langPicker)
 
         togglesInner.addArrangedSubview(langRow)
@@ -620,7 +597,6 @@ class SettingsView: NSView {
         pinCard.widthAnchor.constraint(equalTo: capture.widthAnchor).isActive = true
 
         buildRecordingCard(into: recording)
-        buildHistoryCards(into: history)
         buildSavePathCard(into: files)
         buildScreenshotQualityCard(into: files)
         let filenameCard = FilenameRuleCard()
@@ -631,7 +607,6 @@ class SettingsView: NSView {
         paneViews[.general] = wrapPane(basic)
         paneViews[.capture] = wrapPane(capture)
         paneViews[.recording] = wrapPane(recording)
-        paneViews[.history] = wrapPane(history)
         paneViews[.files] = wrapPane(files)
     }
 
@@ -677,7 +652,7 @@ class SettingsView: NSView {
 
         windowShadowSizeValueLabel = NSTextField(labelWithString: "\(Int(Defaults.windowShadowSize.rounded()))")
         windowShadowSizeValueLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .semibold)
-        windowShadowSizeValueLabel.textColor = NSColor.white.withAlphaComponent(0.88)
+        windowShadowSizeValueLabel.textColor = DesignTokens.Colors.textPrimary
         header.addArrangedSubview(windowShadowSizeValueLabel)
 
         inner.addArrangedSubview(header)
@@ -721,21 +696,9 @@ class SettingsView: NSView {
     private func updateWindowShadowControlsEnabled() {
         let on = Defaults.windowShadowEnabled
         windowShadowSlider?.isEnabled = on
-        windowShadowSizeTitleLabel?.textColor = NSColor.white.withAlphaComponent(on ? 0.94 : 0.4)
-        windowShadowSizeValueLabel?.textColor = NSColor.white.withAlphaComponent(on ? 0.88 : 0.4)
+        windowShadowSizeTitleLabel?.textColor = on ? DesignTokens.Colors.textPrimary : DesignTokens.Colors.textTertiary
+        windowShadowSizeValueLabel?.textColor = on ? DesignTokens.Colors.textPrimary : DesignTokens.Colors.textTertiary
         windowShadowPreview?.isEffectEnabled = on
-    }
-
-    private func updateHistoryCacheControlsEnabled() {
-        let mediaOn = Defaults.historyCacheEnabled
-        historyCacheSlider?.isEnabled = mediaOn
-        historyCacheTitleLabel?.textColor = NSColor.white.withAlphaComponent(mediaOn ? 0.94 : 0.4)
-        historyCacheValueLabel?.textColor = NSColor.white.withAlphaComponent(mediaOn ? 0.88 : 0.4)
-
-        let textOn = Defaults.clipboardTextCacheEnabled
-        clipboardTextHistoryLimitSlider?.isEnabled = textOn
-        clipboardTextHistoryLimitTitleLabel?.textColor = NSColor.white.withAlphaComponent(textOn ? 0.94 : 0.4)
-        clipboardTextHistoryLimitValueLabel?.textColor = NSColor.white.withAlphaComponent(textOn ? 0.88 : 0.4)
     }
 
     private func refreshSavePathControls() {
@@ -808,7 +771,9 @@ class SettingsView: NSView {
     private func updateMicrophoneControlsEnabled() {
         let enabled = Defaults.recordingMicrophoneEnabled
         recordingMicrophoneDevicePopup?.isEnabled = enabled
-        recordingMicrophoneDeviceTitleLabel?.textColor = NSColor.white.withAlphaComponent(enabled ? 0.94 : 0.4)
+        recordingMicrophoneDeviceTitleLabel?.textColor = enabled
+            ? DesignTokens.Colors.textPrimary
+            : DesignTokens.Colors.textDisabled
     }
 
     @objc private func recordingMicrophoneDeviceChanged(_ sender: NSPopUpButton) {
@@ -893,118 +858,6 @@ class SettingsView: NSView {
         return wrapPane(stack)
     }
 
-    private func buildHistoryCards(into stack: NSStackView) {
-        // History cache card
-        let historyCard = CardView()
-        let historyInner = NSStackView()
-        historyInner.orientation = .vertical
-        historyInner.alignment = .leading
-        historyInner.spacing = 10
-        historyInner.translatesAutoresizingMaskIntoConstraints = false
-        historyCard.addSubview(historyInner)
-        pin(historyInner, to: historyCard, insets: NSEdgeInsets(top: 4, left: 14, bottom: 14, right: 14))
-
-        let historyToggle = makeToggleRow(
-            title: L10n.historyCacheToggleLabel,
-            subtitle: L10n.historyCacheToggleHint,
-            isOn: Defaults.historyCacheEnabled,
-            action: #selector(historyCacheToggled(_:))
-        )
-        historyCacheToggleTitleLabel = historyToggle.title
-        historyCacheToggleHintLabel = historyToggle.subtitle
-        historyCacheSwitch = historyToggle.toggle
-        historyInner.addArrangedSubview(historyToggle.row)
-        historyToggle.row.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let historyHeader = NSStackView()
-        historyHeader.orientation = .horizontal
-        historyHeader.alignment = .firstBaseline
-        historyHeader.spacing = 8
-        historyHeader.translatesAutoresizingMaskIntoConstraints = false
-
-        historyCacheTitleLabel = primaryLabel(L10n.historyCacheLabel)
-        historyHeader.addArrangedSubview(historyCacheTitleLabel)
-        historyHeader.addArrangedSubview(flexSpacer())
-
-        historyCacheValueLabel = NSTextField(labelWithString: "\(Defaults.historyCacheLimit)")
-        historyCacheValueLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .semibold)
-        historyCacheValueLabel.textColor = NSColor.white.withAlphaComponent(0.88)
-        historyHeader.addArrangedSubview(historyCacheValueLabel)
-
-        historyInner.addArrangedSubview(historyHeader)
-        historyHeader.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let slider = SettingsTickSlider(
-            value: Double(Defaults.historyCacheLimit),
-            minValue: Double(Defaults.historyCacheMin),
-            maxValue: Double(Defaults.historyCacheMax),
-            stepValue: Double(Defaults.historyCacheStep),
-            numberOfTickMarks: (Defaults.historyCacheMax - Defaults.historyCacheMin) / Defaults.historyCacheStep + 1,
-            target: self,
-            action: #selector(historyCacheSliderChanged(_:))
-        )
-        slider.translatesAutoresizingMaskIntoConstraints = false
-        historyCacheSlider = slider
-        historyInner.addArrangedSubview(slider)
-        slider.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let clipboardTextDivider = rowDivider()
-        historyInner.addArrangedSubview(clipboardTextDivider)
-        clipboardTextDivider.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let clipboardTextToggle = makeToggleRow(
-            title: L10n.clipboardTextCacheToggleLabel,
-            subtitle: L10n.clipboardTextCacheToggleHint,
-            isOn: Defaults.clipboardTextCacheEnabled,
-            action: #selector(clipboardTextCacheToggled(_:))
-        )
-        clipboardTextCacheToggleTitleLabel = clipboardTextToggle.title
-        clipboardTextCacheToggleHintLabel = clipboardTextToggle.subtitle
-        clipboardTextCacheSwitch = clipboardTextToggle.toggle
-        historyInner.addArrangedSubview(clipboardTextToggle.row)
-        clipboardTextToggle.row.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let clipboardTextHistoryHeader = NSStackView()
-        clipboardTextHistoryHeader.orientation = .horizontal
-        clipboardTextHistoryHeader.alignment = .firstBaseline
-        clipboardTextHistoryHeader.spacing = 8
-        clipboardTextHistoryHeader.translatesAutoresizingMaskIntoConstraints = false
-
-        clipboardTextHistoryLimitTitleLabel = primaryLabel(L10n.clipboardTextHistoryLimitLabel)
-        clipboardTextHistoryHeader.addArrangedSubview(clipboardTextHistoryLimitTitleLabel)
-        clipboardTextHistoryHeader.addArrangedSubview(flexSpacer())
-
-        clipboardTextHistoryLimitValueLabel = NSTextField(
-            labelWithString: "\(Defaults.clipboardTextHistoryLimit)"
-        )
-        clipboardTextHistoryLimitValueLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .semibold)
-        clipboardTextHistoryLimitValueLabel.textColor = NSColor.white.withAlphaComponent(0.88)
-        clipboardTextHistoryHeader.addArrangedSubview(clipboardTextHistoryLimitValueLabel)
-
-        historyInner.addArrangedSubview(clipboardTextHistoryHeader)
-        clipboardTextHistoryHeader.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let clipboardTextSlider = SettingsTickSlider(
-            value: Double(Defaults.clipboardTextHistoryLimit),
-            minValue: Double(Defaults.clipboardTextHistoryLimitMin),
-            maxValue: Double(Defaults.clipboardTextHistoryLimitMax),
-            stepValue: Double(Defaults.clipboardTextHistoryLimitStep),
-            numberOfTickMarks: (Defaults.clipboardTextHistoryLimitMax - Defaults.clipboardTextHistoryLimitMin)
-                / Defaults.clipboardTextHistoryLimitStep + 1,
-            target: self,
-            action: #selector(clipboardTextHistoryLimitSliderChanged(_:))
-        )
-        clipboardTextSlider.translatesAutoresizingMaskIntoConstraints = false
-        clipboardTextHistoryLimitSlider = clipboardTextSlider
-        historyInner.addArrangedSubview(clipboardTextSlider)
-        clipboardTextSlider.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        updateHistoryCacheControlsEnabled()
-
-        stack.addArrangedSubview(historyCard)
-        historyCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-    }
 
     private func buildCountdownCard(into stack: NSStackView) {
         // Countdown card
@@ -1029,7 +882,7 @@ class SettingsView: NSView {
 
         countdownValueLabel = NSTextField(labelWithString: "\(Defaults.countdownSeconds)\(L10n.countdownSecondsSuffix)")
         countdownValueLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .semibold)
-        countdownValueLabel.textColor = NSColor.white.withAlphaComponent(0.88)
+        countdownValueLabel.textColor = DesignTokens.Colors.textPrimary
         countdownHeader.addArrangedSubview(countdownValueLabel)
 
         countdownInner.addArrangedSubview(countdownHeader)
@@ -1143,7 +996,7 @@ class SettingsView: NSView {
 
         let popup = NSPopUpButton(frame: .zero, pullsDown: false)
         popup.controlSize = .small
-        popup.font = NSFont.systemFont(ofSize: 12)
+        popup.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
         popup.target = self
         popup.action = action
         popup.translatesAutoresizingMaskIntoConstraints = false
@@ -1268,7 +1121,7 @@ class SettingsView: NSView {
 
         recordingSaveFormatPopup = NSPopUpButton(frame: .zero, pullsDown: false)
         recordingSaveFormatPopup.controlSize = .small
-        recordingSaveFormatPopup.font = NSFont.systemFont(ofSize: 12)
+        recordingSaveFormatPopup.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
         recordingSaveFormatPopup.target = self
         recordingSaveFormatPopup.action = #selector(recordingSaveFormatPreferenceChanged(_:))
         recordingSaveFormatPopup.translatesAutoresizingMaskIntoConstraints = false
@@ -1325,7 +1178,7 @@ class SettingsView: NSView {
 
         recordingMicrophoneDevicePopup = NSPopUpButton(frame: .zero, pullsDown: false)
         recordingMicrophoneDevicePopup?.controlSize = .small
-        recordingMicrophoneDevicePopup?.font = NSFont.systemFont(ofSize: 12)
+        recordingMicrophoneDevicePopup?.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
         recordingMicrophoneDevicePopup?.target = self
         recordingMicrophoneDevicePopup?.action = #selector(recordingMicrophoneDeviceChanged(_:))
         recordingMicrophoneDevicePopup?.translatesAutoresizingMaskIntoConstraints = false
@@ -1367,14 +1220,14 @@ class SettingsView: NSView {
         let chooseButton = NSButton(title: L10n.savePathChoose, target: self, action: chooseAction)
         chooseButton.bezelStyle = .rounded
         chooseButton.controlSize = .small
-        chooseButton.font = NSFont.systemFont(ofSize: 11)
+        chooseButton.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.tiny)
         chooseButton.setContentHuggingPriority(.required, for: .horizontal)
         row.addArrangedSubview(chooseButton)
 
         let revealButton = NSButton(title: L10n.savePathReveal, target: self, action: revealAction)
         revealButton.bezelStyle = .rounded
         revealButton.controlSize = .small
-        revealButton.font = NSFont.systemFont(ofSize: 11)
+        revealButton.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.tiny)
         revealButton.setContentHuggingPriority(.required, for: .horizontal)
         row.addArrangedSubview(revealButton)
 
@@ -1490,12 +1343,12 @@ class SettingsView: NSView {
         headerRow.addArrangedSubview(iconView)
 
         let nameLabel = NSTextField(labelWithString: "Ya cap")
-        nameLabel.font = NSFont.systemFont(ofSize: 18, weight: .bold)
-        nameLabel.textColor = NSColor.white.withAlphaComponent(0.96)
+        nameLabel.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.header + 2, weight: DesignTokens.Typography.FontWeight.bold)
+        nameLabel.textColor = DesignTokens.Colors.textPrimary
 
         let versionLabel = NSTextField(labelWithString: appVersionString())
-        versionLabel.font = NSFont.systemFont(ofSize: 12, weight: .regular)
-        versionLabel.textColor = NSColor.white.withAlphaComponent(0.55)
+        versionLabel.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small, weight: DesignTokens.Typography.FontWeight.regular)
+        versionLabel.textColor = DesignTokens.Colors.textSecondary
 
         let versionRow = NSStackView(views: [versionLabel, makeBuildConfigurationBadge()])
         versionRow.orientation = .horizontal
@@ -1604,8 +1457,11 @@ class SettingsView: NSView {
         errorLogTitleLabel = titleLabel
 
         let statusLabel = NSTextField(labelWithString: "")
-        statusLabel.font = NSFont.systemFont(ofSize: 12, weight: .regular)
-        statusLabel.textColor = NSColor.white.withAlphaComponent(0.55)
+        statusLabel.font = NSFont.systemFont(
+            ofSize: DesignTokens.Typography.FontSize.small,
+            weight: DesignTokens.Typography.FontWeight.regular
+        )
+        statusLabel.textColor = DesignTokens.Colors.textTertiary
         statusLabel.lineBreakMode = .byTruncatingTail
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         errorLogStatusLabel = statusLabel
@@ -1621,7 +1477,7 @@ class SettingsView: NSView {
 
         let chevron = NSImageView(frame: NSRect(x: 0, y: 0, width: 12, height: 12))
         chevron.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)
-        chevron.contentTintColor = NSColor.white.withAlphaComponent(0.32)
+        chevron.contentTintColor = DesignTokens.Colors.textQuaternary
         chevron.imageScaling = .scaleProportionallyUpOrDown
         chevron.wantsLayer = true
         chevron.autoresizingMask = []
@@ -1659,22 +1515,22 @@ class SettingsView: NSView {
         let scroll = NSScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
         scroll.drawsBackground = true
-        scroll.backgroundColor = NSColor.black.withAlphaComponent(0.22)
+        scroll.backgroundColor = DesignTokens.Colors.backgroundSunken
         scroll.hasVerticalScroller = true
         scroll.hasHorizontalScroller = false
         scroll.autohidesScrollers = true
         scroll.borderType = .noBorder
         scroll.wantsLayer = true
-        scroll.layer?.cornerRadius = 8
+        scroll.layer?.cornerRadius = DesignTokens.BorderRadius.medium
         scroll.layer?.masksToBounds = true
 
         let textView = NSTextView()
         textView.isEditable = false
         textView.isSelectable = true
         textView.drawsBackground = false
-        textView.textColor = NSColor.white.withAlphaComponent(0.82)
+        textView.textColor = DesignTokens.Colors.textSecondary
         textView.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
-        textView.textContainerInset = NSSize(width: 8, height: 8)
+        textView.textContainerInset = NSSize(width: DesignTokens.Spacing.s, height: DesignTokens.Spacing.s)
         textView.minSize = NSSize(width: 0, height: 0)
         textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude,
                                   height: CGFloat.greatestFiniteMagnitude)
@@ -1690,7 +1546,7 @@ class SettingsView: NSView {
             let button = NSButton(title: title, target: self, action: action)
             button.bezelStyle = .rounded
             button.controlSize = .small
-            button.font = NSFont.systemFont(ofSize: 12)
+            button.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
             button.translatesAutoresizingMaskIntoConstraints = false
             return button
         }
@@ -1798,13 +1654,13 @@ class SettingsView: NSView {
         errorLogLoaded = true
         if let entry = errorLogEntry {
             errorLogTextView?.string = CrashLogReader.readableText(at: entry.url)
-            errorLogTextView?.textColor = NSColor.white.withAlphaComponent(0.82)
+            errorLogTextView?.textColor = DesignTokens.Colors.textSecondary
             errorLogCopyButton?.isEnabled = true
             errorLogRevealButton?.isEnabled = true
             errorLogClearButton?.isEnabled = true
         } else {
             errorLogTextView?.string = L10n.aboutErrorLogEmptyBody
-            errorLogTextView?.textColor = NSColor.white.withAlphaComponent(0.55)
+            errorLogTextView?.textColor = DesignTokens.Colors.textTertiary
             errorLogCopyButton?.isEnabled = false
             errorLogRevealButton?.isEnabled = false
             errorLogClearButton?.isEnabled = false
@@ -1819,13 +1675,13 @@ class SettingsView: NSView {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm"
             label.stringValue = L10n.aboutErrorLogLastCrash(formatter.string(from: entry.date))
-            label.textColor = NSColor(calibratedRed: 0.95, green: 0.55, blue: 0.45, alpha: 1.0)
+            label.textColor = DesignTokens.Colors.warning
             errorLogCopyButton?.isEnabled = errorLogLoaded
             errorLogRevealButton?.isEnabled = errorLogLoaded
             errorLogClearButton?.isEnabled = true
         } else {
             label.stringValue = L10n.aboutErrorLogNoCrash
-            label.textColor = NSColor.white.withAlphaComponent(0.55)
+            label.textColor = DesignTokens.Colors.textTertiary
             errorLogCopyButton?.isEnabled = false
             errorLogRevealButton?.isEnabled = false
             errorLogClearButton?.isEnabled = false
@@ -1866,7 +1722,7 @@ class SettingsView: NSView {
         errorLogEntry = nil
         errorLogLoaded = true
         errorLogTextView?.string = L10n.aboutErrorLogEmptyBody
-        errorLogTextView?.textColor = NSColor.white.withAlphaComponent(0.55)
+        errorLogTextView?.textColor = DesignTokens.Colors.textTertiary
         errorLogCopyButton?.isEnabled = false
         errorLogRevealButton?.isEnabled = false
         errorLogClearButton?.isEnabled = false
@@ -1882,8 +1738,11 @@ class SettingsView: NSView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let valueLabel = NSTextField(labelWithString: value)
-        valueLabel.font = NSFont.systemFont(ofSize: 12, weight: .regular)
-        valueLabel.textColor = NSColor.white.withAlphaComponent(0.55)
+        valueLabel.font = NSFont.systemFont(
+            ofSize: DesignTokens.Typography.FontSize.small,
+            weight: DesignTokens.Typography.FontWeight.regular
+        )
+        valueLabel.textColor = DesignTokens.Colors.textTertiary
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
 
         row.addSubview(titleLabel)
@@ -1907,20 +1766,23 @@ class SettingsView: NSView {
         button.action = action
         button.title = ""
         button.isBordered = false
-        button.cornerRadius = 10
+        button.cornerRadius = DesignTokens.BorderRadius.medium
 
         let titleLabel = primaryLabel(title)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let valueLabel = NSTextField(labelWithString: value)
-        valueLabel.font = NSFont.systemFont(ofSize: 12, weight: .regular)
-        valueLabel.textColor = NSColor(calibratedRed: 0.42, green: 0.66, blue: 0.98, alpha: 1.0)
+        valueLabel.font = NSFont.systemFont(
+            ofSize: DesignTokens.Typography.FontSize.small,
+            weight: DesignTokens.Typography.FontWeight.regular
+        )
+        valueLabel.textColor = DesignTokens.Colors.primaryLight
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         valueLabel.setContentHuggingPriority(.required, for: .horizontal)
 
         let chevron = NSTextField(labelWithString: "\u{203A}")
         chevron.font = NSFont.systemFont(ofSize: 18, weight: .regular)
-        chevron.textColor = NSColor.white.withAlphaComponent(0.32)
+        chevron.textColor = DesignTokens.Colors.textQuaternary
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.setContentHuggingPriority(.required, for: .horizontal)
 
@@ -1975,8 +1837,11 @@ class SettingsView: NSView {
         aboutUpdateTitleLabel = titleLabel
 
         let statusLabel = NSTextField(labelWithString: "")
-        statusLabel.font = NSFont.systemFont(ofSize: 12, weight: .regular)
-        statusLabel.textColor = NSColor.white.withAlphaComponent(0.55)
+        statusLabel.font = NSFont.systemFont(
+            ofSize: DesignTokens.Typography.FontSize.small,
+            weight: DesignTokens.Typography.FontWeight.regular
+        )
+        statusLabel.textColor = DesignTokens.Colors.textTertiary
         statusLabel.lineBreakMode = .byTruncatingTail
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         aboutUpdateStatusLabel = statusLabel
@@ -1985,7 +1850,7 @@ class SettingsView: NSView {
                               action: #selector(aboutUpdateButtonClicked))
         button.bezelStyle = .rounded
         button.controlSize = .small
-        button.font = NSFont.systemFont(ofSize: 12)
+        button.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -2029,9 +1894,9 @@ class SettingsView: NSView {
     /// Syncs the Updates row to the current check state.
     @objc private func refreshUpdateRow() {
         guard let statusLabel = aboutUpdateStatusLabel, let button = aboutUpdateButton else { return }
-        let dim = NSColor.white.withAlphaComponent(0.55)
-        let accent = NSColor(calibratedRed: 0.42, green: 0.66, blue: 0.98, alpha: 1.0)
-        let warn = NSColor(calibratedRed: 0.95, green: 0.55, blue: 0.45, alpha: 1.0)
+        let dim = DesignTokens.Colors.textTertiary
+        let accent = DesignTokens.Colors.primaryLight
+        let warn = DesignTokens.Colors.warningSoft
 
         switch UpdateChecker.shared.state {
         case .idle:
@@ -2081,7 +1946,7 @@ class SettingsView: NSView {
         let s = NSStackView()
         s.orientation = .vertical
         s.alignment = .leading
-        s.spacing = 12
+        s.spacing = 16  // Semi $spacing-base
         s.translatesAutoresizingMaskIntoConstraints = false
         return s
     }
@@ -2092,9 +1957,9 @@ class SettingsView: NSView {
         host.addSubview(stack)
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: host.topAnchor, constant: 4),
-            stack.leadingAnchor.constraint(equalTo: host.leadingAnchor, constant: 22),
-            stack.trailingAnchor.constraint(equalTo: host.trailingAnchor, constant: -22),
-            stack.bottomAnchor.constraint(equalTo: host.bottomAnchor, constant: -22),
+            stack.leadingAnchor.constraint(equalTo: host.leadingAnchor, constant: 24),  // Semi $spacing-loose
+            stack.trailingAnchor.constraint(equalTo: host.trailingAnchor, constant: -24),
+            stack.bottomAnchor.constraint(equalTo: host.bottomAnchor, constant: -24),
         ])
         return host
     }
@@ -2113,7 +1978,7 @@ class SettingsView: NSView {
     private func rowDivider() -> NSView {
         let v = NSView()
         v.wantsLayer = true
-        v.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.06).cgColor
+        v.layer?.backgroundColor = DesignTokens.Colors.divider.cgColor
         v.translatesAutoresizingMaskIntoConstraints = false
         v.heightAnchor.constraint(equalToConstant: 1).isActive = true
         return v
@@ -2129,15 +1994,18 @@ class SettingsView: NSView {
 
     private func primaryLabel(_ text: String) -> NSTextField {
         let l = NSTextField(labelWithString: text)
-        l.font = NSFont.systemFont(ofSize: 13, weight: .semibold)
-        l.textColor = NSColor.white.withAlphaComponent(0.94)
+        l.font = NSFont.systemFont(
+            ofSize: DesignTokens.Typography.FontSize.regular,
+            weight: DesignTokens.Typography.FontWeight.semibold
+        )
+        l.textColor = DesignTokens.Colors.textPrimary
         return l
     }
 
     private func secondaryLabel(_ text: String, wrapping: Bool = false) -> NSTextField {
         let l = wrapping ? NSTextField(wrappingLabelWithString: text) : NSTextField(labelWithString: text)
-        l.font = NSFont.systemFont(ofSize: 11)
-        l.textColor = NSColor.white.withAlphaComponent(0.58)
+        l.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
+        l.textColor = DesignTokens.Colors.textSecondary
         if wrapping {
             l.preferredMaxLayoutWidth = 360
         }
@@ -2170,10 +2038,10 @@ class SettingsView: NSView {
         let inner = NSStackView()
         inner.orientation = .vertical
         inner.alignment = .leading
-        inner.spacing = 8
+        inner.spacing = 12  // Semi $spacing-base-tight
         inner.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(inner)
-        pin(inner, to: card, insets: NSEdgeInsets(top: 12, left: 14, bottom: 12, right: 14))
+        pin(inner, to: card, insets: NSEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))  // Semi $spacing-base
 
         let row = NSStackView()
         row.orientation = .horizontal
@@ -2191,16 +2059,16 @@ class SettingsView: NSView {
         field.isBordered = false
         field.drawsBackground = false
         field.alignment = .center
-        field.font = NSFont.systemFont(ofSize: 12, weight: .medium)
-        field.textColor = NSColor.white.withAlphaComponent(0.92)
+        field.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small, weight: DesignTokens.Typography.FontWeight.medium)
+        field.textColor = DesignTokens.Colors.textPrimary
         field.translatesAutoresizingMaskIntoConstraints = false
 
         let fieldBackground = NSView()
         fieldBackground.wantsLayer = true
-        fieldBackground.layer?.cornerRadius = 5
+        fieldBackground.layer?.cornerRadius = DesignTokens.BorderRadius.small
         fieldBackground.layer?.cornerCurve = .continuous
-        fieldBackground.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.08).cgColor
-        fieldBackground.layer?.borderColor = NSColor.white.withAlphaComponent(0.10).cgColor
+        fieldBackground.layer?.backgroundColor = DesignTokens.Colors.backgroundHover.cgColor
+        fieldBackground.layer?.borderColor = DesignTokens.Colors.border.cgColor
         fieldBackground.layer?.borderWidth = 1
         fieldBackground.translatesAutoresizingMaskIntoConstraints = false
         fieldBackground.addSubview(field)
@@ -2216,7 +2084,7 @@ class SettingsView: NSView {
         let setButton = NSButton(title: L10n.shortcutSet, target: self, action: setAction)
         setButton.bezelStyle = .rounded
         setButton.controlSize = .small
-        setButton.font = NSFont.systemFont(ofSize: 12)
+        setButton.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
         setButton.translatesAutoresizingMaskIntoConstraints = false
         row.addArrangedSubview(setButton)
 
@@ -2231,7 +2099,7 @@ class SettingsView: NSView {
         restoreButton.bezelStyle = .inline
         restoreButton.isBordered = false
         restoreButton.imagePosition = .imageOnly
-        restoreButton.contentTintColor = NSColor.white.withAlphaComponent(0.62)
+        restoreButton.contentTintColor = DesignTokens.Colors.textSecondary
         restoreButton.toolTip = L10n.shortcutRestore
         restoreButton.translatesAutoresizingMaskIntoConstraints = false
         restoreButton.widthAnchor.constraint(equalToConstant: 22).isActive = true
@@ -2377,7 +2245,7 @@ class SettingsView: NSView {
         button.action = action
         button.title = ""
         button.isBordered = false
-        button.cornerRadius = 10
+        button.cornerRadius = DesignTokens.BorderRadius.medium
 
         let nameLbl = primaryLabel(name)
         nameLbl.translatesAutoresizingMaskIntoConstraints = false
@@ -2404,7 +2272,7 @@ class SettingsView: NSView {
 
         let chevron = NSTextField(labelWithString: "\u{203A}")
         chevron.font = NSFont.systemFont(ofSize: 18, weight: .regular)
-        chevron.textColor = NSColor.white.withAlphaComponent(0.32)
+        chevron.textColor = DesignTokens.Colors.textQuaternary
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.setContentHuggingPriority(.required, for: .horizontal)
 
@@ -2555,45 +2423,6 @@ class SettingsView: NSView {
     private func revealSaveDirectory(_ url: URL) {
         try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         NSWorkspace.shared.activateFileViewerSelecting([url])
-    }
-
-    @objc private func historyCacheSliderChanged(_ sender: SettingsTickSlider) {
-        guard Defaults.historyCacheEnabled else {
-            sender.doubleValue = Double(Defaults.historyCacheLimit)
-            return
-        }
-        let value = Int(sender.doubleValue.rounded())
-        Defaults.historyCacheLimit = value
-        let normalizedValue = Defaults.historyCacheLimit
-        sender.doubleValue = Double(normalizedValue)
-        historyCacheValueLabel?.stringValue = "\(normalizedValue)"
-    }
-
-    @objc private func clipboardTextHistoryLimitSliderChanged(_ sender: SettingsTickSlider) {
-        guard Defaults.clipboardTextCacheEnabled else {
-            sender.doubleValue = Double(Defaults.clipboardTextHistoryLimit)
-            return
-        }
-        Defaults.clipboardTextHistoryLimit = Int(sender.doubleValue.rounded())
-        let normalizedValue = Defaults.clipboardTextHistoryLimit
-        sender.doubleValue = Double(normalizedValue)
-        clipboardTextHistoryLimitValueLabel?.stringValue = "\(normalizedValue)"
-    }
-
-    @objc private func historyCacheToggled(_ sender: NSSwitch) {
-        Defaults.historyCacheEnabled = sender.state == .on
-        updateHistoryCacheControlsEnabled()
-    }
-
-    @objc private func clipboardTextCacheToggled(_ sender: NSSwitch) {
-        Defaults.clipboardTextCacheEnabled = sender.state == .on
-        updateHistoryCacheControlsEnabled()
-    }
-
-    @objc private func historyNotchTriggerChanged(_ sender: NSPopUpButton) {
-        let modes = Defaults.HistoryNotchTriggerMode.allCases
-        guard modes.indices.contains(sender.indexOfSelectedItem) else { return }
-        Defaults.historyNotchTriggerMode = modes[sender.indexOfSelectedItem]
     }
 
     @objc private func countdownSliderChanged(_ sender: SettingsTickSlider) {
@@ -3289,17 +3118,6 @@ class SettingsView: NSView {
         screenRecordingDescLabel?.stringValue = L10n.screenRecordingDescription
         microphoneNameLabel?.stringValue = L10n.microphonePermission
         microphoneDescLabel?.stringValue = L10n.microphoneDescription
-        historyCacheToggleTitleLabel?.stringValue = L10n.historyCacheToggleLabel
-        historyCacheToggleHintLabel?.stringValue = L10n.historyCacheToggleHint
-        clipboardTextCacheToggleTitleLabel?.stringValue = L10n.clipboardTextCacheToggleLabel
-        clipboardTextCacheToggleHintLabel?.stringValue = L10n.clipboardTextCacheToggleHint
-        clipboardTextHistoryLimitTitleLabel?.stringValue = L10n.clipboardTextHistoryLimitLabel
-        historyCacheTitleLabel?.stringValue = L10n.historyCacheLabel
-        historyNotchTriggerLabel?.stringValue = L10n.historyNotchTriggerLabel
-        historyNotchTriggerPopup?.setAccessibilityLabel(L10n.historyNotchTriggerLabel)
-        for (index, mode) in Defaults.HistoryNotchTriggerMode.allCases.enumerated() {
-            historyNotchTriggerPopup?.item(at: index)?.title = mode.localizedTitle
-        }
         windowShadowTitleLabel?.stringValue = L10n.windowShadowToggleLabel
         windowShadowSubtitleLabel?.stringValue = L10n.windowShadowToggleHint
         windowShadowSizeTitleLabel?.stringValue = L10n.shadowSizeLabel
@@ -3371,19 +3189,19 @@ private final class SidebarPanel: NSView {
 
     private func commonInit() {
         wantsLayer = true
-        layer?.cornerRadius = 22
+        layer?.cornerRadius = DesignTokens.BorderRadius.sidebar
         layer?.cornerCurve = .continuous
-        layer?.borderColor = NSColor.white.withAlphaComponent(0.10).cgColor
+        layer?.borderColor = DesignTokens.Colors.border.cgColor
         layer?.borderWidth = 1
 
         let g = CAGradientLayer()
         g.colors = [
-            NSColor(calibratedRed: 0.11, green: 0.17, blue: 0.25, alpha: 1.0).cgColor,
-            NSColor(calibratedRed: 0.08, green: 0.12, blue: 0.18, alpha: 1.0).cgColor,
+            DesignTokens.Colors.sidebarGradientStart.cgColor,
+            DesignTokens.Colors.sidebarGradientEnd.cgColor,
         ]
         g.startPoint = CGPoint(x: 0, y: 1)
         g.endPoint = CGPoint(x: 1, y: 0)
-        g.cornerRadius = 22
+        g.cornerRadius = DesignTokens.BorderRadius.sidebar
         layer?.insertSublayer(g, at: 0)
         gradientLayer = g
     }
@@ -3408,19 +3226,19 @@ private final class DetailPanel: NSView {
 
     private func commonInit() {
         wantsLayer = true
-        layer?.cornerRadius = 24
+        layer?.cornerRadius = DesignTokens.BorderRadius.panel
         layer?.cornerCurve = .continuous
-        layer?.borderColor = NSColor.white.withAlphaComponent(0.06).cgColor
+        layer?.borderColor = DesignTokens.Colors.divider.cgColor
         layer?.borderWidth = 1
 
         let g = CAGradientLayer()
         g.colors = [
-            NSColor(calibratedRed: 0.13, green: 0.14, blue: 0.17, alpha: 1.0).cgColor,
-            NSColor(calibratedRed: 0.10, green: 0.11, blue: 0.13, alpha: 1.0).cgColor,
+            DesignTokens.Colors.detailGradientStart.cgColor,
+            DesignTokens.Colors.detailGradientEnd.cgColor,
         ]
         g.startPoint = CGPoint(x: 0, y: 1)
         g.endPoint = CGPoint(x: 1, y: 0)
-        g.cornerRadius = 24
+        g.cornerRadius = DesignTokens.BorderRadius.panel
         layer?.insertSublayer(g, at: 0)
         gradientLayer = g
     }
@@ -3440,9 +3258,9 @@ private final class SidebarSeparatorView: NSView {
         translatesAutoresizingMaskIntoConstraints = false
         wantsLayer = true
         gradient.colors = [
-            NSColor.white.withAlphaComponent(0).cgColor,
-            NSColor.white.withAlphaComponent(0.18).cgColor,
-            NSColor.white.withAlphaComponent(0).cgColor,
+            NSColor.clear.cgColor,
+            DesignTokens.Colors.borderStrong.cgColor,
+            NSColor.clear.cgColor,
         ]
         gradient.locations = [0, 0.5, 1]
         gradient.startPoint = CGPoint(x: 0, y: 0.5)
@@ -3485,12 +3303,12 @@ private final class TabButton: NSControl {
         self.tab = tab
         super.init(frame: .zero)
         wantsLayer = true
-        layer?.cornerRadius = 12
+        layer?.cornerRadius = DesignTokens.BorderRadius.large
         layer?.cornerCurve = .continuous
 
         iconChip.translatesAutoresizingMaskIntoConstraints = false
         iconChip.wantsLayer = true
-        iconChip.layer?.cornerRadius = 8
+        iconChip.layer?.cornerRadius = DesignTokens.BorderRadius.medium
         iconChip.layer?.cornerCurve = .continuous
         iconChip.layer?.borderWidth = 1
         addSubview(iconChip)
@@ -3502,7 +3320,7 @@ private final class TabButton: NSControl {
         iconChip.addSubview(iconView)
 
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = NSFont.systemFont(ofSize: 14, weight: .semibold)
+        label.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.regular, weight: .semibold)
         label.stringValue = tab.title
         addSubview(label)
 
@@ -3541,21 +3359,21 @@ private final class TabButton: NSControl {
 
     private func applyAppearance() {
         if isSelected {
-            layer?.backgroundColor = NSColor(calibratedRed: 0.22, green: 0.40, blue: 0.85, alpha: 1.0).cgColor
-            layer?.borderColor = NSColor.white.withAlphaComponent(0.14).cgColor
+            layer?.backgroundColor = DesignTokens.Colors.primarySelected.cgColor
+            layer?.borderColor = DesignTokens.Colors.borderStrong.cgColor
             layer?.borderWidth = 1
             label.textColor = .white
-            iconChip.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.22).cgColor
-            iconChip.layer?.borderColor = NSColor.white.withAlphaComponent(0.30).cgColor
+            iconChip.layer?.backgroundColor = DesignTokens.Colors.backgroundActive.cgColor
+            iconChip.layer?.borderColor = DesignTokens.Colors.borderStrong.cgColor
             iconView.contentTintColor = .white
         } else {
             layer?.backgroundColor = (
-                isHovered ? NSColor.white.withAlphaComponent(0.05) : NSColor.clear
+                isHovered ? DesignTokens.Colors.backgroundHover : NSColor.clear
             ).cgColor
             layer?.borderWidth = 0
-            label.textColor = NSColor.white.withAlphaComponent(0.82)
-            iconChip.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.06).cgColor
-            iconChip.layer?.borderColor = NSColor.white.withAlphaComponent(0.08).cgColor
+            label.textColor = DesignTokens.Colors.textPrimary
+            iconChip.layer?.backgroundColor = DesignTokens.Colors.backgroundInput.cgColor
+            iconChip.layer?.borderColor = DesignTokens.Colors.border.cgColor
             iconView.contentTintColor = tab.iconTint
         }
     }
@@ -3633,12 +3451,12 @@ private final class ActionButton: NSControl {
     init(symbolName: String, title: String, tint: NSColor) {
         super.init(frame: .zero)
         wantsLayer = true
-        layer?.cornerRadius = 12
+        layer?.cornerRadius = DesignTokens.BorderRadius.large
         layer?.cornerCurve = .continuous
 
         iconChip.translatesAutoresizingMaskIntoConstraints = false
         iconChip.wantsLayer = true
-        iconChip.layer?.cornerRadius = 8
+        iconChip.layer?.cornerRadius = DesignTokens.BorderRadius.medium
         iconChip.layer?.cornerCurve = .continuous
         iconChip.layer?.borderWidth = 1
         addSubview(iconChip)
@@ -3649,7 +3467,7 @@ private final class ActionButton: NSControl {
         iconChip.addSubview(iconView)
 
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = NSFont.systemFont(ofSize: 14, weight: .semibold)
+        label.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.regular, weight: .semibold)
         addSubview(label)
 
         NSLayoutConstraint.activate([
@@ -3692,8 +3510,8 @@ private final class ActionButton: NSControl {
         layer?.backgroundColor = NSColor.clear.cgColor
         // Match unselected TabButton's chip — the tint flows into the
         // icon glyph and the label so the whole row reads as a single color.
-        iconChip.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.06).cgColor
-        iconChip.layer?.borderColor = NSColor.white.withAlphaComponent(0.10).cgColor
+        iconChip.layer?.backgroundColor = DesignTokens.Colors.backgroundInput.cgColor
+        iconChip.layer?.borderColor = DesignTokens.Colors.border.cgColor
         iconView.contentTintColor = tint
         label.textColor = tint
     }
@@ -3715,7 +3533,7 @@ private final class ActionButton: NSControl {
 
     override func mouseEntered(with event: NSEvent) {
         guard isEnabled else { return }
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.05).cgColor
+        layer?.backgroundColor = DesignTokens.Colors.backgroundOverlay.cgColor
     }
 
     override func mouseExited(with event: NSEvent) {
@@ -3724,9 +3542,9 @@ private final class ActionButton: NSControl {
 
     override func mouseDown(with event: NSEvent) {
         guard isEnabled else { return }
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.10).cgColor
+        layer?.backgroundColor = DesignTokens.Colors.backgroundHover.cgColor
         sendAction(action, to: target)
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.05).cgColor
+        layer?.backgroundColor = DesignTokens.Colors.backgroundOverlay.cgColor
     }
 
     override var acceptsFirstResponder: Bool { true }
@@ -3997,8 +3815,8 @@ private final class ShadowPreviewView: NSView {
         // Desktop-like light backdrop so the dark shadow stays visible
         // (the settings UI itself is dark).
         let gradient = NSGradient(colors: [
-            NSColor(calibratedRed: 0.74, green: 0.78, blue: 0.85, alpha: 1),
-            NSColor(calibratedRed: 0.60, green: 0.64, blue: 0.72, alpha: 1)
+            DesignTokens.Colors.knobGradientStart,
+            DesignTokens.Colors.knobGradientEnd
         ])
         gradient?.draw(in: bounds, angle: -90)
 
@@ -4040,9 +3858,9 @@ private final class ShadowPreviewView: NSView {
             width: cardRect.width, height: 16
         )).fill()
         let dotColors: [NSColor] = [
-            NSColor(calibratedRed: 1.00, green: 0.37, blue: 0.35, alpha: 1),
-            NSColor(calibratedRed: 1.00, green: 0.74, blue: 0.18, alpha: 1),
-            NSColor(calibratedRed: 0.31, green: 0.79, blue: 0.31, alpha: 1)
+            DesignTokens.Colors.dangerLight,
+            DesignTokens.Colors.warningLight,
+            DesignTokens.Colors.successLight
         ]
         for (i, color) in dotColors.enumerated() {
             color.setFill()
@@ -4073,10 +3891,10 @@ private final class CardView: NSView {
     private func commonInit() {
         translatesAutoresizingMaskIntoConstraints = false
         wantsLayer = true
-        layer?.cornerRadius = 12
+        layer?.cornerRadius = DesignTokens.BorderRadius.medium
         layer?.cornerCurve = .continuous
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.04).cgColor
-        layer?.borderColor = NSColor.white.withAlphaComponent(0.06).cgColor
+        layer?.backgroundColor = DesignTokens.Colors.backgroundOverlay.cgColor
+        layer?.borderColor = DesignTokens.Colors.border.cgColor
         layer?.borderWidth = 1
     }
 }
@@ -4098,16 +3916,16 @@ final class StatusBadge: NSView {
 
     private func commonInit() {
         wantsLayer = true
-        layer?.cornerRadius = 4
+        layer?.cornerRadius = DesignTokens.BorderRadius.small
         layer?.cornerCurve = .continuous
-        label.font = NSFont.systemFont(ofSize: 10, weight: .semibold)
+        label.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small, weight: DesignTokens.Typography.FontWeight.semibold)
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 2),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: DesignTokens.Spacing.xs / 2),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -DesignTokens.Spacing.xs / 2),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: DesignTokens.Spacing.s - 2),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -(DesignTokens.Spacing.s - 2)),
         ])
         setContentHuggingPriority(.required, for: .horizontal)
         setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -4119,7 +3937,7 @@ final class StatusBadge: NSView {
     }
 
     func refreshTitle() {
-        let color: NSColor = granted ? .systemGreen : .systemOrange
+        let color: NSColor = granted ? DesignTokens.Colors.success : DesignTokens.Colors.warning
         label.stringValue = granted ? L10n.permissionGranted : L10n.permissionNotGranted
         label.textColor = color
         layer?.backgroundColor = color.withAlphaComponent(0.18).cgColor
@@ -4167,7 +3985,7 @@ private final class HoverButton: NSButton {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.06).cgColor
+        layer?.backgroundColor = DesignTokens.Colors.backgroundInput.cgColor
     }
 
     override func mouseExited(with event: NSEvent) {
@@ -4175,8 +3993,8 @@ private final class HoverButton: NSButton {
     }
 
     override func mouseDown(with event: NSEvent) {
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.10).cgColor
+        layer?.backgroundColor = DesignTokens.Colors.backgroundHover.cgColor
         super.mouseDown(with: event)
-        layer?.backgroundColor = NSColor.white.withAlphaComponent(0.06).cgColor
+        layer?.backgroundColor = DesignTokens.Colors.backgroundInput.cgColor
     }
 }

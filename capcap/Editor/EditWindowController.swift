@@ -2191,9 +2191,6 @@ class EditWindowController {
                         )
                     }
                     try output.data.write(to: destination, options: .atomic)
-                    HistoryManager.markAsSavedByCapcap(url: destination)
-                    // 通知历史面板有新文件
-                    NotificationCenter.default.post(name: .historyDidAddEntry, object: destination)
                     let directoryPath = SaveDestination.displayPath(destination.deletingLastPathComponent())
                     ToastWindow.show(message: L10n.screenshotSaved(to: directoryPath), on: targetScreen)
                     if Defaults.autoRevealSavedFiles {

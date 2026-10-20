@@ -14,18 +14,8 @@
 "launchAtLogin" = "登入時啟動";
 "pinAcrossSpaces" = "貼圖跨桌面顯示";
 "pinAcrossSpacesHint" = "開啟後新貼圖會出現在所有桌面與全螢幕空間";
-"historyCacheToggleLabel" = "快取截圖";
-"historyCacheToggleHint" = "保存最近截圖、取色和上傳結果，方便從歷史面板快速再次複製";
 "clipboardTextCacheToggleLabel" = "記錄剪貼簿文字與檔案";
 "clipboardTextCacheToggleHint" = "儲存文字和來源檔案參照，不複製檔案副本";
-"clipboardTextHistoryLimitLabel" = "文字 / 檔案歷史數量";
-"historyCacheLabel" = "圖片與媒體歷史數量";
-"historyPanelDisplayModeLabel" = "歷史面板顯示方式";
-"historyPanelDisplayModeHint" = "選擇透過彈窗或瀏海查看歷史記錄";
-"historyPanelDialogMode" = "彈窗";
-"historyPanelDialogModeHint" = "透過選單或快捷鍵開啟橫向預覽面板";
-"historyPanelNotchMode" = "瀏海";
-"historyPanelNotchModeHint" = "懸停或點擊螢幕頂部瀏海展開，移出後自動收起";
 "countdownLabel" = "倒數秒數";
 "countdownHint" = "按住 ⌥ Option 後連按兩下 ⌘，或按下截圖快捷鍵，即可先倒數再截圖，按 Esc 取消";
 "countdownSecondsSuffix" = "秒";
@@ -90,69 +80,8 @@
 "colorPicker" = "取色器";
 "settings" = "設定";
 "quitApp" = "結束 capcap";
-"historyMenu" = "歷史記錄";
-"historyClear" = "清除歷史記錄";
-"historyCleared" = "歷史記錄已清除";
-"historyShowInFinder" = "在 Finder 中顯示";
-"historyPanelLock" = "鎖定歷史面板";
-"historyPanelUnlock" = "解鎖歷史面板";
-"historyPanelFavorite" = "收藏";
-"historyPanelUnfavorite" = "取消收藏";
-"historyPanelItemFavorited" = "已收藏";
-"historyPanelItemUnfavorited" = "已取消收藏";
-"historyPanelMenu" = "歷史面板";
-"historyPanelDeleteAll" = "刪除全部歷史記錄";
-"historyPanelDeleteSelectedOne" = "刪除 %d 個項目";
-"historyPanelDeleteSelected" = "刪除 %d 個項目";
-"historyPanelDeletedSelectedOne" = "已刪除 %d 個項目";
-"historyPanelDeletedSelected" = "已刪除 %d 個項目";
-"historyPanelFavoriteFailed" = "無法更改收藏";
-"historyDeletedSkippingFavorites" = "已刪除 %d 個項目，跳過 %d 個收藏";
-"historyPanelFilterAll" = "全部";
-"historyPanelFilterScreenshots" = "截圖";
-"historyPanelFilterGIF" = "GIF";
-"historyPanelFilterMP4" = "MP4";
-"historyPanelFilterColors" = "顏色";
-"historyPanelFilterText" = "文字";
-"historyPanelSearchColorsAndText" = "搜尋顏色、文字和檔案";
-"historyPanelSearchColors" = "搜尋顏色";
-"historyPanelSearchText" = "搜尋文字";
-"historyPanelClearSearch" = "清除搜尋";
-"historyPanelSearchNoResults" = "沒有符合的歷史";
-"historyPreviewCopyText" = "複製文字";
-"historyPreviewTranslateText" = "翻譯文字";
-"historyPreviewConvertToQRCode" = "轉成二維碼";
-"historyPreviewQRCodeTooLong" = "文字太長，無法轉換為二維碼";
 "historyPreviewOriginalText" = "原文";
 "historyPreviewQRCodeTitle" = "文字二維碼";
-"historyPanelCopyHint" = "點選複製";
-"historyPanelCopyDragHint" = "點選複製 · 拖曳到應用";
-"historyPanelCopyMarkdownLink" = "複製 MD 連結";
-"historyPanelCopyPlainLink" = "複製純網址";
-"historyPanelEmpty" = "尚無歷史";
-"historyPanelShortcutGuide" = "快速鍵說明";
-"historyPanelShortcutGuideHide" = "返回歷史";
-"historyPanelShortcutKeyClick" = "按一下";
-"historyPanelShortcutKeyDrag" = "拖曳";
-"historyPanelShortcutKeySpace" = "空白鍵";
-"historyPanelShortcutSearch" = "搜尋或關閉搜尋";
-"historyPanelShortcutSwitchFilter" = "切換分類";
-"historyPanelShortcutSwitchItem" = "切換上一個或下一個項目";
-"historyPanelShortcutToggleSelection" = "單選或取消選取";
-"historyPanelShortcutRangeSelection" = "範圍選取";
-"historyPanelShortcutSelectAll" = "全選目前結果";
-"historyPanelShortcutCancel" = "離開搜尋或清除目前狀態";
-"historyPanelShortcutCopyItem" = "複製項目";
-"historyPanelShortcutDragItem" = "拖曳圖片或影片到其他 App";
-"historyPanelShortcutOpenPreview" = "預覽游標停留的圖片或文字";
-"historyPanelShortcutBrowsePreview" = "切換上一個或下一個預覽";
-"historyPanelShortcutClosePreview" = "關閉預覽";
-"historyPanelShortcutCopyPreview" = "複製預覽內容";
-"historyPanelShortcutEditImage" = "編輯圖片";
-"historyPanelShortcutPinImage" = "釘選圖片";
-"historyPanelShortcutTranslateText" = "翻譯文字";
-"historyPanelShortcutQRCode" = "產生二維碼";
-"historyPanelShortcutToggleGuide" = "顯示或隱藏快速鍵說明";
 
 /* Cursor chip */
 "dragToScreenshot" = "點選視窗或拖曳以截圖";
@@ -601,18 +530,13 @@
 "finderUploadReadFailed" = "無法讀取檔案 %@";
 "finderUploadCompleted" = "已上傳 %d 個檔案並複製連結";
 
-"historyNotchTriggerLabel" = "瀏海觸發方式";
-"historyNotchTriggerHover" = "滑鼠懸停開啟";
-"historyNotchTriggerClick" = "滑鼠點擊開啟";
 
 /* General settings categories */
 "settingsGeneralBasic" = "基本";
 "settingsGeneralCapture" = "截圖與貼圖";
 "settingsGeneralRecording" = "錄製";
-"settingsGeneralHistory" = "歷史記錄";
 "settingsGeneralFiles" = "檔案與輸出";
 
-"historyPreviewTextSaveFailed" = "文字儲存失敗，請重試";
 
 "windowCapturePreparing" = "正在準備截圖";
 
@@ -642,22 +566,12 @@
 "ocrTimeoutError" = "OCR 辨識逾時 · 請檢查服務或重試";
 "ocrRequestFailed" = "OCR 請求失敗";
 
-"historyPanelFilterFiles" = "檔案";
 
-"historyPanelFolder" = "資料夾";
 
-"historyPanelSearchFiles" = "搜尋檔案名稱和路徑";
 
-"historyPanelSourceUnavailable" = "來源檔案無法使用";
 
-"historyPanelSourceUnavailableHint" = "部分來源檔案已刪除、離線或尚未下載";
 
-"historyFilePreviewPrevious" = "上一個檔案";
 
-"historyFilePreviewNext" = "下一個檔案";
 
-"historyFilePreviewLoading" = "正在載入預覽";
 
-"historyFilePreviewRetry" = "重新檢查";
 
-"historyFilePreviewUnavailable" = "無法預覽此檔案";

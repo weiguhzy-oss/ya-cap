@@ -37,7 +37,6 @@ final class ColorPickerRunner {
             ClipboardManager.copyColorToClipboard(hex: result.hex)
 
             if Defaults.historyCacheEnabled {
-                HistoryManager.shared.addColor(hex: result.hex)
                 Defaults.lastPickedColorHex = result.hex
             }
 

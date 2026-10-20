@@ -261,12 +261,6 @@ class SettingsView: NSView {
             name: .updateStateDidChange,
             object: nil
         )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(screenParametersChanged),
-            name: NSApplication.didChangeScreenParametersNotification,
-            object: nil
-        )
     }
 
     required init?(coder: NSCoder) {

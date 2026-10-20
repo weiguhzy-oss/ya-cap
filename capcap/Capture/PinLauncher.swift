@@ -168,10 +168,6 @@ enum PinLauncher {
         NSApp.activate(ignoringOtherApps: true)
         window.makeKeyAndOrderFront(nil)
         window.makeFirstResponder(contentView)
-
-        if saveToHistory {
-            HistoryManager.shared.add(image: image)
-        }
     }
 
     private static func makeTextWindow(

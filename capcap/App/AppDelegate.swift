@@ -552,11 +552,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 switch result {
                 case .failure:
-                    HistoryManager.shared.add(image: finalImage)
                     ToastWindow.show(message: L10n.screenshotCompressionFailed, duration: 3.0)
                 case .success(let output):
                     ClipboardManager.copyToClipboard(imageOutput: output)
-                    HistoryManager.shared.add(image: finalImage)
                     ToastWindow.show()
                 }
             }
@@ -919,9 +917,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             do {
                 try? FileManager.default.removeItem(at: destination)
                 try FileManager.default.moveItem(at: tmpURL, to: destination)
-                HistoryManager.markAsSavedByCapcap(url: destination)
-                // 通知历史面板有新文件
-                NotificationCenter.default.post(name: .historyDidAddEntry, object: destination)
                 showSavedRecording(destination)
             } catch {
                 ToastWindow.show(message: L10n.recordingFailed(error.localizedDescription), duration: 3.5)
@@ -933,9 +928,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 switch result {
                 case .success:
                     try? FileManager.default.removeItem(at: tmpURL)
-                    HistoryManager.markAsSavedByCapcap(url: destination)
-                    // 通知历史面板有新文件
-                    NotificationCenter.default.post(name: .historyDidAddEntry, object: destination)
                     self.showSavedRecording(destination)
                 case .failure(let error):
                     ToastWindow.show(message: L10n.recordingFailed(error.localizedDescription), duration: 3.5)
@@ -946,7 +938,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func showSavedRecording(_ destination: URL) {
-        HistoryManager.shared.addFile(destination)
         let directoryPath = SaveDestination.displayPath(destination.deletingLastPathComponent())
         ToastWindow.show(message: L10n.recordingSaved(to: directoryPath))
         if Defaults.autoRevealSavedFiles {

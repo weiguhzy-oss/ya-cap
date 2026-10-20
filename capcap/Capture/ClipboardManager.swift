@@ -157,7 +157,6 @@ final class ClipboardTextHistoryMonitor: NSObject {
                 urls = paths.map { URL(fileURLWithPath: $0) }
             }
             guard pasteboard.changeCount == changeCount else { return }
-            HistoryManager.shared.addFileReferences(urls)
             return
         }
         // Virtual/promised files have no stable source URL. Never record their
@@ -167,11 +166,5 @@ final class ClipboardTextHistoryMonitor: NSObject {
         guard
               let text = pasteboard.string(forType: .string),
               !text.isEmpty, pasteboard.changeCount == changeCount else { return }
-        if Defaults.historyCacheEnabled,
-           let hex = ClipboardColorParser.normalizedHex(from: text) {
-            HistoryManager.shared.addColor(hex: hex)
-        } else {
-            HistoryManager.shared.addText(text)
-        }
     }
 }

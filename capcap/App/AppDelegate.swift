@@ -427,7 +427,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let controller = ImageEditLauncher.launch(
             generatedImage: image,
             source: .pin,
-            keepsEditorAcrossSpaces: Defaults.pinAcrossSpaces,
             onSuspend: { [weak self] draft in
                 self?.handleEditSuspension(draft)
             },
@@ -940,9 +939,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func showSavedRecording(_ destination: URL) {
         let directoryPath = SaveDestination.displayPath(destination.deletingLastPathComponent())
         ToastWindow.show(message: L10n.recordingSaved(to: directoryPath))
-        if Defaults.autoRevealSavedFiles {
-            NSWorkspace.shared.activateFileViewerSelecting([destination])
-        }
     }
 
     private func openSettings() {

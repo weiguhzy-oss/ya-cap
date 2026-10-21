@@ -65,7 +65,6 @@ class SettingsView: NSView {
     // Switches
     private var menuBarSwitch: NSSwitch!
     private var launchAtLoginSwitch: NSSwitch!
-    private var pinAcrossSpacesSwitch: NSSwitch!
 
     // Picker & slider
     private var langPicker: NSPopUpButton!
@@ -131,8 +130,6 @@ class SettingsView: NSView {
     // Labels (kept for language switching)
     private var menuBarTitleLabel: NSTextField!
     private var launchAtLoginTitleLabel: NSTextField!
-    private var pinAcrossSpacesTitleLabel: NSTextField!
-    private var pinAcrossSpacesSubtitleLabel: NSTextField!
     private var langTitleLabel: NSTextField!
     private var permHeaderSubtitleLabel: NSTextField?
     private var accessibilityNameLabel: NSTextField!
@@ -145,26 +142,9 @@ class SettingsView: NSView {
     private var aboutLicenseTitleLabel: NSTextField?
     private var aboutSourceTitleLabel: NSTextField?
     private var aboutStarTitleLabel: NSTextField?
-    private var aboutFeatureRequestTitleLabel: NSTextField?
-    private var aboutBugReportTitleLabel: NSTextField?
     private var aboutUpdateTitleLabel: NSTextField?
     private var aboutUpdateStatusLabel: NSTextField?
     private var aboutUpdateButton: NSButton?
-
-    // Error log card (About pane) — expandable macOS crash report viewer.
-    private var errorLogTitleLabel: NSTextField?
-    private var errorLogStatusLabel: NSTextField?
-    private var errorLogChevron: NSImageView?
-    private var errorLogContentContainer: NSView?
-    private var errorLogHeightConstraint: NSLayoutConstraint?
-    private var errorLogTextView: NSTextView?
-    private var errorLogCopyButton: NSButton?
-    private var errorLogRevealButton: NSButton?
-    private var errorLogRefreshButton: NSButton?
-    private var errorLogClearButton: NSButton?
-    private var errorLogEntry: CrashLogReader.Entry?
-    private var errorLogExpanded = false
-    private var errorLogLoaded = false
 
     // Sidebar / detail chrome
     private var selectedTab: SettingsTab = .general
@@ -189,13 +169,9 @@ class SettingsView: NSView {
     private var askSaveLocationTitleLabel: NSTextField!
     private var askSaveLocationHintLabel: NSTextField?
     private var askSaveLocationSwitch: NSSwitch!
-    private var autoRevealSavedFilesTitleLabel: NSTextField!
-    private var autoRevealSavedFilesHintLabel: NSTextField?
-    private var autoRevealSavedFilesSwitch: NSSwitch!
     private var recordingSavePathTitleLabel: NSTextField!
     private var recordingSavePathValueLabel: NSTextField!
     private var recordingSavePathChooseButton: NSButton!
-    private var recordingSavePathRevealButton: NSButton!
     private var recordingSaveFormatTitleLabel: NSTextField!
     private var recordingSaveFormatPopup: NSPopUpButton!
     private var recordingSystemAudioTitleLabel: NSTextField?
@@ -209,7 +185,6 @@ class SettingsView: NSView {
     private var screenshotSavePathTitleLabel: NSTextField!
     private var screenshotSavePathValueLabel: NSTextField!
     private var screenshotSavePathChooseButton: NSButton!
-    private var screenshotSavePathRevealButton: NSButton!
 
     private var refreshTimer: Timer?
     private var gradientLayer: CAGradientLayer?
@@ -577,24 +552,6 @@ class SettingsView: NSView {
 
         buildCountdownCard(into: capture)
         buildWindowShadowCard(into: capture)
-        let pinCard = CardView()
-        let pinInner = verticalInnerStack()
-        pinCard.addSubview(pinInner)
-        pin(pinInner, to: pinCard, insets: NSEdgeInsets(top: 6, left: 14, bottom: 6, right: 14))
-        let pinAcrossSpaces = makeToggleRow(
-            title: L10n.pinAcrossSpaces,
-            subtitle: L10n.pinAcrossSpacesHint,
-            isOn: Defaults.pinAcrossSpaces,
-            action: #selector(pinAcrossSpacesToggled(_:))
-        )
-        pinAcrossSpacesTitleLabel = pinAcrossSpaces.title
-        pinAcrossSpacesSubtitleLabel = pinAcrossSpaces.subtitle
-        pinAcrossSpacesSwitch = pinAcrossSpaces.toggle
-        pinInner.addArrangedSubview(pinAcrossSpaces.row)
-        pinAcrossSpaces.row.widthAnchor.constraint(equalTo: pinInner.widthAnchor).isActive = true
-
-        capture.addArrangedSubview(pinCard)
-        pinCard.widthAnchor.constraint(equalTo: capture.widthAnchor).isActive = true
 
         buildRecordingCard(into: recording)
         buildSavePathCard(into: files)
@@ -1035,13 +992,11 @@ class SettingsView: NSView {
 
         let screenshotPath = makeSavePathRow(
             title: L10n.screenshotSavePathLabel,
-            chooseAction: #selector(chooseScreenshotSavePathClicked),
-            revealAction: #selector(revealScreenshotSavePathClicked)
+            chooseAction: #selector(chooseScreenshotSavePathClicked)
         )
         screenshotSavePathTitleLabel = screenshotPath.title
         screenshotSavePathValueLabel = screenshotPath.value
         screenshotSavePathChooseButton = screenshotPath.chooseButton
-        screenshotSavePathRevealButton = screenshotPath.revealButton
         inner.addArrangedSubview(screenshotPath.row)
         screenshotPath.row.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
 
@@ -1051,13 +1006,11 @@ class SettingsView: NSView {
 
         let recordingPath = makeSavePathRow(
             title: L10n.recordingSavePathLabel,
-            chooseAction: #selector(chooseRecordingSavePathClicked),
-            revealAction: #selector(revealRecordingSavePathClicked)
+            chooseAction: #selector(chooseRecordingSavePathClicked)
         )
         recordingSavePathTitleLabel = recordingPath.title
         recordingSavePathValueLabel = recordingPath.value
         recordingSavePathChooseButton = recordingPath.chooseButton
-        recordingSavePathRevealButton = recordingPath.revealButton
         inner.addArrangedSubview(recordingPath.row)
         recordingPath.row.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
 
@@ -1079,25 +1032,6 @@ class SettingsView: NSView {
         askSave.toggle.toolTip = L10n.askSaveLocationHint
         inner.addArrangedSubview(askSave.row)
         askSave.row.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let askSaveDivider = rowDivider()
-        inner.addArrangedSubview(askSaveDivider)
-        askSaveDivider.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let autoReveal = makeToggleRow(
-            title: L10n.autoRevealSavedFilesLabel,
-            subtitle: L10n.autoRevealSavedFilesHint,
-            isOn: Defaults.autoRevealSavedFiles,
-            action: #selector(autoRevealSavedFilesToggled(_:))
-        )
-        autoRevealSavedFilesTitleLabel = autoReveal.title
-        autoRevealSavedFilesHintLabel = autoReveal.subtitle
-        autoRevealSavedFilesSwitch = autoReveal.toggle
-        autoReveal.subtitle?.isHidden = true
-        autoReveal.title.toolTip = L10n.autoRevealSavedFilesHint
-        autoReveal.toggle.toolTip = L10n.autoRevealSavedFilesHint
-        inner.addArrangedSubview(autoReveal.row)
-        autoReveal.row.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
 
         refreshSavePathControls()
         stack.addArrangedSubview(card)
@@ -1196,9 +1130,8 @@ class SettingsView: NSView {
 
     private func makeSavePathRow(
         title: String,
-        chooseAction: Selector,
-        revealAction: Selector
-    ) -> (row: NSView, title: NSTextField, value: NSTextField, chooseButton: NSButton, revealButton: NSButton) {
+        chooseAction: Selector
+    ) -> (row: NSView, title: NSTextField, value: NSTextField, chooseButton: NSButton) {
         let row = NSStackView()
         row.orientation = .horizontal
         row.distribution = .fill
@@ -1224,14 +1157,7 @@ class SettingsView: NSView {
         chooseButton.setContentHuggingPriority(.required, for: .horizontal)
         row.addArrangedSubview(chooseButton)
 
-        let revealButton = NSButton(title: L10n.savePathReveal, target: self, action: revealAction)
-        revealButton.bezelStyle = .rounded
-        revealButton.controlSize = .small
-        revealButton.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.tiny)
-        revealButton.setContentHuggingPriority(.required, for: .horizontal)
-        row.addArrangedSubview(revealButton)
-
-        return (row, titleLabel, valueLabel, chooseButton, revealButton)
+        return (row, titleLabel, valueLabel, chooseButton)
     }
 
     private func buildToolbarPane() -> NSView {
@@ -1404,329 +1330,11 @@ class SettingsView: NSView {
         aboutStarTitleLabel = star.title
         infoInner.addArrangedSubview(star.row)
         star.row.widthAnchor.constraint(equalTo: infoInner.widthAnchor).isActive = true
-        infoInner.addArrangedSubview(rowDivider())
-
-        let featureRequest = makeLinkRow(
-            title: L10n.aboutFeatureRequest,
-            value: "",
-            action: #selector(openFeatureRequest)
-        )
-        aboutFeatureRequestTitleLabel = featureRequest.title
-        infoInner.addArrangedSubview(featureRequest.row)
-        featureRequest.row.widthAnchor.constraint(equalTo: infoInner.widthAnchor).isActive = true
-        infoInner.addArrangedSubview(rowDivider())
-
-        let bugReport = makeLinkRow(
-            title: L10n.aboutBugReport,
-            value: "",
-            action: #selector(openBugReport)
-        )
-        aboutBugReportTitleLabel = bugReport.title
-        infoInner.addArrangedSubview(bugReport.row)
-        bugReport.row.widthAnchor.constraint(equalTo: infoInner.widthAnchor).isActive = true
 
         stack.addArrangedSubview(infoCard)
         infoCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
 
-        // Error log card — collapsed by default, expands to show the most
-        // recent crash report so users can copy it into a bug report.
-        let errorLogCard = buildErrorLogCard()
-        stack.addArrangedSubview(errorLogCard)
-        errorLogCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
         return wrapPane(stack)
-    }
-
-    /// Builds the expandable "Error Log" card for the About pane. The header is
-    /// a clickable row; tapping it animates the crash-log viewer open or shut.
-    private func buildErrorLogCard() -> NSView {
-        let card = CardView()
-        card.layer?.masksToBounds = true
-
-        // Clickable header — toggles the expand / collapse animation.
-        let header = HoverButton()
-        header.translatesAutoresizingMaskIntoConstraints = false
-        header.target = self
-        header.action = #selector(toggleErrorLog)
-        header.title = ""
-        header.isBordered = false
-        header.cornerRadius = 0
-
-        let titleLabel = primaryLabel(L10n.aboutErrorLog)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        errorLogTitleLabel = titleLabel
-
-        let statusLabel = NSTextField(labelWithString: "")
-        statusLabel.font = NSFont.systemFont(
-            ofSize: DesignTokens.Typography.FontSize.small,
-            weight: DesignTokens.Typography.FontWeight.regular
-        )
-        statusLabel.textColor = DesignTokens.Colors.textTertiary
-        statusLabel.lineBreakMode = .byTruncatingTail
-        statusLabel.translatesAutoresizingMaskIntoConstraints = false
-        errorLogStatusLabel = statusLabel
-
-        // The chevron lives inside a fixed-size Auto Layout container, while the
-        // image view itself uses a static frame. This keeps Auto Layout from
-        // resetting the image view's frame on each layout pass — which would
-        // otherwise discard the pivot compensation `frameCenterRotation` needs
-        // and make the chevron rotate around its corner instead of its center.
-        let chevronBox = NSView()
-        chevronBox.translatesAutoresizingMaskIntoConstraints = false
-        chevronBox.setContentHuggingPriority(.required, for: .horizontal)
-
-        let chevron = NSImageView(frame: NSRect(x: 0, y: 0, width: 12, height: 12))
-        chevron.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)
-        chevron.contentTintColor = DesignTokens.Colors.textQuaternary
-        chevron.imageScaling = .scaleProportionallyUpOrDown
-        chevron.wantsLayer = true
-        chevron.autoresizingMask = []
-        chevronBox.addSubview(chevron)
-        errorLogChevron = chevron
-
-        header.addSubview(titleLabel)
-        header.addSubview(statusLabel)
-        header.addSubview(chevronBox)
-        NSLayoutConstraint.activate([
-            header.heightAnchor.constraint(equalToConstant: 46),
-            titleLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 14),
-            titleLabel.centerYAnchor.constraint(equalTo: header.centerYAnchor),
-            chevronBox.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -14),
-            chevronBox.centerYAnchor.constraint(equalTo: header.centerYAnchor),
-            chevronBox.widthAnchor.constraint(equalToConstant: 12),
-            chevronBox.heightAnchor.constraint(equalToConstant: 12),
-            statusLabel.trailingAnchor.constraint(equalTo: chevronBox.leadingAnchor, constant: -8),
-            statusLabel.centerYAnchor.constraint(equalTo: header.centerYAnchor),
-            statusLabel.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 10),
-        ])
-
-        // Expandable content — clipped to its animatable height.
-        let content = NSView()
-        content.translatesAutoresizingMaskIntoConstraints = false
-        content.wantsLayer = true
-        content.layer?.masksToBounds = true
-        content.alphaValue = 0
-        errorLogContentContainer = content
-
-        let divider = rowDivider()
-        content.addSubview(divider)
-
-        // Crash log — read-only, selectable, monospace.
-        let scroll = NSScrollView()
-        scroll.translatesAutoresizingMaskIntoConstraints = false
-        scroll.drawsBackground = true
-        scroll.backgroundColor = DesignTokens.Colors.backgroundSunken
-        scroll.hasVerticalScroller = true
-        scroll.hasHorizontalScroller = false
-        scroll.autohidesScrollers = true
-        scroll.borderType = .noBorder
-        scroll.wantsLayer = true
-        scroll.layer?.cornerRadius = DesignTokens.BorderRadius.medium
-        scroll.layer?.masksToBounds = true
-
-        let textView = NSTextView()
-        textView.isEditable = false
-        textView.isSelectable = true
-        textView.drawsBackground = false
-        textView.textColor = DesignTokens.Colors.textSecondary
-        textView.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
-        textView.textContainerInset = NSSize(width: DesignTokens.Spacing.s, height: DesignTokens.Spacing.s)
-        textView.minSize = NSSize(width: 0, height: 0)
-        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude,
-                                  height: CGFloat.greatestFiniteMagnitude)
-        textView.isVerticallyResizable = true
-        textView.isHorizontallyResizable = false
-        textView.autoresizingMask = [.width]
-        textView.textContainer?.widthTracksTextView = true
-        scroll.documentView = textView
-        errorLogTextView = textView
-
-        // Action buttons.
-        func makeLogButton(title: String, action: Selector) -> NSButton {
-            let button = NSButton(title: title, target: self, action: action)
-            button.bezelStyle = .rounded
-            button.controlSize = .small
-            button.font = NSFont.systemFont(ofSize: DesignTokens.Typography.FontSize.small)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            return button
-        }
-
-        let copyButton = makeLogButton(title: L10n.aboutErrorLogCopy, action: #selector(copyErrorLog))
-        errorLogCopyButton = copyButton
-
-        let revealButton = makeLogButton(title: L10n.aboutErrorLogReveal, action: #selector(revealErrorLog))
-        errorLogRevealButton = revealButton
-
-        let refreshButton = makeLogButton(title: L10n.aboutErrorLogRefresh, action: #selector(refreshErrorLog))
-        errorLogRefreshButton = refreshButton
-
-        let clearButton = makeLogButton(title: L10n.aboutErrorLogClear, action: #selector(clearErrorLog))
-        errorLogClearButton = clearButton
-
-        content.addSubview(scroll)
-        content.addSubview(copyButton)
-        content.addSubview(revealButton)
-        content.addSubview(refreshButton)
-        content.addSubview(clearButton)
-        NSLayoutConstraint.activate([
-            divider.topAnchor.constraint(equalTo: content.topAnchor),
-            divider.leadingAnchor.constraint(equalTo: content.leadingAnchor),
-            divider.trailingAnchor.constraint(equalTo: content.trailingAnchor),
-
-            scroll.topAnchor.constraint(equalTo: divider.bottomAnchor, constant: 12),
-            scroll.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: 14),
-            scroll.trailingAnchor.constraint(equalTo: content.trailingAnchor, constant: -14),
-            scroll.heightAnchor.constraint(equalToConstant: 220),
-
-            copyButton.topAnchor.constraint(equalTo: scroll.bottomAnchor, constant: 10),
-            copyButton.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: 14),
-            copyButton.bottomAnchor.constraint(equalTo: content.bottomAnchor, constant: -14),
-
-            revealButton.centerYAnchor.constraint(equalTo: copyButton.centerYAnchor),
-            revealButton.leadingAnchor.constraint(equalTo: copyButton.trailingAnchor, constant: 8),
-
-            refreshButton.centerYAnchor.constraint(equalTo: copyButton.centerYAnchor),
-            refreshButton.leadingAnchor.constraint(equalTo: revealButton.trailingAnchor, constant: 8),
-
-            clearButton.centerYAnchor.constraint(equalTo: copyButton.centerYAnchor),
-            clearButton.leadingAnchor.constraint(equalTo: refreshButton.trailingAnchor, constant: 8),
-        ])
-
-        let inner = verticalInnerStack()
-        card.addSubview(inner)
-        pin(inner, to: card, insets: NSEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
-        inner.addArrangedSubview(header)
-        inner.addArrangedSubview(content)
-        header.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-        content.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let heightConstraint = content.heightAnchor.constraint(equalToConstant: 0)
-        heightConstraint.isActive = true
-        errorLogHeightConstraint = heightConstraint
-
-        refreshErrorLogStatus()
-        return card
-    }
-
-    /// Expands or collapses the crash-log viewer with a height animation.
-    @objc private func toggleErrorLog() {
-        errorLogExpanded.toggle()
-        if errorLogExpanded { loadErrorLogIfNeeded() }
-
-        guard let content = errorLogContentContainer,
-              let heightConstraint = errorLogHeightConstraint else { return }
-
-        // Measure the content's natural height with the clamp lifted.
-        var target: CGFloat = 0
-        if errorLogExpanded {
-            heightConstraint.isActive = false
-            content.layoutSubtreeIfNeeded()
-            target = content.fittingSize.height
-            heightConstraint.isActive = true
-            heightConstraint.constant = 0
-            content.layoutSubtreeIfNeeded()
-        }
-
-        NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = 0.28
-            ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            ctx.allowsImplicitAnimation = true
-            heightConstraint.animator().constant = target
-            content.animator().alphaValue = errorLogExpanded ? 1 : 0
-            errorLogChevron?.animator().frameCenterRotation = errorLogExpanded ? -90 : 0
-            self.layoutSubtreeIfNeeded()
-        }
-    }
-
-    /// Reads the latest crash report into the text view on first expansion.
-    private func loadErrorLogIfNeeded() {
-        guard !errorLogLoaded else { return }
-        renderErrorLogContent()
-    }
-
-    /// Re-scans log files and refreshes the visible error-log content.
-    private func reloadErrorLogFromDisk() {
-        refreshErrorLogStatus()
-        renderErrorLogContent()
-    }
-
-    private func renderErrorLogContent() {
-        errorLogLoaded = true
-        if let entry = errorLogEntry {
-            errorLogTextView?.string = CrashLogReader.readableText(at: entry.url)
-            errorLogTextView?.textColor = DesignTokens.Colors.textSecondary
-            errorLogCopyButton?.isEnabled = true
-            errorLogRevealButton?.isEnabled = true
-            errorLogClearButton?.isEnabled = true
-        } else {
-            errorLogTextView?.string = L10n.aboutErrorLogEmptyBody
-            errorLogTextView?.textColor = DesignTokens.Colors.textTertiary
-            errorLogCopyButton?.isEnabled = false
-            errorLogRevealButton?.isEnabled = false
-            errorLogClearButton?.isEnabled = false
-        }
-    }
-
-    /// Syncs the header status label to whether a crash report exists.
-    private func refreshErrorLogStatus() {
-        errorLogEntry = CrashLogReader.latestLogFile()
-        guard let label = errorLogStatusLabel else { return }
-        if let entry = errorLogEntry {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm"
-            label.stringValue = L10n.aboutErrorLogLastCrash(formatter.string(from: entry.date))
-            label.textColor = DesignTokens.Colors.warning
-            errorLogCopyButton?.isEnabled = errorLogLoaded
-            errorLogRevealButton?.isEnabled = errorLogLoaded
-            errorLogClearButton?.isEnabled = true
-        } else {
-            label.stringValue = L10n.aboutErrorLogNoCrash
-            label.textColor = DesignTokens.Colors.textTertiary
-            errorLogCopyButton?.isEnabled = false
-            errorLogRevealButton?.isEnabled = false
-            errorLogClearButton?.isEnabled = false
-        }
-    }
-
-    /// Copies the crash report to the clipboard, flashing the button as feedback.
-    @objc private func copyErrorLog() {
-        guard errorLogEntry != nil,
-              let text = errorLogTextView?.string, !text.isEmpty else { return }
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()
-        pasteboard.setString(text, forType: .string)
-
-        guard let button = errorLogCopyButton else { return }
-        button.title = L10n.aboutErrorLogCopied
-        button.isEnabled = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            self?.errorLogCopyButton?.title = L10n.aboutErrorLogCopy
-            self?.errorLogCopyButton?.isEnabled = true
-        }
-    }
-
-    /// Reveals the crash report file in Finder.
-    @objc private func revealErrorLog() {
-        guard let url = errorLogEntry?.url else { return }
-        NSWorkspace.shared.activateFileViewerSelecting([url])
-    }
-
-    /// Manually reloads logs from disk.
-    @objc private func refreshErrorLog() {
-        reloadErrorLogFromDisk()
-    }
-
-    /// Deletes all capcap crash reports and resets the visible error-log UI.
-    @objc private func clearErrorLog() {
-        CrashLogReader.deleteAllLogs()
-        errorLogEntry = nil
-        errorLogLoaded = true
-        errorLogTextView?.string = L10n.aboutErrorLogEmptyBody
-        errorLogTextView?.textColor = DesignTokens.Colors.textTertiary
-        errorLogCopyButton?.isEnabled = false
-        errorLogRevealButton?.isEnabled = false
-        errorLogClearButton?.isEnabled = false
-        refreshErrorLogStatus()
     }
 
     /// Static left-title / right-value row, mirroring the permission row chrome.
@@ -1814,17 +1422,6 @@ class SettingsView: NSView {
         }
     }
 
-    @objc private func openFeatureRequest() {
-        if let url = URL(string: "https://github.com/weiguhzy-oss/ya-cap/issues/new?template=feature_request.yml") {
-            NSWorkspace.shared.open(url)
-        }
-    }
-
-    @objc private func openBugReport() {
-        if let url = URL(string: "https://github.com/weiguhzy-oss/ya-cap/issues/new?template=bug_report.yml") {
-            NSWorkspace.shared.open(url)
-        }
-    }
 
     /// "Updates" row — a status label plus a button whose role tracks state:
     /// "Check for Updates" normally, "Update Now" once a newer release is found.
@@ -2351,10 +1948,6 @@ class SettingsView: NSView {
         Defaults.askSaveLocation = sender.state == .on
     }
 
-    @objc private func autoRevealSavedFilesToggled(_ sender: NSSwitch) {
-        Defaults.autoRevealSavedFiles = sender.state == .on
-    }
-
     @objc private func chooseRecordingSavePathClicked() {
         chooseSaveDirectory(
             title: L10n.chooseRecordingSavePathTitle,
@@ -2373,14 +1966,6 @@ class SettingsView: NSView {
             Defaults.screenshotSaveDirectory = url
             self.refreshSavePathControls()
         }
-    }
-
-    @objc private func revealRecordingSavePathClicked() {
-        revealSaveDirectory(Defaults.recordingSaveDirectory)
-    }
-
-    @objc private func revealScreenshotSavePathClicked() {
-        revealSaveDirectory(Defaults.screenshotSaveDirectory)
     }
 
     private func chooseSaveDirectory(
@@ -2418,11 +2003,6 @@ class SettingsView: NSView {
             return parent
         }
         return Defaults.defaultScreenshotSaveDirectory.deletingLastPathComponent()
-    }
-
-    private func revealSaveDirectory(_ url: URL) {
-        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
-        NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 
     @objc private func countdownSliderChanged(_ sender: SettingsTickSlider) {
@@ -2499,10 +2079,6 @@ class SettingsView: NSView {
         if !ok {
             sender.state = LaunchAtLogin.isEnabled ? .on : .off
         }
-    }
-
-    @objc private func pinAcrossSpacesToggled(_ sender: NSSwitch) {
-        Defaults.pinAcrossSpaces = sender.state == .on
     }
 
     @objc private func menuBarSwitchToggled(_ sender: NSSwitch) {
@@ -3072,9 +2648,6 @@ class SettingsView: NSView {
         updateMicrophoneControlsEnabled()
         menuBarTitleLabel?.stringValue = L10n.showMenuBarIcon
         launchAtLoginTitleLabel?.stringValue = L10n.launchAtLogin
-        pinAcrossSpacesTitleLabel?.stringValue = L10n.pinAcrossSpaces
-        pinAcrossSpacesSubtitleLabel?.stringValue = L10n.pinAcrossSpacesHint
-        pinAcrossSpacesSwitch?.state = Defaults.pinAcrossSpaces ? .on : .off
         langTitleLabel?.stringValue = L10n.languageHeader
         filenameRuleCard?.refreshLocalization()
         screenshotQualityTitleLabel?.stringValue = L10n.screenshotQualityTitle
@@ -3091,11 +2664,6 @@ class SettingsView: NSView {
         askSaveLocationTitleLabel?.toolTip = L10n.askSaveLocationHint
         askSaveLocationSwitch?.toolTip = L10n.askSaveLocationHint
         askSaveLocationSwitch?.state = Defaults.askSaveLocation ? .on : .off
-        autoRevealSavedFilesTitleLabel?.stringValue = L10n.autoRevealSavedFilesLabel
-        autoRevealSavedFilesHintLabel?.stringValue = L10n.autoRevealSavedFilesHint
-        autoRevealSavedFilesTitleLabel?.toolTip = L10n.autoRevealSavedFilesHint
-        autoRevealSavedFilesSwitch?.toolTip = L10n.autoRevealSavedFilesHint
-        autoRevealSavedFilesSwitch?.state = Defaults.autoRevealSavedFiles ? .on : .off
         recordingSavePathTitleLabel?.stringValue = L10n.recordingSavePathLabel
         recordingSaveFormatTitleLabel?.stringValue = L10n.recordingSaveFormatSettingLabel
         recordingSystemAudioTitleLabel?.stringValue = L10n.recordingSystemAudioLabel
@@ -3108,9 +2676,7 @@ class SettingsView: NSView {
         refreshMicrophoneDevicePopup()
         screenshotSavePathTitleLabel?.stringValue = L10n.screenshotSavePathLabel
         recordingSavePathChooseButton?.title = L10n.savePathChoose
-        recordingSavePathRevealButton?.title = L10n.savePathReveal
         screenshotSavePathChooseButton?.title = L10n.savePathChoose
-        screenshotSavePathRevealButton?.title = L10n.savePathReveal
         refreshSavePathControls()
         accessibilityNameLabel?.stringValue = L10n.accessibilityPermission
         accessibilityDescLabel?.stringValue = L10n.accessibilityDescription
@@ -3140,18 +2706,7 @@ class SettingsView: NSView {
         aboutLicenseTitleLabel?.stringValue = L10n.aboutLicense
         aboutSourceTitleLabel?.stringValue = L10n.aboutSourceCode
         aboutStarTitleLabel?.stringValue = L10n.aboutStarOnGitHub
-        aboutFeatureRequestTitleLabel?.stringValue = L10n.aboutFeatureRequest
-        aboutBugReportTitleLabel?.stringValue = L10n.aboutBugReport
         aboutUpdateTitleLabel?.stringValue = L10n.aboutUpdateTitle
-        errorLogTitleLabel?.stringValue = L10n.aboutErrorLog
-        errorLogCopyButton?.title = L10n.aboutErrorLogCopy
-        errorLogRevealButton?.title = L10n.aboutErrorLogReveal
-        errorLogRefreshButton?.title = L10n.aboutErrorLogRefresh
-        errorLogClearButton?.title = L10n.aboutErrorLogClear
-        if errorLogLoaded, errorLogEntry == nil {
-            errorLogTextView?.string = L10n.aboutErrorLogEmptyBody
-        }
-        refreshErrorLogStatus()
         refreshUpdateRow()
         refreshShortcutDisplay()
         refreshFullScreenScreenshotShortcutDisplay()

@@ -55,18 +55,14 @@
 	<array>
 		<string>en</string>
 		<string>zh-Hans</string>
-		<string>ja</string>
-		<string>ko</string>
-		<string>fr</string>
-		<string>ru</string>
-		<string>vi</string>
+		<string>zh-Hant</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Ya cap</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.4</string>
+	<string>1.0.5</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -79,7 +75,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>722</string>
+	<string>723</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
 	<key>LSUIElement</key>

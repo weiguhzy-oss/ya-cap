@@ -2193,10 +2193,6 @@ class EditWindowController {
                     try output.data.write(to: destination, options: .atomic)
                     let directoryPath = SaveDestination.displayPath(destination.deletingLastPathComponent())
                     ToastWindow.show(message: L10n.screenshotSaved(to: directoryPath), on: targetScreen)
-                    if Defaults.autoRevealSavedFiles {
-                        NSWorkspace.shared.activateFileViewerSelecting([destination])
-                        shouldReturnFocus = false
-                    }
                 } catch {
                     ToastWindow.show(
                         message: L10n.screenshotSaveFailed(error.localizedDescription),

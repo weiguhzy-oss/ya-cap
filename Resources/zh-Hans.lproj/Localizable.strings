@@ -12,8 +12,6 @@
 "microphoneDescription" = "可选；用于在录屏时录制你的声音";
 "launchApp" = "启动应用";
 "launchAtLogin" = "开机自动启动";
-"pinAcrossSpaces" = "贴图跨桌面显示";
-"pinAcrossSpacesHint" = "开启后新贴图会出现在所有桌面与全屏空间";
 "clipboardTextCacheToggleLabel" = "记录剪贴板文本与文件";
 "clipboardTextCacheToggleHint" = "保存文本和源文件引用，不复制文件副本";
 "countdownLabel" = "倒计时秒数";
@@ -247,7 +245,6 @@
 "toolbarSettingsShortcutResetAll" = "重置编辑器快捷键";
 "toolbarSettingsShortcutNone" = "未设置";
 "toolbarSettingsShortcutUnavailable" = "N/A";
-"toolbarSettingsAdditionalShortcuts" = "其他编辑操作";
 "toolbarSettingsReset" = "重置为默认";
 "toolbarSettingsCancel" = "取消";
 "toolbarSettingsApply" = "应用";
@@ -261,18 +258,7 @@
 "aboutLicense" = "开源协议";
 "aboutSourceCode" = "源代码";
 "aboutStarOnGitHub" = "给 Ya cap 点个 Star 🌟";
-"aboutFeatureRequest" = "提需求";
-"aboutBugReport" = "提 Bug";
 "aboutUpdateTitle" = "软件更新";
-"aboutErrorLog" = "错误日志";
-"aboutErrorLogNoCrash" = "暂无错误日志";
-"aboutErrorLogLastCrash" = "最近日志 · %@";
-"aboutErrorLogCopy" = "复制日志";
-"aboutErrorLogCopied" = "已复制";
-"aboutErrorLogReveal" = "在访达中显示";
-"aboutErrorLogRefresh" = "刷新日志";
-"aboutErrorLogClear" = "清除日志";
-"aboutErrorLogEmptyBody" = "Ya cap 暂未记录到错误日志。如果遇到卡死、强制退出或闪退，请回到这里复制日志反馈给开发者";
 
 /* Updates — About pane */
 "checkForUpdates" = "检查更新";
@@ -417,6 +403,9 @@
 
 /* Translation — errors */
 "translationErrMissingAPIKey" = "未配置 API Key";
+"translationErrMissingModel" = "未填写模型名称";
+"translationErrMissingEndpoint" = "未填写接口地址";
+"translationModelPlaceholder" = "例如 gpt-4o-mini";
 "translationErrBadEndpoint" = "接口地址无效";
 "translationErrBadResponse" = "响应格式异常";
 
@@ -475,8 +464,6 @@
 "savePathSubtitle" = "配置截图和录制的默认保存位置";
 "askSaveLocationLabel" = "询问保存位置";
 "askSaveLocationHint" = "保存截图时弹出对话框选择位置，关闭后直接保存到截图路径";
-"autoRevealSavedFilesLabel" = "在 Finder 中显示";
-"autoRevealSavedFilesHint" = "保存成功后，在 Finder 中选中刚保存的截图或录制";
 "recordingSavePathLabel" = "录制保存路径";
 "recordingSaveFormatSettingLabel" = "录制格式";
 "recordingSystemAudioLabel" = "录制系统音频";
@@ -497,7 +484,6 @@
 "recordingMicrophoneStartFailed" = "无法启动麦克风采集";
 "screenshotSavePathLabel" = "截图保存路径";
 "savePathChoose" = "选择";
-"savePathReveal" = "显示";
 "chooseRecordingSavePathTitle" = "选择录制保存路径";
 "chooseScreenshotSavePathTitle" = "选择截图保存路径";
 
@@ -545,19 +531,10 @@
 "ocrProviderApple" = "Apple · 本地识别";
 "ocrProviderBaidu" = "百度 OCR";
 "ocrProviderTencent" = "腾讯云 OCR";
-"ocrProviderCompatible" = "OpenAI 兼容视觉模型";
 "ocrProviderLabel" = "OCR 提供商";
-"ocrEndpointLabel" = "完整 API 地址";
-"ocrModelLabel" = "视觉模型名称";
 "ocrRegionLabel" = "地域";
-"ocrOptionalKey" = "无需认证的服务可留空";
-"ocrVisionModelHint" = "填写已安装或可用的视觉模型";
 "ocrLocalDescription" = "在这台 Mac 上识别文字，无需上传图片";
 "ocrCloudDescription" = "使用文字识别时会将图片发送至所选提供商，包括截图翻译、贴图和历史预览";
-"ocrCompatibleDescription" = "支持 OpenAI、通义千问或本地服务的视觉 Chat Completions 接口 · 图片会发送至你配置的地址";
-"ocrOllamaDescription" = "连接 Ollama 并填写已安装的视觉模型 · 图片会发送至你配置的 Ollama 服务";
-"ocrTextOnlyDescription" = "此模型只返回文字，不提供坐标 · 贴图和历史预览会打开文字结果面板，无法在图片上选字";
-"ocrDocumentation" = "提供商文档";
 "ocrSettingsSaved" = "设置自动保存 · 下次识别时生效";
 "ocrConfigurationError" = "请补全所需的密钥、API 地址和模型设置";
 "ocrEndpointError" = "请填写完整 HTTPS API 地址，本机服务可使用 HTTP";

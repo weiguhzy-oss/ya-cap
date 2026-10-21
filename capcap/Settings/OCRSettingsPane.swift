@@ -6,13 +6,9 @@ final class OCRSettingsPane: NSView, NSTextFieldDelegate {
     private var kind = Defaults.ocrProviderKind
     private let providerPopup = NSPopUpButton()
     private let descriptionLabel = NSTextField(wrappingLabelWithString: "")
-    private let geometryLabel = NSTextField(wrappingLabelWithString: "")
     private let statusLabel = NSTextField(wrappingLabelWithString: "")
-    private let documentationButton = NSButton()
     private let apiKeyField = OCRSecureField()
     private let secretKeyField = OCRSecureField()
-    private let endpointField = OCREditableField()
-    private let modelField = OCREditableField()
     private let regionField = OCREditableField()
     private var labels: [String: NSTextField] = [:]
     private var rows: [String: NSView] = [:]
@@ -48,7 +44,7 @@ final class OCRSettingsPane: NSView, NSTextFieldDelegate {
         providerPopup.action = #selector(providerChanged)
         stack.addArrangedSubview(makeRow("provider", field: providerPopup))
 
-        for label in [descriptionLabel, geometryLabel, statusLabel] {
+        for label in [descriptionLabel, statusLabel] {
             label.font = .systemFont(ofSize: 12)
             label.textColor = .secondaryLabelColor
             label.maximumNumberOfLines = 0
@@ -56,7 +52,7 @@ final class OCRSettingsPane: NSView, NSTextFieldDelegate {
         }
         stack.addArrangedSubview(descriptionLabel)
         for (key, field) in [("apiKey", apiKeyField as NSTextField), ("secretKey", secretKeyField),
-                             ("endpoint", endpointField), ("model", modelField), ("region", regionField)] {
+                             ("region", regionField)] {
             field.delegate = self
             field.font = .systemFont(ofSize: 12)
             field.lineBreakMode = .byTruncatingMiddle
@@ -65,13 +61,8 @@ final class OCRSettingsPane: NSView, NSTextFieldDelegate {
             rows[key] = row
             stack.addArrangedSubview(row)
         }
-        stack.addArrangedSubview(geometryLabel)
         stack.addArrangedSubview(statusLabel)
-        documentationButton.bezelStyle = .rounded
-        documentationButton.target = self
-        documentationButton.action = #selector(openDocumentation)
-        stack.addArrangedSubview(documentationButton)
-        for view in stack.arrangedSubviews where view !== documentationButton {
+        for view in stack.arrangedSubviews {
             view.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
         }
     }
@@ -91,7 +82,6 @@ final class OCRSettingsPane: NSView, NSTextFieldDelegate {
 
     private var config: OCRProviderConfig {
         OCRProviderConfig(apiKey: apiKeyField.stringValue, secretKey: secretKeyField.stringValue,
-                          endpoint: endpointField.stringValue, model: modelField.stringValue,
                           region: regionField.stringValue).normalized()
     }
 
@@ -99,8 +89,6 @@ final class OCRSettingsPane: NSView, NSTextFieldDelegate {
         let config = OCRConfigStore.load(kind)
         apiKeyField.stringValue = config.apiKey
         secretKeyField.stringValue = config.secretKey
-        endpointField.stringValue = config.endpoint
-        modelField.stringValue = config.model
         regionField.stringValue = config.region
     }
 
@@ -120,7 +108,6 @@ final class OCRSettingsPane: NSView, NSTextFieldDelegate {
     }
 
     @objc private func languageChanged() { refreshLocalization() }
-    @objc private func openDocumentation() { NSWorkspace.shared.open(kind.documentationURL) }
 
     private func refreshLocalization() {
         providerPopup.removeAllItems()
@@ -129,26 +116,13 @@ final class OCRSettingsPane: NSView, NSTextFieldDelegate {
         labels["provider"]?.stringValue = L10n.ocrProviderLabel
         labels["apiKey"]?.stringValue = kind == .tencent ? "SecretId" : "API Key"
         labels["secretKey"]?.stringValue = kind == .tencent ? "SecretKey" : "Secret Key"
-        labels["endpoint"]?.stringValue = L10n.ocrEndpointLabel
-        labels["model"]?.stringValue = L10n.ocrModelLabel
         labels["region"]?.stringValue = L10n.ocrRegionLabel
-        apiKeyField.placeholderString = kind.needsModel ? L10n.ocrOptionalKey : ""
-        endpointField.placeholderString = kind == .azure
-            ? "https://YOUR-RESOURCE.cognitiveservices.azure.com/computervision/imageanalysis:analyze?api-version=2024-02-01&features=read"
-            : kind.defaultEndpoint
-        modelField.placeholderString = L10n.ocrVisionModelHint
+        apiKeyField.placeholderString = ""
         regionField.placeholderString = "ap-guangzhou"
         rows["apiKey"]?.isHidden = kind == .apple
         rows["secretKey"]?.isHidden = !kind.needsSecret
-        rows["endpoint"]?.isHidden = !kind.needsEndpoint
-        rows["model"]?.isHidden = !kind.needsModel
         rows["region"]?.isHidden = kind != .tencent
-        descriptionLabel.stringValue = kind == .apple ? L10n.ocrLocalDescription
-            : kind == .ollama ? L10n.ocrOllamaDescription
-            : kind == .openAICompatible ? L10n.ocrCompatibleDescription : L10n.ocrCloudDescription
-        geometryLabel.stringValue = kind.hasGeometry ? "" : L10n.ocrTextOnlyDescription
-        geometryLabel.isHidden = kind.hasGeometry
-        documentationButton.title = L10n.ocrDocumentation
+        descriptionLabel.stringValue = kind == .apple ? L10n.ocrLocalDescription : L10n.ocrCloudDescription
         refreshStatus()
     }
 

@@ -12,8 +12,6 @@
 "microphoneDescription" = "Optional; needed to record your voice with screen recordings";
 "launchApp" = "Launch App";
 "launchAtLogin" = "Launch at Login";
-"pinAcrossSpaces" = "Show Pins Across Desktops";
-"pinAcrossSpacesHint" = "New pinned images appear on every desktop and full-screen Space";
 "clipboardTextCacheToggleLabel" = "Record Clipboard Text and Files";
 "clipboardTextCacheToggleHint" = "Keep text and source file references without copying files";
 "countdownLabel" = "Countdown Seconds";
@@ -247,7 +245,6 @@
 "toolbarSettingsShortcutResetAll" = "Reset Editor Shortcuts";
 "toolbarSettingsShortcutNone" = "Not Set";
 "toolbarSettingsShortcutUnavailable" = "N/A";
-"toolbarSettingsAdditionalShortcuts" = "Additional editor actions";
 "toolbarSettingsReset" = "Reset to Default";
 "toolbarSettingsCancel" = "Cancel";
 "toolbarSettingsApply" = "Apply";
@@ -261,18 +258,7 @@
 "aboutLicense" = "License";
 "aboutSourceCode" = "Source code";
 "aboutStarOnGitHub" = "Star Ya cap on GitHub 🌟";
-"aboutFeatureRequest" = "Request a feature";
-"aboutBugReport" = "Report a bug";
 "aboutUpdateTitle" = "Updates";
-"aboutErrorLog" = "Error Log";
-"aboutErrorLogNoCrash" = "No error logs";
-"aboutErrorLogLastCrash" = "Latest log · %@";
-"aboutErrorLogCopy" = "Copy Log";
-"aboutErrorLogCopied" = "Copied";
-"aboutErrorLogReveal" = "Show in Finder";
-"aboutErrorLogRefresh" = "Refresh Log";
-"aboutErrorLogClear" = "Clear Log";
-"aboutErrorLogEmptyBody" = "Ya cap hasn't recorded any error logs yet. If the app freezes or crashes, come back here to copy the log for a bug report";
 
 /* Updates — About pane */
 "checkForUpdates" = "Check for Updates";
@@ -417,6 +403,9 @@
 
 /* Translation — errors */
 "translationErrMissingAPIKey" = "API key not configured";
+"translationErrMissingModel" = "Model name is empty";
+"translationErrMissingEndpoint" = "Endpoint is empty";
+"translationModelPlaceholder" = "e.g. gpt-4o-mini";
 "translationErrBadEndpoint" = "Invalid endpoint";
 "translationErrBadResponse" = "Unexpected response";
 
@@ -475,8 +464,6 @@
 "savePathSubtitle" = "Default locations for screenshots and recordings";
 "askSaveLocationLabel" = "Ask for save location";
 "askSaveLocationHint" = "Show a save dialog when saving screenshots; turn off to save directly to the screenshot path";
-"autoRevealSavedFilesLabel" = "Show in Finder";
-"autoRevealSavedFilesHint" = "Select the saved screenshot or recording in Finder after a successful save";
 "recordingSavePathLabel" = "Recording save path";
 "recordingSaveFormatSettingLabel" = "Recording format";
 "recordingSystemAudioLabel" = "Record system audio";
@@ -497,7 +484,6 @@
 "recordingMicrophoneStartFailed" = "Could not start microphone capture";
 "screenshotSavePathLabel" = "Screenshot save path";
 "savePathChoose" = "Choose";
-"savePathReveal" = "Reveal";
 "chooseRecordingSavePathTitle" = "Choose Recording Save Path";
 "chooseScreenshotSavePathTitle" = "Choose Screenshot Save Path";
 
@@ -545,19 +531,10 @@
 "ocrProviderApple" = "Apple · On-device";
 "ocrProviderBaidu" = "Baidu OCR";
 "ocrProviderTencent" = "Tencent Cloud OCR";
-"ocrProviderCompatible" = "OpenAI-compatible vision model";
 "ocrProviderLabel" = "OCR provider";
-"ocrEndpointLabel" = "Full API endpoint";
-"ocrModelLabel" = "Vision model name";
 "ocrRegionLabel" = "Region";
-"ocrOptionalKey" = "Optional for servers without authentication";
-"ocrVisionModelHint" = "Enter an installed or available vision model";
 "ocrLocalDescription" = "Recognize text on this Mac without uploading images";
 "ocrCloudDescription" = "Images are sent to the selected provider when you use OCR, including screenshot translation, pins and history previews";
-"ocrCompatibleDescription" = "Use a vision-capable Chat Completions API, including OpenAI, Qwen or a local server · Images are sent to the endpoint you configure";
-"ocrOllamaDescription" = "Connect to Ollama and enter an installed vision model · Images are sent to your configured Ollama server";
-"ocrTextOnlyDescription" = "This model returns text without coordinates · Pins and history open the text result panel instead of image text selection";
-"ocrDocumentation" = "Provider documentation";
 "ocrSettingsSaved" = "Settings saved automatically · Applies to the next recognition request";
 "ocrConfigurationError" = "Complete the required credentials, endpoint and model settings";
 "ocrEndpointError" = "Use a full HTTPS API URL or HTTP on localhost";

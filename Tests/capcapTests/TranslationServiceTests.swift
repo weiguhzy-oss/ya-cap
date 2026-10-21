@@ -46,9 +46,7 @@ final class TranslationServiceTests: XCTestCase {
     }
 
     func testDeepSeekThinkingOptionDoesNotLeakToOtherProviders() throws {
-        XCTAssertNil(try requestBody(for: .openai)["thinking"])
         XCTAssertNil(try requestBody(for: .custom)["thinking"])
-        XCTAssertNil(try requestBody(for: .claude)["thinking"])
     }
 
     func testTranslationPromptPinsQualityAndFormattingRules() {

@@ -27,11 +27,6 @@ enum TranslationLanguage: String, CaseIterable {
         case .zh: return .chinese
         case .zhTW: return .chinese
         case .en: return .english
-        case .vi: return .vietnamese
-        case .ja: return .japanese
-        case .ko: return .korean
-        case .fr: return .french
-        case .ru: return .russian
         }
     }
 
@@ -147,10 +142,59 @@ enum TranslationProviderKind: String, CaseIterable {
     var defaultModel: String {
         switch self {
         case .apple:    return ""
-        case .deepseek: return "deepseek-chat"
+        // DeepSeek retired `deepseek-chat`; the API now only accepts
+        // `deepseek-flash` and `deepseek-v4-pro`.
+        case .deepseek: return "deepseek-flash"
         case .custom:   return ""
         }
     }
+
+    /// Model names offered as a closed list. Only providers whose catalog is
+    /// known and small enough to pick from populate this; an empty array means
+    /// the model is free text.
+    var selectableModels: [String] {
+        switch self {
+        case .deepseek: return ["deepseek-flash", "deepseek-v4-pro"]
+        case .apple, .custom: return []
+        }
+    }
+
+    /// Completion candidates for the free-text model field. These are only
+    /// suggestions — any name the user types is still accepted.
+    static let suggestedModels: [String] = [
+        // DeepSeek
+        "deepseek-flash",
+        "deepseek-v4-pro",
+        // Moonshot / Kimi
+        "kimi-k2-0905-preview",
+        "kimi-k2-turbo-preview",
+        "kimi-latest",
+        "moonshot-v1-8k",
+        "moonshot-v1-32k",
+        "moonshot-v1-128k",
+        // Alibaba Qwen
+        "qwen-max",
+        "qwen-plus",
+        "qwen-turbo",
+        "qwen-long",
+        "qwen3-max",
+        // Zhipu GLM
+        "glm-4.6",
+        "glm-4-plus",
+        "glm-4-flash",
+        // OpenAI
+        "gpt-4o",
+        "gpt-4o-mini",
+        "gpt-4.1",
+        "gpt-4.1-mini",
+        // Anthropic
+        "claude-sonnet-4-5",
+        "claude-opus-4-1",
+        "claude-haiku-4-5",
+        // Google
+        "gemini-2.5-pro",
+        "gemini-2.5-flash",
+    ]
 
     var endpointRequired: Bool {
         switch self {
@@ -258,14 +302,25 @@ enum TranslationConfigStore {
         "translation.\(kind.rawValue).enabled"
     }
 
+    /// Model names DeepSeek has retired. A stored value overrides the provider
+    /// default, so these are cleared on read to fall back to the live default
+    /// instead of failing every request with an invalid-model error.
+    private static let retiredModels: [TranslationProviderKind: Set<String>] = [
+        .deepseek: ["deepseek-chat", "deepseek-reasoner"]
+    ]
+
     static func load(_ kind: TranslationProviderKind) -> TranslationConfig {
         guard let data = UserDefaults.standard.data(forKey: configKey(for: kind)),
               let dict = try? JSONDecoder().decode([String: String].self, from: data) else {
             return TranslationConfig()
         }
+        var model = dict["model"] ?? ""
+        if retiredModels[kind]?.contains(model.trimmingCharacters(in: .whitespacesAndNewlines)) == true {
+            model = ""
+        }
         return TranslationConfig(
             apiKey: dict["apiKey"] ?? "",
-            model: dict["model"] ?? "",
+            model: model,
             endpoint: dict["endpoint"] ?? ""
         )
     }
@@ -308,7 +363,11 @@ enum TranslationConfigStore {
             guard !cfg.apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         }
         if kind.endpointRequired {
-            return !cfg.endpoint.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            guard !cfg.endpoint.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+        }
+        // A provider without a built-in default model needs one spelled out.
+        if kind.defaultModel.isEmpty, !kind.isAppleTranslation {
+            return !cfg.model.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         }
         return true
     }

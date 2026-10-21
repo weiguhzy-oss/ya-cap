@@ -137,9 +137,6 @@ enum PinLauncher {
             defer: false
         )
         window.level = .floating
-        if Defaults.pinAcrossSpaces {
-            window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        }
         window.isOpaque = false
         window.backgroundColor = .clear
         window.isMovableByWindowBackground = false
@@ -178,9 +175,6 @@ enum PinLauncher {
             defer: false
         )
         window.level = .floating
-        if Defaults.pinAcrossSpaces {
-            window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        }
         window.isOpaque = false
         window.backgroundColor = .clear
         window.isMovableByWindowBackground = false

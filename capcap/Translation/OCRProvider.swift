@@ -1,74 +1,34 @@
 import Foundation
 
 enum OCRProviderKind: String, CaseIterable, Codable {
-    case apple, baidu, tencent, google, azure, ocrSpace, openAICompatible, ollama
+    case apple, baidu, tencent
 
     var displayName: String {
         switch self {
         case .apple: return L10n.ocrProviderApple
         case .baidu: return L10n.ocrProviderBaidu
         case .tencent: return L10n.ocrProviderTencent
-        case .google: return "Google Cloud Vision"
-        case .azure: return "Azure AI Vision"
-        case .ocrSpace: return "OCR.space"
-        case .openAICompatible: return L10n.ocrProviderCompatible
-        case .ollama: return "Ollama"
         }
     }
 
-    var hasGeometry: Bool { self != .openAICompatible && self != .ollama }
-    var needsModel: Bool { self == .openAICompatible || self == .ollama }
     var needsSecret: Bool { self == .baidu || self == .tencent }
-    var needsEndpoint: Bool { self == .openAICompatible || self == .ollama || self == .azure }
-
-    var defaultEndpoint: String {
-        switch self {
-        case .openAICompatible: return "https://api.openai.com/v1/chat/completions"
-        case .ollama: return "http://localhost:11434/api/chat"
-        default: return ""
-        }
-    }
-
-    var documentationURL: URL {
-        let value: String
-        switch self {
-        case .apple: value = "https://developer.apple.com/documentation/vision/recognizing-text-in-images"
-        case .baidu: value = "https://ai.baidu.com/ai-doc/OCR/Nkibizxlf"
-        case .tencent: value = "https://cloud.tencent.com/document/api/866/33526"
-        case .google: value = "https://docs.cloud.google.com/vision/docs/ocr"
-        case .azure: value = "https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/how-to/call-analyze-image-40"
-        case .ocrSpace: value = "https://ocr.space/ocrapi"
-        case .openAICompatible: value = "https://developers.openai.com/api/docs/guides/images-vision"
-        case .ollama: value = "https://docs.ollama.com/capabilities/vision"
-        }
-        return URL(string: value)!
-    }
 }
 
 struct OCRProviderConfig: Codable {
     var apiKey = ""
     var secretKey = ""
-    var endpoint = ""
-    var model = ""
     var region = "ap-guangzhou"
 
     func normalized() -> Self {
         func trim(_ value: String) -> String { value.trimmingCharacters(in: .whitespacesAndNewlines) }
-        return Self(apiKey: trim(apiKey), secretKey: trim(secretKey), endpoint: trim(endpoint),
-                    model: trim(model), region: trim(region))
-    }
-
-    func resolvedEndpoint(for kind: OCRProviderKind) -> String {
-        endpoint.isEmpty ? kind.defaultEndpoint : endpoint
+        return Self(apiKey: trim(apiKey), secretKey: trim(secretKey), region: trim(region))
     }
 
     func validate(for kind: OCRProviderKind) throws {
         if kind == .apple { return }
-        if !kind.needsModel && apiKey.isEmpty { throw OCRProviderError.configuration }
+        if apiKey.isEmpty { throw OCRProviderError.configuration }
         if kind.needsSecret && secretKey.isEmpty { throw OCRProviderError.configuration }
-        if kind.needsModel && model.isEmpty { throw OCRProviderError.configuration }
         if kind == .tencent && region.isEmpty { throw OCRProviderError.configuration }
-        if kind.needsEndpoint { _ = try OCRProviderConfig.validatedURL(resolvedEndpoint(for: kind)) }
     }
 
     /// Permit plain HTTP only for a local model server. Cloud credentials and

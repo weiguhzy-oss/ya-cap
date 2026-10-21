@@ -16,11 +16,6 @@ enum AppLanguage: String, CaseIterable {
     case zh
     case zhTW = "zh-Hant"
     case en
-    case ja
-    case ko
-    case fr
-    case ru
-    case vi
 
     /// Folder name (without extension) of the matching `.lproj` bundle inside
     /// `capcap.app/Contents/Resources/`.
@@ -38,11 +33,6 @@ enum AppLanguage: String, CaseIterable {
         case .zh: return "简体中文"
         case .zhTW: return "繁體中文"
         case .en: return "English"
-        case .ja: return "日本語"
-        case .ko: return "한국어"
-        case .fr: return "Français"
-        case .ru: return "Русский"
-        case .vi: return "Tiếng Việt"
         }
     }
 
@@ -58,11 +48,6 @@ enum AppLanguage: String, CaseIterable {
                 return .zhTW
             }
             if lower.hasPrefix("zh") { return .zh }
-            if lower.hasPrefix("ja") { return .ja }
-            if lower.hasPrefix("ko") { return .ko }
-            if lower.hasPrefix("fr") { return .fr }
-            if lower.hasPrefix("ru") { return .ru }
-            if lower.hasPrefix("vi") { return .vi }
             if lower.hasPrefix("en") { return .en }
         }
         return .en
@@ -95,8 +80,6 @@ enum L10n {
     static var screenRecordingDescription: String { s("screenRecordingDescription") }
     static var launchApp: String { s("launchApp") }
     static var launchAtLogin: String { s("launchAtLogin") }
-    static var pinAcrossSpaces: String { s("pinAcrossSpaces") }
-    static var pinAcrossSpacesHint: String { s("pinAcrossSpacesHint") }
     static var countdownLabel: String { s("countdownLabel") }
     static var countdownHint: String { s("countdownHint") }
     static var countdownSecondsSuffix: String { s("countdownSecondsSuffix") }
@@ -108,13 +91,10 @@ enum L10n {
     static var savePathSubtitle: String { s("savePathSubtitle") }
     static var askSaveLocationLabel: String { s("askSaveLocationLabel") }
     static var askSaveLocationHint: String { s("askSaveLocationHint") }
-    static var autoRevealSavedFilesLabel: String { s("autoRevealSavedFilesLabel") }
-    static var autoRevealSavedFilesHint: String { s("autoRevealSavedFilesHint") }
     static var recordingSavePathLabel: String { s("recordingSavePathLabel") }
     static var recordingSaveFormatSettingLabel: String { s("recordingSaveFormatSettingLabel") }
     static var screenshotSavePathLabel: String { s("screenshotSavePathLabel") }
     static var savePathChoose: String { s("savePathChoose") }
-    static var savePathReveal: String { s("savePathReveal") }
     static var chooseRecordingSavePathTitle: String { s("chooseRecordingSavePathTitle") }
     static var chooseScreenshotSavePathTitle: String { s("chooseScreenshotSavePathTitle") }
     static var screenshotQualityTitle: String { s("screenshotQualityTitle") }
@@ -419,7 +399,6 @@ enum L10n {
     static var toolbarSettingsShortcutResetAll: String { s("toolbarSettingsShortcutResetAll") }
     static var toolbarSettingsShortcutNone: String { s("toolbarSettingsShortcutNone") }
     static var toolbarSettingsShortcutUnavailable: String { s("toolbarSettingsShortcutUnavailable") }
-    static var toolbarSettingsAdditionalShortcuts: String { s("toolbarSettingsAdditionalShortcuts") }
     static var toolbarSettingsReset: String { s("toolbarSettingsReset") }
     static var toolbarSettingsCancel: String { s("toolbarSettingsCancel") }
     static var toolbarSettingsApply: String { s("toolbarSettingsApply") }
@@ -435,22 +414,7 @@ enum L10n {
     static var aboutLicense: String { s("aboutLicense") }
     static var aboutSourceCode: String { s("aboutSourceCode") }
     static var aboutStarOnGitHub: String { s("aboutStarOnGitHub") }
-    static var aboutFeatureRequest: String { s("aboutFeatureRequest") }
-    static var aboutBugReport: String { s("aboutBugReport") }
     static var aboutUpdateTitle: String { s("aboutUpdateTitle") }
-
-    // Error log — About pane
-    static var aboutErrorLog: String { s("aboutErrorLog") }
-    static var aboutErrorLogNoCrash: String { s("aboutErrorLogNoCrash") }
-    static func aboutErrorLogLastCrash(_ date: String) -> String {
-        String(format: s("aboutErrorLogLastCrash"), date)
-    }
-    static var aboutErrorLogCopy: String { s("aboutErrorLogCopy") }
-    static var aboutErrorLogCopied: String { s("aboutErrorLogCopied") }
-    static var aboutErrorLogReveal: String { s("aboutErrorLogReveal") }
-    static var aboutErrorLogRefresh: String { s("aboutErrorLogRefresh") }
-    static var aboutErrorLogClear: String { s("aboutErrorLogClear") }
-    static var aboutErrorLogEmptyBody: String { s("aboutErrorLogEmptyBody") }
 
     // Updates — About pane
     static var checkForUpdates: String { s("checkForUpdates") }
@@ -546,19 +510,10 @@ enum L10n {
     static var ocrProviderApple: String { s("ocrProviderApple") }
     static var ocrProviderBaidu: String { s("ocrProviderBaidu") }
     static var ocrProviderTencent: String { s("ocrProviderTencent") }
-    static var ocrProviderCompatible: String { s("ocrProviderCompatible") }
     static var ocrProviderLabel: String { s("ocrProviderLabel") }
-    static var ocrEndpointLabel: String { s("ocrEndpointLabel") }
-    static var ocrModelLabel: String { s("ocrModelLabel") }
     static var ocrRegionLabel: String { s("ocrRegionLabel") }
-    static var ocrOptionalKey: String { s("ocrOptionalKey") }
-    static var ocrVisionModelHint: String { s("ocrVisionModelHint") }
     static var ocrLocalDescription: String { s("ocrLocalDescription") }
     static var ocrCloudDescription: String { s("ocrCloudDescription") }
-    static var ocrCompatibleDescription: String { s("ocrCompatibleDescription") }
-    static var ocrOllamaDescription: String { s("ocrOllamaDescription") }
-    static var ocrTextOnlyDescription: String { s("ocrTextOnlyDescription") }
-    static var ocrDocumentation: String { s("ocrDocumentation") }
     static var ocrSettingsSaved: String { s("ocrSettingsSaved") }
     static var ocrConfigurationError: String { s("ocrConfigurationError") }
     static var ocrEndpointError: String { s("ocrEndpointError") }
@@ -624,6 +579,9 @@ enum L10n {
 
     // Translation — errors
     static var translationErrMissingAPIKey: String { s("translationErrMissingAPIKey") }
+    static var translationErrMissingModel: String { s("translationErrMissingModel") }
+    static var translationErrMissingEndpoint: String { s("translationErrMissingEndpoint") }
+    static var translationModelPlaceholder: String { s("translationModelPlaceholder") }
     static var translationErrBadEndpoint: String { s("translationErrBadEndpoint") }
     static var translationErrBadResponse: String { s("translationErrBadResponse") }
 
@@ -910,18 +868,6 @@ struct Defaults {
         }
         set {
             defaults.set(newValue, forKey: "askSaveLocation")
-        }
-    }
-
-    static var autoRevealSavedFiles: Bool {
-        get {
-            if defaults.object(forKey: "autoRevealSavedFiles") == nil {
-                return true
-            }
-            return defaults.bool(forKey: "autoRevealSavedFiles")
-        }
-        set {
-            defaults.set(newValue, forKey: "autoRevealSavedFiles")
         }
     }
 
@@ -1709,10 +1655,6 @@ struct Defaults {
         }
     }
 
-    static var pinAcrossSpaces: Bool {
-        get { defaults.bool(forKey: "pinAcrossSpaces") }
-        set { defaults.set(newValue, forKey: "pinAcrossSpaces") }
-    }
 
     // Window-capture drop shadow. When enabled, single-window screenshots get
     // rounded corners and a macOS-style drop shadow in the final output.

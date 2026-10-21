@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-10-21
+
+### Added
+- Pick the DeepSeek model from a dropdown instead of typing it, so a retired
+  model name can no longer be submitted
+- Suggest known model names while typing in the custom OpenAI-compatible
+  provider, covering the DeepSeek, Kimi, Qwen, GLM, GPT, Claude, and Gemini
+  families
+
+### Changed
+- Replace the pin button at the top-right of the OCR/translation panel with a
+  close button
+- Trim the interface language list to Simplified Chinese, Traditional Chinese,
+  and English, matching the localizations that actually ship
+- Reduce the text recognition providers to Apple, Baidu, and Tencent
+- Remove the editor shortcut rows from toolbar settings; the V and F shortcuts
+  still work but are no longer rebindable
+- Remove the cross-desktop toggle for pinned images, fixing them to the desktop
+  they were created on
+- Remove the reveal-in-Finder toggle and the reveal buttons from file settings
+- Remove the feature-request and bug-report links and the error log card from
+  the About pane
+
+### Fixed
+- Update the default DeepSeek model to `deepseek-flash`; the previous
+  `deepseek-chat` default was retired by the API and failed every request
+- Clear retired DeepSeek model names on load so an existing config falls back to
+  a working default
+- Report an empty endpoint as a missing field instead of an invalid URL, and
+  check it before the connection test runs
+- Report an empty model name before the request instead of letting the server
+  reject it
+
 ## [1.0.1] - 2026-10-19
 
 ### Changed

@@ -711,9 +711,8 @@ final class OCRLineSelectionOverlayView: NSView {
     }
 }
 
-private final class PanelPinButton: NSButton {
-    private var pinned = false
-    private let pinSymbolConfiguration = NSImage.SymbolConfiguration(pointSize: 12, weight: .semibold)
+private final class PanelCloseButton: NSButton {
+    private let closeSymbolConfiguration = NSImage.SymbolConfiguration(pointSize: 12, weight: .semibold)
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -730,7 +729,13 @@ private final class PanelPinButton: NSButton {
         layer?.shadowOpacity = 0.28
         layer?.shadowRadius = 3
         layer?.shadowOffset = NSSize(width: 0, height: -1)
-        setPinned(false)
+
+        let label = "Close dialog"
+        image = NSImage(systemSymbolName: "xmark", accessibilityDescription: label)?
+            .withSymbolConfiguration(closeSymbolConfiguration)
+        toolTip = label
+        setAccessibilityLabel(label)
+        updateAppearance()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -743,28 +748,17 @@ private final class PanelPinButton: NSButton {
         layer?.shadowPath = CGPath(ellipseIn: bounds, transform: nil)
     }
 
-    func setPinned(_ pinned: Bool) {
-        self.pinned = pinned
-        let label = pinned ? "Unpin dialog" : "Pin dialog"
-        let symbolName = pinned ? "pin.fill" : "pin"
-        image = NSImage(systemSymbolName: symbolName, accessibilityDescription: label)?
-            .withSymbolConfiguration(pinSymbolConfiguration)
-        updateAppearance()
-        toolTip = label
-        setAccessibilityLabel(label)
-    }
-
     override func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
         updateAppearance()
     }
 
     private func updateAppearance() {
-        contentTintColor = pinned ? .white : .labelColor
-        let background = pinned
-            ? accentGreen.withAlphaComponent(0.96)
-            : AdaptiveChrome.floatingBackground
-        layer?.backgroundColor = AdaptiveChrome.resolvedCGColor(background, for: effectiveAppearance)
+        contentTintColor = .labelColor
+        layer?.backgroundColor = AdaptiveChrome.resolvedCGColor(
+            AdaptiveChrome.floatingBackground,
+            for: effectiveAppearance
+        )
         layer?.borderColor = AdaptiveChrome.resolvedCGColor(
             AdaptiveChrome.border,
             for: effectiveAppearance
@@ -1344,7 +1338,7 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
     private var translationResultViews: [TranslationProviderKind: TranslationResultView] = [:]
     private var dictionaryResultView: DictionaryResultView?
     private var translationLanguageButton: NSButton?
-    private var pinButton: PanelPinButton?
+    private var closeButton: PanelCloseButton?
 
     private var keyMonitor: Any?
     private var outsideClickLocalMonitor: Any?
@@ -1365,9 +1359,6 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
     private var recognizedText = ""
     private var ocrReady = false
     private var selectedTarget = TranslationLanguage.appDefault
-    private var isPinned = false {
-        didSet { pinButton?.setPinned(isPinned) }
-    }
 
     // MARK: Presentation
 
@@ -1512,12 +1503,12 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
         let documentWidthConstraint = docView.widthAnchor.constraint(equalToConstant: panelWidth - padding * 2)
         self.documentWidthConstraint = documentWidthConstraint
 
-        let pinButton = PanelPinButton()
-        pinButton.translatesAutoresizingMaskIntoConstraints = false
-        pinButton.target = self
-        pinButton.action = #selector(pinTapped)
-        self.pinButton = pinButton
-        root.addSubview(pinButton)
+        let closeButton = PanelCloseButton()
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.target = self
+        closeButton.action = #selector(closeTapped)
+        self.closeButton = closeButton
+        root.addSubview(closeButton)
 
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: root.topAnchor, constant: padding),
@@ -1533,10 +1524,10 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
             contentStack.leadingAnchor.constraint(equalTo: docView.leadingAnchor),
             contentStack.trailingAnchor.constraint(equalTo: docView.trailingAnchor),
 
-            pinButton.topAnchor.constraint(equalTo: root.topAnchor, constant: 8),
-            pinButton.trailingAnchor.constraint(equalTo: root.trailingAnchor, constant: -8),
-            pinButton.widthAnchor.constraint(equalToConstant: 24),
-            pinButton.heightAnchor.constraint(equalToConstant: 24),
+            closeButton.topAnchor.constraint(equalTo: root.topAnchor, constant: 8),
+            closeButton.trailingAnchor.constraint(equalTo: root.trailingAnchor, constant: -8),
+            closeButton.widthAnchor.constraint(equalToConstant: 24),
+            closeButton.heightAnchor.constraint(equalToConstant: 24),
         ])
 
         switch mode {
@@ -2180,8 +2171,8 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
 
     // MARK: Actions
 
-    @objc private func pinTapped() {
-        isPinned.toggle()
+    @objc private func closeTapped() {
+        dismiss()
     }
 
     @objc private func openSettingsTapped() {
@@ -2278,8 +2269,7 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
     }
 
     private func dismissForOutsideClickIfNeeded(_ event: NSEvent) {
-        guard !isPinned,
-              !isLiveTextMenuOpen,
+        guard !isLiveTextMenuOpen,
               isVisible,
               !eventBelongsToPanel(event),
               !eventTargetsPanelThroughCaptureOverlay(event)

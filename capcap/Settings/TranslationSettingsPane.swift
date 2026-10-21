@@ -174,12 +174,45 @@ private func editingSelector(for event: NSEvent) -> Selector? {
 }
 
 /// Text field that honors Cmd+C/V/X/A in a menu-less LSUIElement app.
-private final class TKTextField: NSTextField {
+private class TKTextField: NSTextField {
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
         guard let action = editingSelector(for: event) else {
             return super.performKeyEquivalent(with: event)
         }
         return NSApp.sendAction(action, to: nil, from: nil)
+    }
+}
+
+/// Free-text field that suggests known model names while typing. The list only
+/// offers completions; any value the user types is kept as-is.
+private final class TKCompletingTextField: TKTextField, NSTextFieldDelegate {
+    var completions: [String] = []
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        delegate = self
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    func control(
+        _ control: NSControl,
+        textView: NSTextView,
+        completions words: [String],
+        forPartialWordRange charRange: NSRange,
+        indexOfSelectedItem index: UnsafeMutablePointer<Int>
+    ) -> [String] {
+        let partial = textView.string as NSString
+        guard charRange.location + charRange.length <= partial.length else { return [] }
+        let prefix = partial.substring(with: charRange).lowercased()
+        guard !prefix.isEmpty else { return [] }
+        return completions.filter { $0.lowercased().hasPrefix(prefix) }
+    }
+
+    func controlTextDidChange(_ obj: Notification) {
+        // The completion list is advisory, so it is shown without selecting a
+        // candidate — typing a name that isn't listed must stay untouched.
+        currentEditor()?.complete(nil)
     }
 }
 
@@ -209,7 +242,8 @@ private final class TranslationProviderCard: NSView {
     private let moveUpButton = NSButton()
     private let moveDownButton = NSButton()
     private let apiKeyField = TKSecureTextField()
-    private let modelField = TKTextField()
+    private let modelField = TKCompletingTextField()
+    private let modelPopUp = NSPopUpButton()
     private let endpointField = TKTextField()
     private let apiKeyLabel = NSTextField(labelWithString: "")
     private let modelLabel = NSTextField(labelWithString: "")
@@ -316,9 +350,17 @@ private final class TranslationProviderCard: NSView {
                                                  label: apiKeyLabelText(),
                                                  placeholder: "API key", width: body))
             if !kind.isDirectTranslationAPI {
-                body.addArrangedSubview(makeFieldRow(modelLabel, modelField,
-                                                     label: L10n.translationModel,
-                                                     placeholder: modelPlaceholder(), width: body))
+                if usesModelPopUp {
+                    configureModelPopUp()
+                    body.addArrangedSubview(makeFieldRow(modelLabel, modelPopUp,
+                                                         label: L10n.translationModel,
+                                                         placeholder: "", width: body))
+                } else {
+                    modelField.completions = TranslationProviderKind.suggestedModels
+                    body.addArrangedSubview(makeFieldRow(modelLabel, modelField,
+                                                         label: L10n.translationModel,
+                                                         placeholder: modelPlaceholder(), width: body))
+                }
             }
             body.addArrangedSubview(makeFieldRow(endpointLabel, endpointField,
                                                  label: endpointLabelText(),
@@ -390,8 +432,30 @@ private final class TranslationProviderCard: NSView {
 
     // MARK: Field metadata
 
+    /// True when the provider's model list is known, so the name is chosen
+    /// instead of typed and an invalid model can't be submitted.
+    private var usesModelPopUp: Bool { !kind.selectableModels.isEmpty }
+
+    private func configureModelPopUp() {
+        modelPopUp.removeAllItems()
+        modelPopUp.addItems(withTitles: kind.selectableModels)
+        modelPopUp.controlSize = .small
+        modelPopUp.font = NSFont.systemFont(ofSize: 12)
+        modelPopUp.target = self
+        modelPopUp.action = #selector(modelSelectionChanged)
+    }
+
+    /// Selecting a model is a config change on its own, so it is persisted
+    /// immediately rather than waiting for 保存 like the text fields do.
+    @objc private func modelSelectionChanged() {
+        TranslationConfigStore.save(currentConfig(), for: kind)
+    }
+
+    /// The field takes any name the user types. For providers that ship a
+    /// default, the placeholder names the model used when the field is blank,
+    /// so a wrong guess doesn't become a server-side model error.
     private func modelPlaceholder() -> String {
-        return kind.defaultModel.isEmpty ? "e.g. gpt-4o-mini" : kind.defaultModel
+        kind.defaultModel.isEmpty ? L10n.translationModelPlaceholder : kind.defaultModel
     }
 
     private func apiKeyLabelText() -> String {
@@ -413,14 +477,28 @@ private final class TranslationProviderCard: NSView {
     private func loadFromStore() {
         let cfg = TranslationConfigStore.load(kind)
         apiKeyField.stringValue = cfg.apiKey
-        modelField.stringValue = cfg.model
         endpointField.stringValue = cfg.endpoint
+        if usesModelPopUp {
+            // A stored name that is no longer offered falls back to the
+            // provider default rather than showing an unselected menu.
+            let stored = cfg.model.trimmingCharacters(in: .whitespacesAndNewlines)
+            let selection = kind.selectableModels.contains(stored) ? stored : kind.defaultModel
+            modelPopUp.selectItem(withTitle: selection)
+        } else {
+            modelField.stringValue = cfg.model
+        }
+    }
+
+    private func currentModel() -> String {
+        if kind.isDirectTranslationAPI { return "" }
+        if usesModelPopUp { return modelPopUp.titleOfSelectedItem ?? kind.defaultModel }
+        return modelField.stringValue
     }
 
     private func currentConfig() -> TranslationConfig {
         TranslationConfig(
             apiKey: apiKeyField.stringValue,
-            model: kind.isDirectTranslationAPI ? "" : modelField.stringValue,
+            model: currentModel(),
             endpoint: endpointField.stringValue
         )
     }
@@ -520,6 +598,16 @@ private final class TranslationProviderCard: NSView {
                 flashButton(saveButton, to: L10n.translationConfigSaved, restore: L10n.translationSave)
                 return
             }
+        }
+
+        // A provider with no built-in endpoint can't be tested until one is
+        // typed. The placeholder looks pre-filled, so say which field is empty
+        // instead of letting the request fail with a generic endpoint error.
+        if kind.endpointRequired,
+           config.endpoint.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            flashButton(saveButton, to: L10n.translationTestFailed, restore: L10n.translationSave)
+            showTestFailure(TranslationError.missingEndpoint)
+            return
         }
 
         saveButton.isEnabled = false
@@ -645,8 +733,12 @@ private final class TranslationProviderCard: NSView {
 
     @objc private func clearTapped() {
         apiKeyField.stringValue = ""
-        modelField.stringValue = ""
         endpointField.stringValue = ""
+        if usesModelPopUp {
+            modelPopUp.selectItem(withTitle: kind.defaultModel)
+        } else {
+            modelField.stringValue = ""
+        }
         TranslationConfigStore.clear(kind)
     }
 

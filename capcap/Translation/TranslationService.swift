@@ -2,6 +2,8 @@ import Foundation
 
 enum TranslationError: LocalizedError {
     case missingAPIKey
+    case missingModel
+    case missingEndpoint
     case badEndpoint
     case http(Int, String)
     case badResponse
@@ -11,6 +13,10 @@ enum TranslationError: LocalizedError {
         switch self {
         case .missingAPIKey:
             return L10n.translationErrMissingAPIKey
+        case .missingModel:
+            return L10n.translationErrMissingModel
+        case .missingEndpoint:
+            return L10n.translationErrMissingEndpoint
         case .badEndpoint:
             return L10n.translationErrBadEndpoint
         case .badResponse:
@@ -271,7 +277,8 @@ enum TranslationService {
 
         let endpoint = config.resolvedEndpoint(for: kind)
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !endpoint.isEmpty, let url = URL(string: endpoint), url.scheme != nil else {
+        guard !endpoint.isEmpty else { throw TranslationError.missingEndpoint }
+        guard let url = URL(string: endpoint), url.scheme != nil else {
             throw TranslationError.badEndpoint
         }
 
@@ -288,8 +295,13 @@ enum TranslationService {
             request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         }
 
+        // An empty model name is accepted by the settings pane but rejected by
+        // every OpenAI-compatible server, so surface it before the request.
+        let model = config.resolvedModel(for: kind)
+        guard !model.isEmpty else { throw TranslationError.missingModel }
+
         var body: [String: Any] = [
-            "model": config.resolvedModel(for: kind),
+            "model": model,
             "stream": true,
             "messages": [
                 ["role": "system", "content": system],

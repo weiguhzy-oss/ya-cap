@@ -22,41 +22,6 @@ enum NetworkOCRProvider {
         defer { transport.session.invalidateAndCancel() }
         switch kind {
         case .apple: throw OCRProviderError.configuration
-        case .openAICompatible, .ollama:
-            var request = try post(config.resolvedEndpoint(for: kind))
-            if !config.apiKey.isEmpty { request.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization") }
-            let message: [String: Any]
-            if kind == .ollama {
-                message = ["role": "user", "content": prompt, "images": [base64]]
-            } else {
-                message = ["role": "user", "content": [
-                    ["type": "text", "text": prompt],
-                    ["type": "image_url", "image_url": ["url": "data:image/png;base64,\(base64)"]]
-                ]]
-            }
-            request.httpBody = try JSONSerialization.data(withJSONObject: [
-                "model": config.model, "stream": false, "messages": [message]
-            ])
-            let json = try await transport.json(request)
-            let messageResult: [String: Any]?
-            if kind == .ollama {
-                messageResult = json["message"] as? [String: Any]
-                guard json["done"] as? Bool != false else { throw OCRProviderError.response }
-            } else {
-                let choice = (json["choices"] as? [[String: Any]])?.first
-                guard choice?["finish_reason"] as? String != "length",
-                      choice?["finish_reason"] as? String != "content_filter" else { throw OCRProviderError.response }
-                messageResult = choice?["message"] as? [String: Any]
-            }
-            if let text = messageResult?["content"] as? String {
-                return OCRResult(text: text, provider: kind)
-            }
-            if let parts = messageResult?["content"] as? [[String: Any]] {
-                let textParts = parts.compactMap { $0["text"] as? String }
-                guard !textParts.isEmpty else { throw OCRProviderError.response }
-                return OCRResult(text: textParts.joined(separator: "\n"), provider: kind)
-            }
-            throw OCRProviderError.response
         case .baidu:
             var tokenRequest = try post("https://aip.baidubce.com/oauth/2.0/token")
             tokenRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -94,77 +59,6 @@ enum NetworkOCRProvider {
                       let vertices = word["Polygon"] as? [[String: Any]] else { throw OCRProviderError.response }
                 return try line(text, rect: polygon(vertices, x: "X", y: "Y"), size: size)
             }
-        case .google:
-            var request = try post("https://vision.googleapis.com/v1/images:annotate")
-            request.setValue(config.apiKey, forHTTPHeaderField: "X-Goog-Api-Key")
-            request.httpBody = try JSONSerialization.data(withJSONObject: ["requests": [[
-                "image": ["content": base64], "features": [["type": "DOCUMENT_TEXT_DETECTION"]]
-            ]]])
-            let root = try await transport.json(request)
-            guard let json = (root["responses"] as? [[String: Any]])?.first else { throw OCRProviderError.response }
-            if let error = json["error"] as? [String: Any] {
-                throw OCRProviderError.service(String(error["code"] as? Int ?? 0))
-            }
-            // The first annotation is the full transcript; following entries
-            // have word coordinates in the original image's pixel space.
-            guard let annotations = json["textAnnotations"] as? [[String: Any]] else {
-                // Vision returns an empty response object for images with no text.
-                guard json.isEmpty else { throw OCRProviderError.response }
-                return OCRResult(provider: kind)
-            }
-            if annotations.count == 1, let text = annotations.first?["description"] as? String {
-                return OCRResult(text: text, provider: kind)
-            }
-            return try geometricResult(Array(annotations.dropFirst()), kind: kind) { word in
-                guard let text = word["description"] as? String,
-                      let bounds = word["boundingPoly"] as? [String: Any],
-                      let vertices = bounds["vertices"] as? [[String: Any]] else { throw OCRProviderError.response }
-                return try line(text, rect: polygon(vertices, x: "x", y: "y", omittedZeros: true), size: size, asToken: true)
-            }
-        case .azure:
-            // Azure endpoint is the full Image Analysis 4.0 request URL.
-            var request = try post(config.endpoint)
-            request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
-            request.setValue(config.apiKey, forHTTPHeaderField: "Ocp-Apim-Subscription-Key")
-            request.httpBody = data
-            let json = try await transport.json(request)
-            guard let read = json["readResult"] as? [String: Any],
-                  let blocks = read["blocks"] as? [[String: Any]] else { throw OCRProviderError.response }
-            let words = try blocks.flatMap { block -> [[String: Any]] in
-                guard let lines = block["lines"] as? [[String: Any]] else { throw OCRProviderError.response }
-                return lines
-            }
-            return try geometricResult(words, kind: kind) { word in
-                guard let text = word["text"] as? String,
-                      let vertices = word["boundingPolygon"] as? [[String: Any]] else { throw OCRProviderError.response }
-                return try line(text, rect: polygon(vertices, x: "x", y: "y"), size: size)
-            }
-        case .ocrSpace:
-            var request = try post("https://api.ocr.space/parse/image")
-            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            request.setValue(config.apiKey, forHTTPHeaderField: "apikey")
-            request.httpBody = form(["base64Image": "data:image/png;base64,\(base64)", "isOverlayRequired": "true", "OCREngine": "2", "scale": "false", "detectOrientation": "false"])
-            let json = try await transport.json(request)
-            guard json["IsErroredOnProcessing"] as? Bool == false,
-                  let pages = json["ParsedResults"] as? [[String: Any]] else { throw OCRProviderError.response }
-            var fragments: [RecognizedTextLine] = []
-            var transcripts: [String] = []
-            for page in pages {
-                guard page["FileParseExitCode"] as? Int == 1,
-                      let text = page["ParsedText"] as? String else { throw OCRProviderError.response }
-                transcripts.append(text)
-                guard let overlay = page["TextOverlay"] as? [String: Any],
-                      let lines = overlay["Lines"] as? [[String: Any]] else { continue }
-                for entry in lines {
-                    guard let words = entry["Words"] as? [[String: Any]] else { throw OCRProviderError.response }
-                    for word in words {
-                        guard let text = word["WordText"] as? String else { throw OCRProviderError.response }
-                        fragments.append(try line(text, rect: rectangle(word, x: "Left", y: "Top", w: "Width", h: "Height"), size: size, asToken: true))
-                    }
-                }
-            }
-            let lines = OCRService.readingOrderLines(fragments, joinsCJK: true)
-            return OCRResult(text: lines.isEmpty ? transcripts.joined(separator: "\n") : nil, lines: lines, provider: kind)
         }
     }
 

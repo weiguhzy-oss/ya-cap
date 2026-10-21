@@ -107,8 +107,8 @@ enum TranslationLanguage: String, CaseIterable {
 
 // MARK: - Provider kinds
 
-/// Translation providers. OpenAI / DeepSeek / Custom all speak the OpenAI
-/// chat-completions wire format; Claude, DeepL, and DeepLX use their own APIs.
+/// Translation providers: Apple Translation (on-device) and OpenAI-compatible
+/// chat-completions endpoints (DeepSeek, custom).
 enum TranslationProviderKind: String, CaseIterable {
     case apple
     case deepseek
@@ -134,9 +134,6 @@ enum TranslationProviderKind: String, CaseIterable {
     }
 
     var isAppleTranslation: Bool { self == .apple }
-    var isClaude: Bool { false }
-    var isDeepL: Bool { false }
-    var isDeepLX: Bool { false }
     var isDirectTranslationAPI: Bool { isAppleTranslation }
 
     var defaultEndpoint: String {
@@ -169,32 +166,6 @@ enum TranslationProviderKind: String, CaseIterable {
         case .deepseek, .custom: return true
         }
     }
-}
-
-extension TranslationLanguage {
-    /// DeepL target language code. Generic variants are used where possible;
-    /// Chinese prefers the explicit simplified variant.
-    var deepLTargetCode: String {
-        switch self {
-        case .chinese:    return "ZH-HANS"
-        case .english:    return "EN"
-        case .vietnamese: return "VI"
-        case .hindi:      return "HI"
-        case .spanish:    return "ES"
-        case .french:     return "FR"
-        case .arabic:     return "AR"
-        case .bengali:    return "BN"
-        case .portuguese: return "PT"
-        case .russian:    return "RU"
-        case .urdu:       return "UR"
-        case .indonesian: return "ID"
-        case .german:     return "DE"
-        case .japanese:   return "JA"
-        case .korean:     return "KO"
-        case .turkish:    return "TR"
-        }
-    }
-
 }
 
 // MARK: - Config model

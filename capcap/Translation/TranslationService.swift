@@ -24,9 +24,8 @@ enum TranslationError: LocalizedError {
     }
 }
 
-/// Streams translations. OpenAI / DeepSeek / Custom share the OpenAI
-/// chat-completions SSE format; Claude uses Anthropic Messages SSE; DeepL and
-/// DeepLX return a single JSON payload that is yielded as one chunk.
+/// Streams translations via OpenAI-compatible chat-completions SSE
+/// or on-device Apple Translation.
 enum TranslationService {
 
     /// Yields translated text deltas as they arrive. Cancelling the consuming
@@ -245,9 +244,7 @@ enum TranslationService {
                         let payload = line.dropFirst(5).trimmingCharacters(in: .whitespaces)
                         if payload.isEmpty || payload == "[DONE]" { continue }
                         guard let data = payload.data(using: .utf8) else { continue }
-                        if let delta = kind.isClaude
-                            ? parseClaudeDelta(data)
-                            : parseOpenAIDelta(data) {
+                        if let delta = parseOpenAIDelta(data) {
                             continuation.yield(delta)
                         }
                     }
@@ -260,14 +257,54 @@ enum TranslationService {
         }
     }
 
+    /// Builds an OpenAI-compatible streaming chat-completions request.
+    /// Apple Translation runs on-device and never reaches this path.
     static func buildRequest(
         text: String,
         system: String,
         kind: TranslationProviderKind,
         config: TranslationConfig
     ) throws -> URLRequest {
-        // Only Apple Translation is supported now, which doesn't use HTTP requests
-        throw TranslationError.badResponse
+        guard !kind.isAppleTranslation else {
+            throw TranslationError.appleTranslationUnavailable
+        }
+
+        let endpoint = config.resolvedEndpoint(for: kind)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !endpoint.isEmpty, let url = URL(string: endpoint), url.scheme != nil else {
+            throw TranslationError.badEndpoint
+        }
+
+        let apiKey = config.apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        if kind.isAPIKeyRequired, apiKey.isEmpty {
+            throw TranslationError.missingAPIKey
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+        if !apiKey.isEmpty {
+            request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        }
+
+        var body: [String: Any] = [
+            "model": config.resolvedModel(for: kind),
+            "stream": true,
+            "messages": [
+                ["role": "system", "content": system],
+                ["role": "user", "content": text]
+            ]
+        ]
+
+        // DeepSeek's chat models reason by default, which adds latency and
+        // breaks the translate-only contract of the system prompt.
+        if kind == .deepseek {
+            body["thinking"] = ["type": "disabled"]
+        }
+
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        return request
     }
 
     private static func parseDictionaryEntry(_ raw: String, fallbackWord: String) -> DictionaryEntry {
@@ -306,17 +343,5 @@ enum TranslationService {
             return nil
         }
         return content
-    }
-
-    /// Claude chunk: `{ "type": "content_block_delta", "delta": { "text": "…" } }`
-    private static func parseClaudeDelta(_ data: Data) -> String? {
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              (json["type"] as? String) == "content_block_delta",
-              let delta = json["delta"] as? [String: Any],
-              let text = delta["text"] as? String,
-              !text.isEmpty else {
-            return nil
-        }
-        return text
     }
 }

@@ -158,19 +158,36 @@ final class TranslationSettingsPane: NSView {
 
 // MARK: - Pasteable text field
 
+/// Maps Cmd+X/C/V/A onto the first responder in a menu-less LSUIElement app.
+/// Returns nil when the event is not one of those shortcuts.
+private func editingSelector(for event: NSEvent) -> Selector? {
+    guard event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command else {
+        return nil
+    }
+    switch event.charactersIgnoringModifiers {
+    case "x": return #selector(NSText.cut(_:))
+    case "c": return #selector(NSText.copy(_:))
+    case "v": return #selector(NSText.paste(_:))
+    case "a": return #selector(NSText.selectAll(_:))
+    default: return nil
+    }
+}
+
 /// Text field that honors Cmd+C/V/X/A in a menu-less LSUIElement app.
 private final class TKTextField: NSTextField {
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
-        guard event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command else {
+        guard let action = editingSelector(for: event) else {
             return super.performKeyEquivalent(with: event)
         }
-        let action: Selector
-        switch event.charactersIgnoringModifiers {
-        case "x": action = #selector(NSText.cut(_:))
-        case "c": action = #selector(NSText.copy(_:))
-        case "v": action = #selector(NSText.paste(_:))
-        case "a": action = #selector(NSText.selectAll(_:))
-        default: return super.performKeyEquivalent(with: event)
+        return NSApp.sendAction(action, to: nil, from: nil)
+    }
+}
+
+/// Secure counterpart of `TKTextField`, so pasting an API key works.
+private final class TKSecureTextField: NSSecureTextField {
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        guard let action = editingSelector(for: event) else {
+            return super.performKeyEquivalent(with: event)
         }
         return NSApp.sendAction(action, to: nil, from: nil)
     }
@@ -191,7 +208,7 @@ private final class TranslationProviderCard: NSView {
     private let enableSwitch = NSSwitch()
     private let moveUpButton = NSButton()
     private let moveDownButton = NSButton()
-    private let apiKeyField = NSSecureTextField()
+    private let apiKeyField = TKSecureTextField()
     private let modelField = TKTextField()
     private let endpointField = TKTextField()
     private let apiKeyLabel = NSTextField(labelWithString: "")
@@ -378,7 +395,7 @@ private final class TranslationProviderCard: NSView {
     }
 
     private func apiKeyLabelText() -> String {
-        kind.isDeepLX ? L10n.translationApiKeyOptional : L10n.translationApiKey
+        L10n.translationApiKey
     }
 
     private func endpointLabelText() -> String {
@@ -386,13 +403,7 @@ private final class TranslationProviderCard: NSView {
     }
 
     private func endpointPlaceholder() -> String {
-        if kind.isDeepL {
-            return "Auto: api-free.deepl.com for :fx keys"
-        }
-        if kind.isDeepLX {
-            return kind.defaultEndpoint
-        }
-        return kind.defaultEndpoint.isEmpty
+        kind.defaultEndpoint.isEmpty
             ? "https://api.example.com/v1/chat/completions"
             : kind.defaultEndpoint
     }

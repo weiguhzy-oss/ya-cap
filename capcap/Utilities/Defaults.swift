@@ -539,18 +539,8 @@ enum L10n {
     static func screenshotTranslationLanguageButton(_ language: String) -> String {
         String(format: s("screenshotTranslationLanguageButton"), language)
     }
-    static var dictionaryEntryLabel: String { s("dictionaryEntryLabel") }
-    static var dictionaryPhoneticLabel: String { s("dictionaryPhoneticLabel") }
-    static var dictionaryPartOfSpeechLabel: String { s("dictionaryPartOfSpeechLabel") }
-    static var dictionaryDefinitionLabel: String { s("dictionaryDefinitionLabel") }
-    static var dictionaryExampleLabel: String { s("dictionaryExampleLabel") }
-    static var dictionaryDifficultyLabel: String { s("dictionaryDifficultyLabel") }
-    static var dictionaryNoProviderTitle: String { s("dictionaryNoProviderTitle") }
-    static var dictionaryNoProviderHint: String { s("dictionaryNoProviderHint") }
 
     // Translation — settings tab
-    static var translationDictionaryModeTitle: String { s("translationDictionaryModeTitle") }
-    static var translationDictionaryModeSubtitle: String { s("translationDictionaryModeSubtitle") }
     static var translationTargetLanguage: String { s("translationTargetLanguage") }
     static var translationTargetHint: String { s("translationTargetHint") }
     static var translationApiKey: String { s("translationApiKey") }
@@ -928,8 +918,8 @@ struct Defaults {
         return ScreenshotImageQuality(rawValue: raw) ?? ScreenshotImageQuality.defaultValue
     }
 
-    static let defaultImageFilenameTemplate = "capcap-{date}-{time}"
-    static let defaultRecordingFilenameTemplate = "capcap-rec-{date}-{time}"
+    static let defaultImageFilenameTemplate = "Yacap-{date}-{time}"
+    static let defaultRecordingFilenameTemplate = "Yacap-rec-{date}-{time}"
 
     static var imageFilenameTemplate: String {
         get {

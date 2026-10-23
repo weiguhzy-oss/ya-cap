@@ -27,10 +27,6 @@ private func installMinimalEditMenu(on app: NSApplication) {
     app.mainMenu = mainMenu
 }
 
-if let exitCode = AgentCommand.runIfRequested(arguments: Array(CommandLine.arguments.dropFirst())) {
-    exit(exitCode)
-}
-
 let app = NSApplication.shared
 installMinimalEditMenu(on: app)
 let delegate = AppDelegate()

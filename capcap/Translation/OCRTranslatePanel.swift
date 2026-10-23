@@ -1,4 +1,3 @@
-import AVFoundation
 import AppKit
 import CoreText
 import VisionKit
@@ -1142,164 +1141,6 @@ private final class TranslationResultView: NSView {
     }
 }
 
-private final class DictionaryResultView: NSView {
-    private let fieldsStack = NSStackView()
-    private let errorRow = NSStackView()
-    private let errorLabel = NSTextField(labelWithString: "")
-    private let retryButton: NSButton
-    private let speaker = AVSpeechSynthesizer()
-    private var retrySleeve: ClosureSleeve?
-    private var speechSleeves: [ClosureSleeve] = []
-    private let onLayoutChange: () -> Void
-
-    init(
-        onRetry: @escaping () -> Void,
-        onLayoutChange: @escaping () -> Void
-    ) {
-        self.retryButton = makeSmallButton(L10n.ocrRetry, action: #selector(ClosureSleeve.invoke))
-        self.onLayoutChange = onLayoutChange
-        super.init(frame: .zero)
-
-        translatesAutoresizingMaskIntoConstraints = false
-
-        let stack = NSStackView()
-        stack.orientation = .vertical
-        stack.alignment = .leading
-        stack.spacing = 14
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(stack)
-        pin(stack, to: self, inset: 0)
-
-        retrySleeve = ClosureSleeve(onRetry)
-        retryButton.target = retrySleeve
-
-        errorLabel.font = NSFont.systemFont(ofSize: 11, weight: .medium)
-        errorLabel.textColor = NSColor.systemOrange
-        errorLabel.lineBreakMode = .byWordWrapping
-        errorLabel.usesSingleLineMode = false
-        errorLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        errorRow.orientation = .horizontal
-        errorRow.alignment = .centerY
-        errorRow.spacing = 8
-        errorRow.translatesAutoresizingMaskIntoConstraints = false
-        errorRow.addArrangedSubview(errorLabel)
-        errorRow.addArrangedSubview(flexSpacer())
-        errorRow.addArrangedSubview(retryButton)
-        errorRow.isHidden = true
-        stack.addArrangedSubview(errorRow)
-        errorRow.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        errorLabel.widthAnchor.constraint(lessThanOrEqualTo: errorRow.widthAnchor, constant: -86).isActive = true
-
-        fieldsStack.orientation = .vertical
-        fieldsStack.alignment = .leading
-        fieldsStack.spacing = 15
-        fieldsStack.translatesAutoresizingMaskIntoConstraints = false
-        stack.addArrangedSubview(fieldsStack)
-        fieldsStack.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        fieldsStack.isHidden = true
-    }
-
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-
-    func reset() {
-        errorRow.isHidden = true
-        fieldsStack.isHidden = true
-        clearFields()
-        onLayoutChange()
-    }
-
-    func show(_ entry: DictionaryEntry) {
-        errorRow.isHidden = true
-        rebuildFields(entry)
-        fieldsStack.isHidden = false
-        onLayoutChange()
-    }
-
-    func markFailure(_ error: Error) {
-        errorLabel.stringValue = "\(L10n.ocrTranslateFailedPrefix) \(error.localizedDescription)"
-        errorRow.isHidden = false
-        fieldsStack.isHidden = true
-        onLayoutChange()
-    }
-
-    private func rebuildFields(_ entry: DictionaryEntry) {
-        clearFields()
-        addSection(title: L10n.dictionaryEntryLabel, value: entry.word, speakText: entry.word)
-        addSection(title: L10n.dictionaryPhoneticLabel, value: entry.phonetic)
-        addSection(title: L10n.dictionaryPartOfSpeechLabel, value: entry.partOfSpeech)
-        addSection(title: L10n.dictionaryDefinitionLabel, value: entry.definition)
-        addSection(
-            title: L10n.dictionaryExampleLabel,
-            value: [entry.example, entry.exampleTranslation]
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { !$0.isEmpty }
-                .joined(separator: "\n"),
-            speakText: entry.example
-        )
-        addSection(title: L10n.dictionaryDifficultyLabel, value: entry.difficulty)
-    }
-
-    private func clearFields() {
-        speechSleeves.removeAll()
-        for view in fieldsStack.arrangedSubviews {
-            fieldsStack.removeArrangedSubview(view)
-            view.removeFromSuperview()
-        }
-    }
-
-    private func addSection(title: String, value: String, speakText: String? = nil) {
-        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
-
-        let section = NSStackView()
-        section.orientation = .vertical
-        section.alignment = .leading
-        section.spacing = 6
-        section.translatesAutoresizingMaskIntoConstraints = false
-
-        let titleLabel = makeLabel(title, size: 12, weight: .semibold, alpha: 0.58)
-        let headerViews: [NSView]
-        if let speakText, !speakText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            let speakButton = NSButton(title: "", target: nil, action: #selector(ClosureSleeve.invoke))
-            configureIconButton(speakButton, symbolName: "speaker.wave.2.fill", label: title)
-            let sleeve = ClosureSleeve { [weak self] in self?.speak(speakText) }
-            speechSleeves.append(sleeve)
-            speakButton.target = sleeve
-            headerViews = [titleLabel, speakButton]
-        } else {
-            headerViews = [titleLabel]
-        }
-
-        let header = NSStackView(views: headerViews)
-        header.orientation = .horizontal
-        header.alignment = .centerY
-        header.spacing = 6
-        header.translatesAutoresizingMaskIntoConstraints = false
-        section.addArrangedSubview(header)
-
-        let valueLabel = NSTextField(wrappingLabelWithString: trimmed)
-        valueLabel.font = NSFont.systemFont(ofSize: 15)
-        valueLabel.textColor = .labelColor
-        valueLabel.maximumNumberOfLines = 0
-        valueLabel.isSelectable = true
-        valueLabel.translatesAutoresizingMaskIntoConstraints = false
-        valueLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        section.addArrangedSubview(valueLabel)
-        valueLabel.widthAnchor.constraint(equalTo: section.widthAnchor).isActive = true
-
-        fieldsStack.addArrangedSubview(section)
-        section.widthAnchor.constraint(equalTo: fieldsStack.widthAnchor).isActive = true
-    }
-
-    private func speak(_ text: String) {
-        if speaker.isSpeaking {
-            speaker.stopSpeaking(at: .immediate)
-        }
-        speaker.speak(AVSpeechUtterance(string: text))
-    }
-}
-
 // MARK: - OCR / screenshot translation panel
 
 /// Floating dialog shown after text recognition or screenshot translation.
@@ -1332,28 +1173,20 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
     private var ocrTextView: PanelTextView?
     private var ocrCopyButton: NSButton?
     private var translationTitleLabel: NSTextField?
-    private var dictionaryTitleLabel: AnimatedGradientTextLabel?
     private var translationPlaceholderLabel: NSTextField?
     private var translationResultsStack: NSStackView?
     private var translationResultViews: [TranslationProviderKind: TranslationResultView] = [:]
-    private var dictionaryResultView: DictionaryResultView?
     private var translationLanguageButton: NSButton?
     private var closeButton: PanelCloseButton?
 
     private var keyMonitor: Any?
-    private var outsideClickLocalMonitor: Any?
-    private var outsideClickGlobalMonitor: Any?
     private var languagePopover: NSPopover?
     private var isLiveTextMenuOpen = false
     private var ocrTask: Task<Void, Never>?
     private var liveTextTask: Task<Void, Never>?
     private var translationTasks: [TranslationProviderKind: Task<Void, Never>] = [:]
-    private var dictionaryTask: Task<Void, Never>?
     private var translationRunID = UUID()
     private var translationAttemptIDs: [TranslationProviderKind: UUID] = [:]
-    private var dictionaryRunID = UUID()
-    private var currentDictionaryWord: String?
-    private var currentDictionaryProvider: TranslationProviderKind?
     private var appleTranslationProvider: AppleTranslationSessionProviding?
     private var recognizedLines: [RecognizedTextLine] = []
     private var recognizedText = ""
@@ -1634,16 +1467,12 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
         title.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         translationTitleLabel = title
 
-        let dictionaryTitle = AnimatedGradientTextLabel()
-        dictionaryTitle.font = NSFont.systemFont(ofSize: 12, weight: .semibold)
-        dictionaryTitle.isHidden = true
-        dictionaryTitleLabel = dictionaryTitle
 
         let languageButton = makeSmallButton(languageButtonTitle(), action: #selector(languageTapped))
         languageButton.target = self
         translationLanguageButton = languageButton
 
-        let header = NSStackView(views: [title, dictionaryTitle, flexSpacer(), languageButton])
+        let header = NSStackView(views: [title, flexSpacer(), languageButton])
         header.orientation = .horizontal
         header.alignment = .centerY
         header.spacing = 8
@@ -1889,10 +1718,6 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
             setTranslationPlaceholder(L10n.ocrNoText)
             return
         }
-        if Defaults.translationDictionaryMode, let word = Self.singleDictionaryWord(in: recognizedText) {
-            runDictionary(word: word)
-            return
-        }
         runTranslation(target: selectedTarget)
     }
 
@@ -1901,8 +1726,6 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
         clearTranslationResults()
         translationRunID = UUID()
         showStandardTranslationHeader()
-        currentDictionaryWord = nil
-        currentDictionaryProvider = nil
 
         let kinds = TranslationConfigStore.usableKinds()
         guard !kinds.isEmpty else {
@@ -1927,38 +1750,6 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
             }
             startTranslation(kind: kind, target: target, text: text)
         }
-        refreshHeight()
-    }
-
-    private func runDictionary(word: String) {
-        cancelTranslationTasks()
-        clearTranslationResults()
-        translationRunID = UUID()
-        dictionaryRunID = UUID()
-        currentDictionaryWord = word
-        currentDictionaryProvider = nil
-        showDictionaryHeader(word: word)
-
-        guard let kind = TranslationConfigStore.usableKinds().first(where: { !$0.isDirectTranslationAPI }) else {
-            resetDictionaryTitle()
-            setTranslationPlaceholder("\(L10n.dictionaryNoProviderTitle)\n\(L10n.dictionaryNoProviderHint)")
-            refreshHeight()
-            return
-        }
-
-        currentDictionaryProvider = kind
-        translationPlaceholderLabel?.isHidden = true
-
-        let resultView = DictionaryResultView(
-            onRetry: { [weak self] in self?.retryDictionary() },
-            onLayoutChange: { [weak self] in self?.refreshHeight() }
-        )
-        dictionaryResultView = resultView
-        translationResultsStack?.addArrangedSubview(resultView)
-        if let stack = translationResultsStack {
-            resultView.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-        }
-        startDictionary(kind: kind, word: word, target: selectedTarget)
         refreshHeight()
     }
 
@@ -2002,37 +1793,6 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
         }
     }
 
-    private func startDictionary(kind: TranslationProviderKind, word: String, target: TranslationLanguage) {
-        dictionaryTask?.cancel()
-        dictionaryResultView?.reset()
-        setDictionaryLoadingTitle(word: word)
-
-        let config = TranslationConfigStore.load(kind)
-        let runID = UUID()
-        dictionaryRunID = runID
-        dictionaryTask = Task { @MainActor [weak self] in
-            do {
-                let entry = try await TranslationService.fetchDictionaryEntry(
-                    word: word,
-                    target: target,
-                    kind: kind,
-                    config: config
-                )
-                guard let self, self.dictionaryRunID == runID else { return }
-                self.resetDictionaryTitle()
-                self.dictionaryResultView?.show(entry)
-                self.refreshHeight()
-            } catch is CancellationError {
-                // Panel closed or lookup retried.
-            } catch {
-                guard let self, self.dictionaryRunID == runID else { return }
-                self.resetDictionaryTitle()
-                self.dictionaryResultView?.markFailure(error)
-                self.refreshHeight()
-            }
-        }
-    }
-
     private func isCurrentTranslation(
         kind: TranslationProviderKind,
         runID: UUID,
@@ -2046,24 +1806,14 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
         startTranslation(kind: kind, target: selectedTarget, text: recognizedText)
     }
 
-    private func retryDictionary() {
-        guard let word = currentDictionaryWord, let kind = currentDictionaryProvider else { return }
-        startDictionary(kind: kind, word: word, target: selectedTarget)
-    }
-
     private func cancelTranslationTasks() {
         for task in translationTasks.values { task.cancel() }
         translationTasks.removeAll()
         translationAttemptIDs.removeAll()
-        dictionaryTask?.cancel()
-        dictionaryTask = nil
-        dictionaryRunID = UUID()
-        resetDictionaryTitle()
     }
 
     private func clearTranslationResults() {
         translationResultViews.removeAll()
-        dictionaryResultView = nil
         guard let stack = translationResultsStack else { return }
         for view in stack.arrangedSubviews {
             stack.removeArrangedSubview(view)
@@ -2078,63 +1828,10 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
     }
 
     private func showStandardTranslationHeader() {
-        dictionaryTitleLabel?.stopAnimating()
-        dictionaryTitleLabel?.isHidden = true
         translationTitleLabel?.isHidden = false
         translationTitleLabel?.stringValue = L10n.screenshotTranslationHeader
         translationLanguageButton?.isHidden = false
         updateLanguageButtonTitle()
-    }
-
-    private func showDictionaryHeader(word: String) {
-        setDictionaryTitle(word, isAnimating: true)
-        translationLanguageButton?.isHidden = true
-    }
-
-    private func setDictionaryLoadingTitle(word: String) {
-        currentDictionaryWord = word
-        setDictionaryTitle(word, isAnimating: true)
-    }
-
-    private func resetDictionaryTitle() {
-        if let word = currentDictionaryWord {
-            setDictionaryTitle(word, isAnimating: false)
-        }
-    }
-
-    private func setDictionaryTitle(_ word: String, isAnimating: Bool) {
-        translationTitleLabel?.isHidden = true
-        dictionaryTitleLabel?.isHidden = false
-        dictionaryTitleLabel?.stringValue = word
-        if isAnimating {
-            dictionaryTitleLabel?.startAnimating()
-        } else {
-            dictionaryTitleLabel?.stopAnimating()
-        }
-    }
-
-    private static func singleDictionaryWord(in text: String) -> String? {
-        var trimSet = CharacterSet.whitespacesAndNewlines
-        trimSet.formUnion(.punctuationCharacters)
-        trimSet.formUnion(.symbols)
-        let word = text.trimmingCharacters(in: trimSet)
-        guard !word.isEmpty,
-              word.rangeOfCharacter(from: .whitespacesAndNewlines) == nil else {
-            return nil
-        }
-
-        var containsLetter = false
-        for scalar in word.unicodeScalars {
-            switch scalar.value {
-            case 65...90, 97...122:
-                containsLetter = true
-            case 39, 45, 8217:
-                continue
-            default:
-                return nil
-            }
-        }
-        return containsLetter ? word : nil
     }
 
     // MARK: Sizing
@@ -2209,7 +1906,11 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
         popover.behavior = .transient
         popover.animates = true
         let controller = NSViewController()
-        controller.view = LanguagePickerView(selected: selectedTarget) { [weak self, weak popover] language in
+        // Check the effective target, not the stored preference. When the OCR
+        // text is already in the preferred language the resolver flips the
+        // direction, and marking the preference here would contradict the
+        // button title next to it.
+        controller.view = LanguagePickerView(selected: displayTargetLanguage) { [weak self, weak popover] language in
             popover?.performClose(nil)
             self?.selectTargetLanguage(language)
         }
@@ -2222,7 +1923,11 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
     }
 
     private func selectTargetLanguage(_ language: TranslationLanguage) {
-        guard selectedTarget != language else { return }
+        // Compare against the effective target so the menu matches what the
+        // button shows. Picking the already-active language is a no-op, and
+        // picking the detected source language keeps the resolver's flip
+        // instead of re-running a same-language translation.
+        guard displayTargetLanguage != language else { return }
         selectedTarget = language
         updateLanguageButtonTitle()
         if !recognizedText.isEmpty {
@@ -2258,37 +1963,10 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
             return event
         }
 
-        let mouseDownMask: NSEvent.EventTypeMask = [.leftMouseDown, .rightMouseDown, .otherMouseDown]
-        outsideClickLocalMonitor = NSEvent.addLocalMonitorForEvents(matching: mouseDownMask) { [weak self] event in
-            self?.dismissForOutsideClickIfNeeded(event)
-            return event
-        }
-        outsideClickGlobalMonitor = NSEvent.addGlobalMonitorForEvents(matching: mouseDownMask) { [weak self] event in
-            self?.dismissForOutsideClickIfNeeded(event)
-        }
-    }
-
-    private func dismissForOutsideClickIfNeeded(_ event: NSEvent) {
-        guard !isLiveTextMenuOpen,
-              isVisible,
-              !eventBelongsToPanel(event),
-              !eventTargetsPanelThroughCaptureOverlay(event)
-        else { return }
-        dismiss()
-    }
-
-    private func eventTargetsPanelThroughCaptureOverlay(_ event: NSEvent) -> Bool {
-        guard let eventWindow = event.window,
-              eventWindow.contentView is SelectionView
-        else {
-            return false
-        }
-
-        // A click on this panel during capcap's own capture overlay is delivered
-        // to SelectionView, not to the panel. Keep the panel visible until the
-        // window-ID capture has read its contents.
-        let screenPoint = eventWindow.convertPoint(toScreen: event.locationInWindow)
-        return frame.insetBy(dx: -24, dy: -24).contains(screenPoint)
+        // The panel is not dismissed by clicking outside it. Translation and
+        // language-pack downloads run long enough that an incidental click
+        // elsewhere would discard results in progress. Escape and the close
+        // button are the ways out.
     }
 
     private func handleOCRImageKeyEquivalent(_ event: NSEvent) -> Bool {
@@ -2315,31 +1993,12 @@ final class OCRTranslatePanel: NSPanel, NSTextViewDelegate {
         }
     }
 
-    private func eventBelongsToPanel(_ event: NSEvent) -> Bool {
-        if event.window === self || event.windowNumber == windowNumber {
-            return true
-        }
-        if let popoverWindow = languagePopover?.contentViewController?.view.window,
-           (event.window === popoverWindow || event.windowNumber == popoverWindow.windowNumber) {
-            return true
-        }
-        return false
-    }
-
     func dismiss() {
         ocrTask?.cancel()
         ocrTask = nil
         liveTextTask?.cancel()
         liveTextTask = nil
         if let keyMonitor { NSEvent.removeMonitor(keyMonitor); self.keyMonitor = nil }
-        if let outsideClickLocalMonitor {
-            NSEvent.removeMonitor(outsideClickLocalMonitor)
-            self.outsideClickLocalMonitor = nil
-        }
-        if let outsideClickGlobalMonitor {
-            NSEvent.removeMonitor(outsideClickGlobalMonitor)
-            self.outsideClickGlobalMonitor = nil
-        }
         cancelTranslationTasks()
         appleTranslationProvider?.cancel()
         languagePopover?.performClose(nil)

@@ -60,6 +60,11 @@ class SettingsWindowController: NSWindowController {
         if shouldFocusPermissions {
             settingsView.showPermissionsTab()
         }
+        // Settings is the one window that behaves like a regular app window, so
+        // give the app a Dock icon while it is open. The policy switch must
+        // happen before activation, otherwise the window opens behind whatever
+        // app was frontmost.
+        NSApp.setActivationPolicy(.regular)
         resetInitialFocus()
         showWindow(nil)
         resetInitialFocus()
@@ -88,5 +93,12 @@ extension SettingsWindowController: NSWindowDelegate {
         settingsView.cancelClipboardShortcutRecording()
         settingsView.cancelFileSaveShortcutRecording()
         settingsView.closePermissionFlowPanel()
+
+        // Drop back to the menu-bar-only policy so the Dock icon disappears
+        // with the window. This runs before the window is actually gone, so
+        // defer it until AppKit has finished closing.
+        DispatchQueue.main.async {
+            NSApp.setActivationPolicy(.accessory)
+        }
     }
 }

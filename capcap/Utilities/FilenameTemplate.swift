@@ -15,8 +15,8 @@ enum FilenameTemplate {
 
         var fallbackBase: String {
             switch self {
-            case .image: return "capcap"
-            case .recording: return "capcap-rec"
+            case .image: return "Yacap"
+            case .recording: return "Yacap-rec"
             }
         }
 

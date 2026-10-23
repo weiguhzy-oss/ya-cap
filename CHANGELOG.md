@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-10-23
+
+### Added
+- Show a Dock icon while the settings window is open, and drop it again when
+  the window closes
+
+### Changed
+- Enable Apple Translation by default; it runs on-device and needs no
+  credentials, so it is useful before any provider setup
+- Keep the OCR/translation panel open when a click lands outside it.
+  Translation and language-pack downloads run long enough that an incidental
+  click would discard results in progress; Escape and the close button are the
+  ways out
+- Rename the filename rule presets from `capcap` to `Yacap`
+- Remove dictionary mode from the translation panel
+- Remove the command-line interface
+- Remove the system share extension
+
+### Fixed
+- Pass the detected source language to Apple Translation instead of leaving it
+  for the system to infer, which raised a language picker when detection was
+  inconclusive
+- Check the effective target language in the translation language menu. With
+  Chinese text and a Chinese target preference the resolver flips the direction
+  to English, and the menu marked the preference while the button showed the
+  resolved language
+
 ## [1.0.5] - 2026-10-21
 
 ### Added

@@ -23,10 +23,10 @@ final class FilenameRuleCard: NSView, NSTextFieldDelegate {
         var imageTemplate: String {
             switch self {
             case .custom: return Defaults.imageFilenameTemplate
-            case .short: return "capcap-{date}-{time}"
+            case .short: return "Yacap-{date}-{time}"
             case .compact: return "c-{date}-{time}"
-            case .unique: return "capcap-{date}-{time}-{rand:3}"
-            case .counter: return "capcap-{date}-{daily:3}"
+            case .unique: return "Yacap-{date}-{time}-{rand:3}"
+            case .counter: return "Yacap-{date}-{daily:3}"
             case .restore: return Defaults.defaultImageFilenameTemplate
             }
         }
@@ -34,10 +34,10 @@ final class FilenameRuleCard: NSView, NSTextFieldDelegate {
         var recordingTemplate: String {
             switch self {
             case .custom: return Defaults.recordingFilenameTemplate
-            case .short: return "capcap-rec-{date}-{time}"
+            case .short: return "Yacap-rec-{date}-{time}"
             case .compact: return "r-{date}-{time}"
-            case .unique: return "capcap-rec-{date}-{time}-{rand:3}"
-            case .counter: return "capcap-rec-{date}-{daily:3}"
+            case .unique: return "Yacap-rec-{date}-{time}-{rand:3}"
+            case .counter: return "Yacap-rec-{date}-{daily:3}"
             case .restore: return Defaults.defaultRecordingFilenameTemplate
             }
         }

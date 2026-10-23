@@ -230,63 +230,6 @@ struct TranslationConfig {
     }
 }
 
-// MARK: - Dictionary mode
-
-struct DictionaryEntry: Codable, Equatable {
-    var word: String
-    var phonetic: String
-    var partOfSpeech: String
-    var definition: String
-    var example: String
-    var exampleTranslation: String
-    var difficulty: String
-
-    init(
-        word: String = "",
-        phonetic: String = "",
-        partOfSpeech: String = "",
-        definition: String = "",
-        example: String = "",
-        exampleTranslation: String = "",
-        difficulty: String = ""
-    ) {
-        self.word = word
-        self.phonetic = phonetic
-        self.partOfSpeech = partOfSpeech
-        self.definition = definition
-        self.example = example
-        self.exampleTranslation = exampleTranslation
-        self.difficulty = difficulty
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        word = try container.decodeIfPresent(String.self, forKey: .word) ?? ""
-        phonetic = try container.decodeIfPresent(String.self, forKey: .phonetic) ?? ""
-        partOfSpeech = try container.decodeIfPresent(String.self, forKey: .partOfSpeech) ?? ""
-        definition = try container.decodeIfPresent(String.self, forKey: .definition) ?? ""
-        example = try container.decodeIfPresent(String.self, forKey: .example) ?? ""
-        exampleTranslation = try container.decodeIfPresent(String.self, forKey: .exampleTranslation) ?? ""
-        difficulty = try container.decodeIfPresent(String.self, forKey: .difficulty) ?? ""
-    }
-
-    func normalized(fallbackWord: String) -> DictionaryEntry {
-        DictionaryEntry(
-            word: cleaned(word).isEmpty ? fallbackWord : cleaned(word),
-            phonetic: cleaned(phonetic),
-            partOfSpeech: cleaned(partOfSpeech),
-            definition: cleaned(definition),
-            example: cleaned(example),
-            exampleTranslation: cleaned(exampleTranslation),
-            difficulty: cleaned(difficulty)
-        )
-    }
-
-    private func cleaned(_ value: String) -> String {
-        value.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
-
 // MARK: - Persistence
 
 /// Stores one JSON-encoded config plus an enabled flag per provider in
@@ -345,7 +288,9 @@ enum TranslationConfigStore {
     static func isEnabled(_ kind: TranslationProviderKind) -> Bool {
         let key = enabledKey(for: kind)
         if UserDefaults.standard.object(forKey: key) == nil {
-            return false
+            // Apple Translation runs on-device and needs no credentials, so it
+            // is the one provider that can be useful before any setup.
+            return kind.isAppleTranslation
         }
         return UserDefaults.standard.bool(forKey: key)
     }
@@ -435,11 +380,4 @@ extension Defaults {
         }
     }
 
-    static var translationDictionaryMode: Bool {
-        get { UserDefaults.standard.bool(forKey: "translation.dictionaryMode") }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "translation.dictionaryMode")
-            NotificationCenter.default.post(name: .translationConfigDidChange, object: nil)
-        }
-    }
 }

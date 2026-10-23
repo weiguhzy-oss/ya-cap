@@ -8,8 +8,7 @@ let package = Package(
         .macOS(.v14)
     ],
     products: [
-        .executable(name: "Ya cap", targets: ["capcap"]),
-        .executable(name: "CapcapShareExtension", targets: ["CapcapShareExtension"])
+        .executable(name: "Ya cap", targets: ["capcap"])
     ],
     targets: [
         .target(
@@ -46,15 +45,6 @@ let package = Package(
                 .linkedFramework("Carbon"),
                 .linkedFramework("VideoToolbox"),
                 .linkedLibrary("z"),
-            ]
-        ),
-        .executableTarget(
-            name: "CapcapShareExtension",
-            path: "capcap-share-extension",
-            exclude: ["Info.plist"],
-            linkerSettings: [
-                .linkedFramework("AppKit"),
-                .linkedFramework("UniformTypeIdentifiers"),
             ]
         ),
         .testTarget(

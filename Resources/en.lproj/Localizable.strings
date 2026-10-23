@@ -308,9 +308,6 @@
 "quitConfirmAction" = "Quit";
 "quitConfirmCancel" = "Cancel";
 
-/* Upload — toolbar / toast / progress */
-
-/* Upload — settings tab */
 "filenameRuleTitle" = "File name rules";
 "filenameRuleSubtitle" = "Controls image uploads, image save defaults, and recording save defaults. Extensions are added automatically";
 "filenameRulePresetLabel" = "Preset";
@@ -329,18 +326,7 @@
 "filenameRuleVariableRandom" = "Random";
 "filenameRuleVariableSize" = "Size";
 "filenameRulePreview" = "%@";
-
-/* Upload — provider field labels */
-
-/* Upload — provider names */
-
-/* Upload — errors */
 "missingField" = "Missing %@";
-
-/* Upload — test/validation pill */
-
-/* Upload — log lines */
-
 /* Permissions — status label */
 "permissionGranted" = "Granted";
 "permissionNotGranted" = "Not granted";
@@ -363,18 +349,8 @@
 "copyImageTextNoText" = "No text found";
 "screenshotTranslationHeader" = "Translation";
 "screenshotTranslationLanguageButton" = "To %@";
-"dictionaryEntryLabel" = "Entry";
-"dictionaryPhoneticLabel" = "Pronunciation";
-"dictionaryPartOfSpeechLabel" = "Part of speech";
-"dictionaryDefinitionLabel" = "Meaning";
-"dictionaryExampleLabel" = "Example";
-"dictionaryDifficultyLabel" = "Difficulty";
-"dictionaryNoProviderTitle" = "No dictionary-capable AI service configured";
-"dictionaryNoProviderHint" = "Enable OpenAI, DeepSeek, Claude, or a custom OpenAI-compatible service in Settings → Translation";
 
 /* Translation — settings tab */
-"translationDictionaryModeTitle" = "Dictionary Mode";
-"translationDictionaryModeSubtitle" = "When screenshot translation recognizes a single English word, show pronunciation, meaning, example, translation, and CEFR level";
 "translationTargetLanguage" = "Target Language";
 "translationTargetHint" = "Recognized text is translated into this language; if it is already in that language, it is translated to English instead";
 "translationApiKey" = "API Key";
@@ -410,41 +386,6 @@
 "translationErrBadResponse" = "Unexpected response";
 
 /* Image Merge */
-"imageMergeShortcutHeader" = "Merge Images";
-"imageMergeShortcutDefaultDisplay" = "Not set";
-"shortcutConflictImageMerge" = "This key combination is already used by the Merge Images shortcut. Please choose a different one";
-"mergeImages" = "Merge Images";
-"mergeEditExitHint" = "Editing merged image. Press X to exit editing";
-"imageMergeNeedTwoImages" = "Select at least two Finder images to merge";
-"imageMergeSomeImagesSkipped" = "Some images could not be loaded";
-"imageMergeNoClipboardImage" = "No image on the clipboard";
-"imageMergeFailed" = "Image merge failed";
-"imageMergeSaved" = "Merged image saved";
-"imageMergeWindowTitle" = "Merge Images";
-"imageMergeSources" = "Sources";
-"imageMergeAddFiles" = "Add Files";
-"imageMergeAddFromClipboard" = "Add from Clipboard";
-"imageMergeImageList" = "Images";
-"imageMergeTemplate" = "Arrangement";
-"imageMergeTemplateHorizontal" = "Horizontal";
-"imageMergeTemplateVertical" = "Vertical";
-"imageMergeTemplateGrid" = "Grid";
-"imageMergeTemplateLongStitch" = "Long Stitch";
-"imageMergeLayout" = "Layout";
-"imageMergeSpacing" = "Spacing";
-"imageMergeMargin" = "Outer Margin";
-"imageMergeCornerRadius" = "Corner Radius";
-"imageMergeBackground" = "Background";
-"imageMergeTransparent" = "Transparent";
-"imageMergeSolid" = "Solid";
-"imageMergeOutput" = "Output";
-"imageMergeCopy" = "Copy";
-"imageMergeSave" = "Save";
-"imageMergeContinueEditing" = "Edit";
-"imageMergeClose" = "Close";
-"imageMergeEmptyTitle" = "Drop images to merge";
-"imageMergeEmptyBody" = "Add files, paste from clipboard, or drag images here";
-"imageMergeClipboardSourceName" = "Clipboard Image";
 
 /* Screenshot quality */
 "screenshotQualityTitle" = "Screenshot quality";

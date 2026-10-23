@@ -70,12 +70,24 @@ private final class AppleTranslationBridgeModel: ObservableObject {
                 )
 
                 let targetLanguage = Locale.Language(identifier: target.localeIdentifier)
+                // Leaving the source nil makes Apple Translation detect it, and
+                // a failed detection raises a system language picker. The app
+                // already resolved the direction, so the source is passed along.
+                // When detection is inconclusive the counterpart of the target
+                // is the better guess, since the resolver only picks a target
+                // that differs from the source.
+                var detected = TranslationDirectionResolver.detectedLanguage(in: text)
+                    ?? (target == .chinese ? .english : .chinese)
+                if detected == target {
+                    detected = target == .chinese ? .english : .chinese
+                }
+                let sourceLanguage = Locale.Language(identifier: detected.localeIdentifier)
                 var nextConfiguration = TranslationSession.Configuration(
-                    source: nil,
+                    source: sourceLanguage,
                     target: targetLanguage
                 )
                 if let current = configuration,
-                   current.source == nil,
+                   current.source == sourceLanguage,
                    current.target == targetLanguage {
                     nextConfiguration = current
                     nextConfiguration.invalidate()

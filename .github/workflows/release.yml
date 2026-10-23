@@ -135,10 +135,13 @@ jobs:
           esac
 
           # The release must carry the version from the tag. A mismatch means
-          # Info.plist was not bumped before tagging.
+          # Info.plist was not bumped before tagging. Only the base version is
+          # compared, so a pre-release tag (release-v1.0.6-rc1) still matches a
+          # 1.0.6 bundle — CFBundleShortVersionString takes no suffix.
+          BASE_VERSION="${VERSION%%-*}"
           BUNDLED_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP_DIR/Contents/Info.plist")"
-          if [ "$BUNDLED_VERSION" != "$VERSION" ]; then
-            echo "error: tag says $VERSION but Info.plist says $BUNDLED_VERSION" >&2
+          if [ "$BUNDLED_VERSION" != "$BASE_VERSION" ]; then
+            echo "error: tag says $BASE_VERSION but Info.plist says $BUNDLED_VERSION" >&2
             exit 1
           fi
 

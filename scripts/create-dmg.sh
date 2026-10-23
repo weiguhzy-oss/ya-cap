@@ -40,8 +40,22 @@ cleanup() {
 trap cleanup EXIT
 
 mkdir -p "$OUTPUT_DIR"
-cp -R "$APP_PATH" "$STAGE/$APP_BUNDLE"
+# The project lives in iCloud Drive, which keeps re-attaching extended
+# attributes (com.apple.FinderInfo / com.apple.fileprovider.fpfs#P) to the
+# built bundle. `cp -R` carries them into the DMG, where codesign then rejects
+# the app as "resource fork, Finder information, or similar detritus". ditto
+# with --noextattr strips them while staging, the same way scripts/bundle.sh
+# does before signing.
+ditto --noextattr --norsrc "$APP_PATH" "$STAGE/$APP_BUNDLE"
+xattr -cr "$STAGE/$APP_BUNDLE" 2>/dev/null || true
 ln -s /Applications "$STAGE/Applications"
+
+# A stripped bundle must still carry a valid signature. Catching it here keeps
+# a broken DMG from reaching users.
+if ! codesign --verify --deep --strict "$STAGE/$APP_BUNDLE"; then
+    echo "error: staged bundle fails signature verification" >&2
+    exit 1
+fi
 
 rm -f "$OUTPUT_DMG"
 hdiutil create \
